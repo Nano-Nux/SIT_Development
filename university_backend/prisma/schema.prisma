@@ -1,0 +1,494 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // SUPER_ADMIN, ADMIN, EDITOR
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Hero {
+  id            String   @id @default(uuid())
+  page          String   @unique // HOME, ADMISSIONS, ABOUT, ACADEMICS, LIFE_AT_SIT, COLLABORATIONS
+  title         String
+  titleLa       String?
+  subtitle      String?
+  subtitleLa    String?
+  description   String?  @db.Text
+  descriptionLa String?  @db.Text
+  buttonText    String?
+  buttonTextLa  String?
+  buttonUrl     String?
+  imageUrl      String?
+  image2Url     String?
+  image3Url     String?
+  image4Url     String?
+  bgVideoUrl    String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CoreValue {
+  id            String   @id @default(uuid())
+  title         String
+  titleLa       String?
+  description   String   @db.Text
+  descriptionLa String?  @db.Text
+  icon          String?  // icon identifier or image url
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Major {
+  id            String   @id @default(uuid())
+  title         String
+  titleLa       String?
+  slug          String   @unique
+  description   String   @db.Text
+  descriptionLa String?  @db.Text
+  imageUrl      String?
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Department {
+  id                    String    @id @default(uuid())
+  name                  String
+  nameLa                String?
+  slug                  String    @unique
+  description           String    @db.Text
+  descriptionLa         String?   @db.Text
+  heroImage             String?
+  imageUrl              String?
+  order                 Int       @default(0)
+  isActive              Boolean   @default(true)
+  
+  // Field 3: box-description (15 programming languages, 8 specialized labs, 95% job placement, 40+ industry partners) - Optional
+  boxDescriptions       String?   @db.Text // JSON string array of { value, label }
+  boxDescriptionsLa     String?   @db.Text // JSON string array of { value, label }
+
+  // Field 4: Core Focus Areas (e.g. Software Development, Cybersecurity...)
+  coreFocusAreas        String?   @db.Text // JSON string array of strings
+  coreFocusAreasLa      String?   @db.Text // JSON string array of strings
+
+  // Field 5: Career Outcome description
+  careerOutcomeDesc     String?   @db.Text
+  careerOutcomeDescLa   String?   @db.Text
+
+  // Field 6: Career outcomes boxes (job placement rate, average starting salary, partner companies, avg time to employment) - Optional
+  careerPlacementRate   String?   // e.g. "95%"
+  careerPlacementRateLa String?
+  careerAvgSalary       String?   // e.g. "$92K"
+  careerAvgSalaryLa     String?
+  careerPartnerCompanies String?  // e.g. "200+"
+  careerPartnerCompaniesLa String?
+  careerTimeToEmployment String?  // e.g. "3 Months"
+  careerTimeToEmploymentLa String?
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  programs              Program[]
+  faculty               Faculty[]
+}
+
+model Program {
+  id               String           @id @default(uuid())
+  name             String
+  nameLa           String?
+  slug             String           @unique
+  degree           String           // Bachelor, Master, PhD, Certificate
+  degreeLa         String?
+  duration         String           // e.g. "4 Years", "2 Years"
+  durationLa       String?
+  description      String           @db.Text
+  descriptionLa    String?          @db.Text
+  heroImage        String?
+  coreFocusAreas   String           @db.Text // JSON string array
+  coreFocusAreasLa String?          @db.Text // JSON string array
+  departmentId     String?
+  department       Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  directors        ProgramDirector[]
+  order            Int              @default(0)
+  isPublished      Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Faculty {
+  id               String      @id @default(uuid())
+  name             String
+  nameLa           String?
+  position         String
+  positionLa       String?
+  departmentName   String?
+  departmentNameLa String?
+  biography        String      @db.Text
+  biographyLa      String?     @db.Text
+  imageUrl         String?
+  email            String?
+  departmentId     String?
+  department       Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  order            Int         @default(0)
+  isFeatured       Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model ProgramDirector {
+  id               String   @id @default(uuid())
+  name             String
+  nameLa           String?
+  position         String
+  positionLa       String?
+  departmentName   String?
+  departmentNameLa String?
+  biography        String   @db.Text
+  biographyLa      String?  @db.Text
+  imageUrl         String?
+  email            String?
+  programId        String?
+  program          Program? @relation(fields: [programId], references: [id], onDelete: SetNull)
+  order            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Spotlight {
+  id            String   @id @default(uuid())
+  type          String?  @default("STUDENT") // FACULTY, STUDENT, ALUMNI
+  title         String?
+  titleLa       String?
+  subtitle      String?
+  subtitleLa    String?
+  quote         String?  @db.Text
+  quoteLa       String?  @db.Text
+  description   String?  @db.Text
+  descriptionLa String?  @db.Text
+  authorName    String?
+  authorNameLa  String?
+  authorRole    String?
+  authorRoleLa  String?
+  imageUrl      String?
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Partner {
+  id         String   @id @default(uuid())
+  name       String
+  nameLa     String?
+  type       String   @default("UNIVERSITY") // UNIVERSITY, INDUSTRY
+  logoUrl    String
+  websiteUrl String?
+  country    String?
+  countryLa  String?
+  order      Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CampusFacility {
+  id             String   @id @default(uuid())
+  name           String
+  nameLa         String?
+  description    String   @db.Text
+  descriptionLa  String?  @db.Text
+  imageUrl       String?
+  actionType     String   @default("MODAL") // REDIRECT, MODAL
+  destinationUrl String?
+  modalTitle     String?
+  modalTitleLa   String?
+  modalContent   String?  @db.Text
+  modalContentLa String?  @db.Text
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model News {
+  id          String   @id @default(uuid())
+  title       String
+  titleLa     String?
+  slug        String   @unique
+  summary     String   @db.Text
+  summaryLa   String?  @db.Text
+  content     String   @db.Text
+  contentLa   String?  @db.Text
+  category    String   @default("General")
+  categoryLa  String?
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isPublished Boolean  @default(true)
+  author      String   @default("SIT Communications")
+  authorLa    String?
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id              String   @id @default(uuid())
+  title           String
+  titleLa         String?
+  slug            String   @unique
+  summary         String   @db.Text
+  summaryLa       String?  @db.Text
+  content         String   @db.Text
+  contentLa       String?  @db.Text
+  location        String
+  locationLa      String?
+  eventDate       DateTime
+  time            String
+  timeLa          String?
+  imageUrl        String?
+  isPublished     Boolean  @default(true)
+  registrationUrl String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StudentLife {
+  id            String   @id @default(uuid())
+  title         String
+  titleLa       String?
+  description   String   @db.Text
+  descriptionLa String?  @db.Text
+  category      String   @default("Campus Life")
+  categoryLa    String?
+  imageUrl      String?
+  gallery       String   @default("[]") @db.Text // JSON string array
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Founder {
+  id            String   @id @default(uuid())
+  name          String
+  nameLa        String?
+  designation   String
+  designationLa String?
+  quote         String   @db.Text
+  quoteLa       String?  @db.Text
+  biography     String   @db.Text
+  biographyLa   String?  @db.Text
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Member {
+  id          String   @id @default(uuid())
+  name        String
+  nameLa      String?
+  position    String
+  positionLa  String?
+  category    String   @default("Board of Trustees") // Board of Trustees, University Council, Advisory Board
+  categoryLa  String?
+  biography   String   @db.Text
+  biographyLa String?  @db.Text
+  imageUrl    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model History {
+  id            String   @id @default(uuid())
+  year          String
+  title         String
+  titleLa       String?
+  description   String   @db.Text
+  descriptionLa String?  @db.Text
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model VisionMission {
+  id            String   @id @default(uuid())
+  vision        String   @db.Text
+  visionLa      String?  @db.Text
+  mission       String   @db.Text
+  missionLa     String?  @db.Text
+  corePillars   String   @db.Text // JSON string array
+  corePillarsLa String?  @db.Text // JSON string array
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ContactInfo {
+  id              String   @id @default(uuid())
+  address         String   @db.Text
+  addressLa       String?  @db.Text
+  phone           String
+  email           String
+  mapEmbedUrl     String   @db.Text
+  officeHours     String?
+  officeHoursLa   String?
+  locations       String?  @db.Text // JSON string array of ContactLocation objects
+  phones          String?  @db.Text // JSON string array of ContactPhone objects
+  emails          String?  @db.Text // JSON string array of ContactEmail objects
+  officeHoursList String?  @db.Text // JSON string array of ContactOfficeHour objects
+  socialLinks     String   @default("{}") @db.Text // JSON string
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ApplicationTimeline {
+  id              String   @id @default(uuid())
+  intakeName      String   // e.g. "Fall 2026", "Spring 2027", "Open Intake"
+  intakeNameLa    String?
+  intakeYear      String   // e.g. "2026"
+  openingDate     DateTime
+  closingDate     DateTime
+  deadlineDate    DateTime?
+  classesBeginDate DateTime?
+  additionalNotes String?  @db.Text
+  additionalNotesLa String? @db.Text
+  status          String   @default("Open") // Open, Upcoming, Closed
+  statusLa        String?
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ApplicationReminder {
+  id            String   @id @default(uuid())
+  title         String
+  titleLa       String?
+  description   String   @db.Text
+  descriptionLa String?  @db.Text
+  icon          String?  @default("bell")
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model AdmissionRequirement {
+  id                 String   @id @default(uuid())
+  category           String   @default("ACADEMIC") // ACADEMIC, QUALIFICATIONS, INTERNATIONAL
+  degreeLevel        String   // Undergraduate, Graduate, International, All
+  title              String
+  titleLa            String?
+  subtitle           String?
+  subtitleLa         String?
+  description        String?  @db.Text
+  descriptionLa      String?  @db.Text
+  requirementsList   String   @db.Text // JSON string array
+  requirementsListLa String?  @db.Text // JSON string array
+  icon               String?
+  order              Int      @default(0)
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model AdmissionFaq {
+  id          String   @id @default(uuid())
+  question    String   @db.Text
+  questionLa  String?  @db.Text
+  answer      String   @db.Text
+  answerLa    String?  @db.Text
+  category    String   @default("General")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ApplicationMaterial {
+  id            String   @id @default(uuid())
+  title         String
+  titleLa       String?
+  description   String?  @db.Text
+  descriptionLa String?  @db.Text
+  fileUrl       String   @db.Text
+  fileType      String?  @default("PDF")
+  fileSize      String?
+  icon          String?  @default("Download")
+  badgeColor    String?  @default("#0400CC")
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Application {
+  id              String   @id @default(uuid())
+  fullName        String
+  email           String
+  phone           String
+  dateOfBirth     String
+  gender          String
+  nationality     String
+  address         String   @db.Text
+  intendedProgram String
+  degreeLevel     String
+  previousSchool  String
+  gpa             String?
+  graduationYear  String?
+  englishScore    String?
+  statement       String?  @db.Text
+  documents       String?  @db.Text // JSON string array of { name, url }
+  status          String   @default("PENDING") // PENDING, REVIEWED, ACCEPTED, REJECTED
+  notes           String?  @db.Text
+  submittedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model RequestInfo {
+  id                    String   @id @default(uuid())
+  fullName              String
+  email                 String
+  phone                 String
+  country               String?
+  city                  String?
+  currentEducationLevel String?
+  graduationYear        String?
+  programOfInterest     String
+  intakeTerm            String?
+  planToStart           String?
+  interests             String?  @db.Text // JSON string array of selected interests
+  hearAboutUs           String?
+  communicationPreferences String? @db.Text // JSON string array or object
+  message               String?  @db.Text
+  status                String   @default("PENDING") // PENDING, CONTACTED, RESOLVED
+  notes                 String?  @db.Text
+  submittedAt           DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  fileName  String
+  url       String
+  mimeType  String
+  size      Int
+  createdAt DateTime @default(now())
+}
+
