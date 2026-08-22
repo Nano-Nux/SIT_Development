@@ -110,9 +110,11 @@ npm install
 NODE_OPTIONS="--max-old-space-size=512" npm run build
 
 # Copy static assets for standalone server
-mkdir -p .next/standalone/public .next/standalone/.next
+mkdir -p .next/standalone/public .next/standalone/.next .next/standalone/university_frontend/public .next/standalone/university_frontend/.next
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
-cp -r .next/static .next/standalone/.next/
+cp -r public/* .next/standalone/university_frontend/public/ 2>/dev/null || true
+cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
+cp -r .next/static .next/standalone/university_frontend/.next/ 2>/dev/null || true
 echo -e "${GREEN}✓ Frontend standalone build complete.${NC}"
 
 # ------------------------------------------------------------------------------
@@ -131,12 +133,26 @@ fuser -k ${FRONTEND_PORT}/tcp 2>/dev/null || true
 
 # Start Backend on Port 4118
 cd "$BACKEND_DIR"
-PORT=${BACKEND_PORT} NODE_OPTIONS="--max-old-space-size=128" nohup node dist/main.js > "$ROOT_DIR/backend_staging.log" 2>&1 &
+BACKEND_ENTRY="dist/main.js"
+if [ ! -f "$BACKEND_ENTRY" ]; then
+  BACKEND_ENTRY="dist/src/main.js"
+fi
+
+PORT=${BACKEND_PORT} NODE_OPTIONS="--max-old-space-size=128" nohup node "$BACKEND_ENTRY" > "$ROOT_DIR/backend_staging.log" 2>&1 &
 BACKEND_PID=$!
 
 # Start Frontend on Port 3965
 cd "$FRONTEND_DIR"
-PORT=${FRONTEND_PORT} NODE_OPTIONS="--max-old-space-size=128" nohup node .next/standalone/server.js > "$ROOT_DIR/frontend_staging.log" 2>&1 &
+FRONTEND_ENTRY=".next/standalone/server.js"
+if [ ! -f "$FRONTEND_ENTRY" ]; then
+  FRONTEND_ENTRY=".next/standalone/university_frontend/server.js"
+fi
+
+if [ -f "$FRONTEND_ENTRY" ]; then
+  PORT=${FRONTEND_PORT} NODE_OPTIONS="--max-old-space-size=128" nohup node "$FRONTEND_ENTRY" > "$ROOT_DIR/frontend_staging.log" 2>&1 &
+else
+  PORT=${FRONTEND_PORT} NODE_OPTIONS="--max-old-space-size=128" nohup npx next start -p ${FRONTEND_PORT} > "$ROOT_DIR/frontend_staging.log" 2>&1 &
+fi
 FRONTEND_PID=$!
 
 # Save PIDs
