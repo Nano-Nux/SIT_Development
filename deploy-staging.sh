@@ -8,10 +8,10 @@
 
 set -e
 
-# Port Configuration (Using your assigned NAT ports)
-NAT_PUBLIC_IP="85.155.184.191"
-FRONTEND_PORT="3965"
-BACKEND_PORT="4118"
+# Port & IP Configuration (Accepts CLI arguments or defaults)
+NAT_PUBLIC_IP="${1:-149.56.240.225}"
+FRONTEND_PORT="${2:-3965}"
+BACKEND_PORT="${3:-4118}"
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKEND_DIR="$ROOT_DIR/university_backend"
@@ -60,8 +60,13 @@ fi
 # 2. SeaweedFS Storage Cluster (Docker)
 # ------------------------------------------------------------------------------
 echo -e "\n${CYAN}🗄️  [2/5] Starting SeaweedFS Docker cluster...${NC}"
+COMPOSE_FILE="$ROOT_DIR/seaweedfs-staging.yml"
+if [ ! -f "$COMPOSE_FILE" ]; then
+  COMPOSE_FILE="$ROOT_DIR/seaweedfs-compose.yml"
+fi
+
 if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
-  docker compose -f "$ROOT_DIR/seaweedfs-compose.yml" up -d
+  docker compose -f "$COMPOSE_FILE" up -d
   echo -e "${GREEN}✓ SeaweedFS S3 storage containers running.${NC}"
 else
   echo -e "${YELLOW}ℹ️  Docker not active. Backend will use local disk uploads folder.${NC}"

@@ -32,5 +32,5 @@ fuser -k 4118/tcp 2>/dev/null || true
 fuser -k 3965/tcp 2>/dev/null || true
 
 echo -e "${GREEN}✓ All Node.js staging services stopped.${NC}"
-echo -e "${BLUE}Note: SeaweedFS Docker containers are still running. To stop them, run:${NC}"
-echo -e "  docker compose -f seaweedfs-compose.yml down\n"
+echo -e "${BLUE}Note: SeaweedFS Docker container is still running. To stop it, run:${NC}"
+echo -e "  docker compose -f seaweedfs-staging.yml down\n"

@@ -1,0 +1,14 @@
+services:
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    restart: unless-stopped
+    command: 'server -s3 -filer -dir=/data -volume.max=5'
+    ports:
+      - "8333:8333"
+      - "8888:8888"
+      - "9333:9333"
+    volumes:
+      - seaweedfs_volume_data:/data
+
+volumes:
+  seaweedfs_volume_data:
