@@ -2,28 +2,41 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { api } from '@/lib/api';
+import { api, HeroItem } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function AboutHero() {
-  const { t } = useLanguage();
-  const [bgImage, setBgImage] = useState<string | null>(null);
+  const { lang, t } = useLanguage();
+  const isLa = lang === 'LA';
+  const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
     api.getHero('ABOUT')
       .then((res) => {
-        if (res?.imageUrl && res.imageUrl.trim() !== '') {
-          setBgImage(res.imageUrl.trim());
-        }
+        if (res) setHeroData(res);
       })
       .catch(() => {
-        setBgImage(null);
+        setHeroData(null);
       });
   }, []);
 
+  const subtitle = isLa
+    ? (heroData?.subtitleLa || heroData?.subtitle || t.about.heroSubtitle)
+    : (heroData?.subtitle || t.about.heroSubtitle);
+
+  const title = isLa
+    ? (heroData?.titleLa || heroData?.title || t.about.heroTitle)
+    : (heroData?.title || t.about.heroTitle);
+
+  const description = isLa
+    ? (heroData?.descriptionLa || heroData?.description || t.about.heroDesc)
+    : (heroData?.description || t.about.heroDesc);
+
+  const bgImage = heroData?.imageUrl?.trim() || null;
+
   return (
-    <section className="relative w-full bg-[#00001C] pt-36 pb-24 md:pt-44 md:pb-32 text-white overflow-hidden text-center">
-      {/* Dynamic background photo from Admin Dashboard (Blank by default) */}
+    <section className="relative w-full min-h-[510px] md:h-[600px] bg-[#00001C] pt-28 pb-12 md:pt-32 md:pb-16 text-white overflow-hidden text-center flex flex-col justify-center items-center">
+      {/* Dynamic background photo from Admin Dashboard */}
       {bgImage && (
         <div className="absolute inset-0 z-0">
           <Image
@@ -46,17 +59,21 @@ export function AboutHero() {
       )}
 
       <div className="max-w-[1000px] mx-auto px-6 relative z-10 space-y-4">
-        <span className="block text-xs sm:text-sm font-bold tracking-widest text-white uppercase">
-          {t.about.heroSubtitle}
-        </span>
+        {subtitle && (
+          <span className="block text-xs sm:text-sm font-bold tracking-widest text-white uppercase">
+            {subtitle}
+          </span>
+        )}
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight">
-          {t.about.heroTitle}
+          {title}
         </h1>
 
-        <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed pt-2">
-          {t.about.heroDesc}
-        </p>
+        {description && (
+          <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed pt-2">
+            {description}
+          </p>
+        )}
       </div>
     </section>
   );

@@ -23,7 +23,7 @@ export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
     if (!data || data.length === 0) {
       api.getStudentLife().then((res) => {
         if (res && res.length > 0) {
-          setItems(res.slice(0, 4));
+          setItems(res);
         }
       }).catch(console.error);
     }

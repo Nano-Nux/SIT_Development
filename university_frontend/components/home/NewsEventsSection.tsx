@@ -22,23 +22,24 @@ export function NewsEventsSection({
 
   useEffect(() => {
     if (newsData.length === 0) {
-      api.getNews({ limit: 2 }).then((res) => {
+      api.getNews().then((res) => {
         if (res && res.items) setNews(res.items);
+        else if (Array.isArray(res)) setNews(res);
       }).catch(console.error);
     }
   }, [newsData]);
 
   useEffect(() => {
     if (eventsData.length === 0) {
-      api.getEvents({ limit: 2 }).then((res: any) => {
+      api.getEvents().then((res: any) => {
         if (Array.isArray(res)) setEvents(res);
         else if (res && res.items) setEvents(res.items);
       }).catch(console.error);
     }
   }, [eventsData]);
 
-  const newsList = news.slice(0, 2);
-  const eventsList = events.slice(0, 2);
+  const newsList = news;
+  const eventsList = events;
 
   return (
     <section className="py-20 sm:py-28 bg-white">

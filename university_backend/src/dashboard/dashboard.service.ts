@@ -46,19 +46,22 @@ export class DashboardService {
       }),
     ]);
 
+    const overview = {
+      totalApplications,
+      pendingApplications,
+      totalInquiries,
+      pendingInquiries,
+      totalPrograms,
+      totalFaculty,
+      totalNews,
+      totalEvents,
+      totalPartners,
+      totalSpotlights,
+    };
+
     return {
-      overview: {
-        totalApplications,
-        pendingApplications,
-        totalInquiries,
-        pendingInquiries,
-        totalPrograms,
-        totalFaculty,
-        totalNews,
-        totalEvents,
-        totalPartners,
-        totalSpotlights,
-      },
+      overview,
+      counts: overview,
       recentApplications,
       recentInquiries,
       recentNews,

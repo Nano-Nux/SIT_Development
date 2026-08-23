@@ -12,6 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function AcademicsPage() {
   const [departments, setDepartments] = useState<DepartmentItem[]>([]);
+  const [heroData, setHeroData] = useState<HeroItem | null>(null);
   const [directors, setDirectors] = useState<ProgramDirectorItem[]>([]);
   const [spotlights, setSpotlights] = useState<SpotlightItem[]>([]);
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -26,8 +27,11 @@ export default function AcademicsPage() {
       api.getProgramDirectors().catch(() => []),
       api.getSpotlights().catch(() => []),
     ]).then(([heroRes, deptRes, dirRes, spotRes]) => {
-      if (heroRes?.imageUrl && heroRes.imageUrl.trim() !== '') {
-        setBgImage(heroRes.imageUrl.trim());
+      if (heroRes) {
+        setHeroData(heroRes);
+        if (heroRes.imageUrl && heroRes.imageUrl.trim() !== '') {
+          setBgImage(heroRes.imageUrl.trim());
+        }
       }
       setDepartments(deptRes || []);
       setDirectors(dirRes || []);
@@ -36,9 +40,13 @@ export default function AcademicsPage() {
     });
   }, []);
 
-  const heroSubtitle = t.academics.heroSubtitle;
+  const heroSubtitle = isLa
+    ? (heroData?.subtitleLa || heroData?.subtitle || t.academics.heroSubtitle)
+    : (heroData?.subtitle || t.academics.heroSubtitle);
 
-  const rawTitle = t.academics.heroTitle || (isLa ? 'ຫຼັກສູດວິຊາການ ທີ່ SIT' : 'Academic Programs at SIT');
+  const rawTitle = isLa
+    ? (heroData?.titleLa || heroData?.title || t.academics.heroTitle || 'ຫຼັກສູດວິຊາການ ທີ່ SIT')
+    : (heroData?.title || t.academics.heroTitle || 'Academic Programs at SIT');
 
   let mainTitle = isLa ? 'ຫຼັກສູດວິຊາການ' : 'Academic Programs';
   let subTitleAccent = isLa ? 'ທີ່ SIT' : 'at SIT';
@@ -56,6 +64,7 @@ export default function AcademicsPage() {
     subTitleAccent = 'at SIT';
   } else {
     mainTitle = rawTitle.trim();
+    subTitleAccent = '';
   }
 
   // Find ALUMNI success spotlight as requested, falling back to any active spotlight
@@ -71,7 +80,7 @@ export default function AcademicsPage() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative w-full min-h-[580px] md:h-[692px] bg-[#00001C] pt-36 pb-6 md:pt-44 md:pb-8 text-white overflow-hidden flex flex-col justify-end">
+        <section className="relative w-full min-h-[510px] md:h-[600px] bg-[#00001C] pt-32 pb-5 md:pt-36 md:pb-7 text-white overflow-hidden flex flex-col justify-end">
           {/* Background image & gradient overlay layers matching AcademicsHero.svg */}
           <div className="absolute inset-0 z-0">
             {/* 1. Base photo */}
@@ -89,7 +98,7 @@ export default function AcademicsPage() {
             {/* 3. Dark gradient overlay from bottom to transparent top */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#00001C] via-[#00001C]/40 to-transparent" />
             {/* 4. Large SIT Logo Watermark Emblem (opacity 0.1, rotated 90deg on upper right) */}
-            <div className="absolute -top-32 -right-32 md:-top-48 md:-right-24 w-[600px] h-[600px] md:w-[920px] md:h-[920px] opacity-10 pointer-events-none select-none z-0 rotate-90">
+            <div className="absolute -top-28 -right-28 md:-top-40 md:-right-20 w-[520px] h-[520px] md:w-[800px] md:h-[800px] opacity-10 pointer-events-none select-none z-0 rotate-90">
               <Image
                 src="/images/academics_desktopview/img_2.png"
                 alt="SIT Emblem Watermark"
@@ -100,7 +109,7 @@ export default function AcademicsPage() {
           </div>
 
           {/* Main Content Container (at bottom of hero) */}
-          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-4 md:pb-8">
+          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-3 md:pb-5">
             {/* Badge / Pill */}
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
@@ -117,14 +126,14 @@ export default function AcademicsPage() {
               </h1>
 
               {/* Next line: 'at SIT' in the same row with EXPLORE in the middle */}
-              <div className="relative flex items-end min-h-[52px] pt-1">
+              <div className="relative flex items-end min-h-[48px] pt-1">
                 <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
                   {subTitleAccent}
                 </div>
 
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-1 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
                   <span>{isLa ? 'ສຳຫຼວດ' : 'EXPLORE'}</span>
-                  <div className="w-[1.5px] h-8 md:h-10 bg-gradient-to-b from-white/50 to-transparent mt-1.5" />
+                  <div className="w-[1.5px] h-7 md:h-9 bg-gradient-to-b from-white/50 to-transparent mt-1" />
                 </div>
               </div>
             </div>

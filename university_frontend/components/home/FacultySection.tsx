@@ -14,9 +14,9 @@ export function FacultySection({ data }: { data?: FacultyMember[] }) {
     if (!data || data.length === 0) {
       api.getFaculty({ isFeatured: true }).then((res) => {
         if (res && res.length > 0) {
-          // Strictly take only members where isFeatured is true
+          // Take all featured members without numerical limit
           const featured = res.filter((f) => Boolean(f.isFeatured));
-          setFaculty(featured.slice(0, 4));
+          setFaculty(featured);
         } else {
           setFaculty([]);
         }

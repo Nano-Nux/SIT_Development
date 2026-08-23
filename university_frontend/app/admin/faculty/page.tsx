@@ -409,7 +409,7 @@ export default function AdminFacultyPage() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="e.g. s.jenkins@sit.edu.kh"
+              placeholder="e.g. s.jenkins@sit.edu.la"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
             />
           </div>

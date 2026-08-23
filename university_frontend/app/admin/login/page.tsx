@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { GraduationCap, Lock, Mail, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -35,8 +36,15 @@ export default function AdminLoginPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center space-y-4">
         <Link href="/" className="inline-flex items-center justify-center gap-3 group">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0400CC] to-[#00B6FF] flex items-center justify-center text-white shadow-xl group-hover:scale-105 transition-transform">
-            <GraduationCap className="w-7 h-7 text-white" />
+          <div className="w-16 h-16 rounded-2xl bg-white/10 p-2.5 flex items-center justify-center shadow-xl border border-white/20 backdrop-blur-md group-hover:scale-105 transition-transform">
+            <Image
+              src="/assets/sit-logo-icon.png"
+              alt="SIT Logo"
+              width={64}
+              height={64}
+              className="w-full h-full object-contain drop-shadow-md"
+              priority
+            />
           </div>
         </Link>
         <div>
@@ -70,7 +78,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="admin@sit.edu.kh"
+                  placeholder="Please enter email"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B6FF]"
                 />
               </div>
@@ -91,11 +99,6 @@ export default function AdminLoginPage() {
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B6FF]"
                 />
               </div>
-            </div>
-
-            <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-xs text-slate-400 flex items-center justify-between">
-              <span>Demo Account:</span>
-              <span className="font-mono text-cyan-300">admin@sit.edu.kh / admin123</span>
             </div>
 
             <button

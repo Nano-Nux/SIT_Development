@@ -142,8 +142,8 @@ export function Footer() {
 
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-16">
-          {/* Col 1: Brand & Logo (lg:col-span-4) */}
-          <div className="lg:col-span-4 space-y-6">
+          {/* Col 1: Brand & Logo (lg:col-span-5) */}
+          <div className="lg:col-span-5 space-y-6">
             <Link href="/" className="inline-block relative h-12 w-60">
               <Image
                 src="/assets/sit-logo.png"
@@ -342,42 +342,8 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Colleges (lg:col-span-2) */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-[#1E65FF] text-sm font-bold tracking-widest uppercase">
-              {t.footer.colleges}
-            </h3>
-            <ul className="space-y-3 text-sm text-white/80">
-              <li>
-                <Link href="/departments/it" className="hover:text-white transition-colors">
-                  {t.footer.collegeEngineering}
-                </Link>
-              </li>
-              <li>
-                <Link href="/departments/ba-economics" className="hover:text-white transition-colors">
-                  {t.footer.collegeBusiness}
-                </Link>
-              </li>
-              <li>
-                <Link href="/academics" className="hover:text-white transition-colors">
-                  {t.footer.collegeHealth}
-                </Link>
-              </li>
-              <li>
-                <Link href="/departments/communication-arts" className="hover:text-white transition-colors">
-                  {t.footer.schoolArts}
-                </Link>
-              </li>
-              <li>
-                <Link href="/academics" className="hover:text-white transition-colors">
-                  {t.footer.graduateSchool}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 4: Contact Us (lg:col-span-3) */}
-          <div className="lg:col-span-3 space-y-4">
+          {/* Col 3: Contact Us (lg:col-span-4) */}
+          <div className="lg:col-span-4 space-y-4">
             <h3 className="text-[#1E65FF] text-sm font-bold tracking-widest uppercase">
               {t.footer.contactUs}
             </h3>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from '@/components/layout/Header';
@@ -9,9 +9,20 @@ import { CTABanner } from '@/components/home/CTABanner';
 import { AdmissionsMajorsSection } from '@/components/admissions/AdmissionsMajorsSection';
 import { FileText, UserCheck, MessageSquare, Send, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { api, HeroItem } from '@/lib/api';
 
 export default function AdmissionsPage() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const isLa = lang === 'LA';
+  const [heroData, setHeroData] = useState<HeroItem | null>(null);
+
+  useEffect(() => {
+    api.getHero('ADMISSIONS')
+      .then((res) => {
+        if (res) setHeroData(res);
+      })
+      .catch(() => setHeroData(null));
+  }, []);
 
   const steps = [
     {
@@ -36,34 +47,81 @@ export default function AdmissionsPage() {
     },
   ];
 
+  const heroSubtitle = isLa
+    ? (heroData?.subtitleLa || heroData?.subtitle || t.admissions.heroSubtitle)
+    : (heroData?.subtitle || t.admissions.heroSubtitle);
+
+  const welcomeHeading = isLa
+    ? (heroData?.titleLa || heroData?.title || t.admissions.welcomeHeading)
+    : (heroData?.title || t.admissions.welcomeHeading);
+
+  const customDescription = isLa
+    ? (heroData?.descriptionLa || heroData?.description)
+    : heroData?.description;
+
+  const showcaseImage = heroData?.imageUrl?.trim() || '/images/home_desktopview/img_1.jpg';
+
+  const buttonText = isLa
+    ? (heroData?.buttonTextLa || heroData?.buttonText)
+    : heroData?.buttonText;
+  const buttonUrl = heroData?.buttonUrl || '/apply';
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-[#00001C]">
       <Header />
 
       <main className="flex-grow">
-        {/* Intro Section */}
+        {/* Intro / Hero Section */}
         <section className="w-full pt-36 pb-16 md:pt-44 md:pb-20 bg-white">
           <div className="max-w-[1000px] mx-auto px-6 text-center space-y-6">
             <div className="w-20 h-1 bg-[#0400CC] mx-auto rounded-full" />
 
+            {heroSubtitle && (
+              <span className="inline-block text-xs sm:text-sm font-bold tracking-widest text-[#0400CC] uppercase">
+                {heroSubtitle}
+              </span>
+            )}
+
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#00001C] tracking-tight uppercase">
-              {t.admissions.welcomeHeading.includes('ADMISSIONS') ? (
+              {welcomeHeading.includes('ADMISSIONS') ? (
                 <>
-                  {t.admissions.welcomeHeading.replace('ADMISSIONS', '')} <span className="text-[#0400CC]">ADMISSIONS</span>
+                  {welcomeHeading.replace('ADMISSIONS', '')} <span className="text-[#0400CC]">ADMISSIONS</span>
+                </>
+              ) : welcomeHeading.includes('ການຮັບສະໝັກນັກສຶກສາ') ? (
+                <>
+                  {welcomeHeading.replace('ການຮັບສະໝັກນັກສຶກສາ', '')} <span className="text-[#0400CC]">ການຮັບສະໝັກນັກສຶກສາ</span>
                 </>
               ) : (
-                t.admissions.welcomeHeading
+                welcomeHeading
               )}
             </h1>
 
             <div className="text-base sm:text-lg text-[#4A5565] leading-relaxed space-y-4 max-w-3xl mx-auto">
-              <p>
-                {t.admissions.welcomeP1}
-              </p>
-              <p className="font-semibold text-[#00001C]">
-                {t.admissions.welcomeP2}
-              </p>
+              {customDescription ? (
+                customDescription.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx} className={idx > 0 ? 'font-semibold text-[#00001C]' : ''}>
+                    {paragraph}
+                  </p>
+                ))
+              ) : (
+                <>
+                  <p>{t.admissions.welcomeP1}</p>
+                  <p className="font-semibold text-[#00001C]">{t.admissions.welcomeP2}</p>
+                </>
+              )}
             </div>
+
+            {buttonText && (
+              <div className="pt-2">
+                <Link
+                  href={buttonUrl}
+                  className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 text-sm uppercase tracking-wider"
+                >
+                  <span>{buttonText}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
@@ -71,8 +129,8 @@ export default function AdmissionsPage() {
         <section className="w-full max-w-[1280px] mx-auto px-6 pb-20">
           <div className="relative w-full aspect-[21/9] sm:aspect-[24/9] rounded-3xl overflow-hidden shadow-2xl bg-slate-100">
             <Image
-              src="/images/home_desktopview/img_1.jpg"
-              alt="SIT Students Competition Success"
+              src={showcaseImage}
+              alt="SIT Admissions Showcase"
               fill
               className="object-cover object-center"
               priority

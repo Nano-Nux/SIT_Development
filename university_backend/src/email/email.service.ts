@@ -9,20 +9,33 @@ export class EmailService {
   private readonly adminEmail: string;
 
   constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
     this.fromEmail = process.env.RESEND_FROM_EMAIL || 'SIT Admissions <onboarding@resend.dev>';
     this.adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || 'admissions@sit.edu.la';
+    this.initClient();
+  }
 
+  private initClient(): Resend | null {
+    if (this.resend) return this.resend;
+    const apiKey = process.env.RESEND_API_KEY;
     if (apiKey && apiKey.trim() !== '') {
       try {
         this.resend = new Resend(apiKey.trim());
         this.logger.log('Resend Email client initialized successfully.');
+        return this.resend;
       } catch (err: any) {
         this.logger.error('Failed to initialize Resend client: ' + err.message);
       }
     } else {
-      this.logger.warn('RESEND_API_KEY not configured. Outgoing emails will be logged to console in mock mode.');
+      this.logger.warn('RESEND_API_KEY not configured. Outgoing emails will run in mock mode (logged to console).');
     }
+    return null;
+  }
+
+  /**
+   * Check if Resend email service is properly configured with an API key
+   */
+  isConfigured(): boolean {
+    return !!(this.resend || process.env.RESEND_API_KEY?.trim());
   }
 
   /**
@@ -282,23 +295,67 @@ export class EmailService {
     }
   }
 
-  private async sendMailSafe(options: { to: string; subject: string; html: string }) {
-    if (!this.resend) {
-      this.logger.log(`[Mock Email Sent] To: ${options.to} | Subject: ${options.subject}`);
-      return;
+  /**
+   * Generic method to send an email via Resend (or mock fallback)
+   */
+  async sendEmail(options: {
+    to: string | string[];
+    subject: string;
+    html: string;
+    text?: string;
+    from?: string;
+  }): Promise<{ success: boolean; id?: string; error?: string }> {
+    const client = this.initClient();
+    const from = options.from || this.fromEmail;
+
+    if (!client) {
+      this.logger.log(`[Mock Email Sent] To: ${Array.isArray(options.to) ? options.to.join(', ') : options.to} | Subject: ${options.subject}`);
+      return { success: true, id: 'mock-id' };
     }
 
     try {
-      const response = await this.resend.emails.send({
-        from: this.fromEmail,
+      const response = await client.emails.send({
+        from,
         to: options.to,
         subject: options.subject,
         html: options.html,
+        text: options.text,
       });
 
+      if (response.error) {
+        this.logger.error(`Resend API returned error: ${response.error.message}`);
+        return { success: false, error: response.error.message };
+      }
+
       this.logger.log(`[Email Sent via Resend] ID: ${response.data?.id || 'OK'} to ${options.to}`);
+      return { success: true, id: response.data?.id };
     } catch (err: any) {
       this.logger.error(`Failed to send email to ${options.to} via Resend: ${err.message}`);
+      return { success: false, error: err.message };
     }
+  }
+
+  /**
+   * Send a test email to verify Resend configuration
+   */
+  async sendTestEmail(toEmail: string) {
+    return this.sendEmail({
+      to: toEmail,
+      subject: 'SIT Admissions - Resend Service Test',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h2 style="color: #0400CC; margin-top: 0;">SIT Email Service Setup Verification</h2>
+          <p>This is a test email sent from the <strong>Soutsakan Institute of Technology (SIT)</strong> backend service.</p>
+          <p style="color: #166534; background: #f0fdf4; padding: 12px; border-radius: 6px; border: 1px solid #bbf7d0;">
+            &check; Resend email service integration is successfully configured and working!
+          </p>
+          <p style="font-size: 12px; color: #94a3b8; margin-top: 20px;">Sent at: ${new Date().toISOString()}</p>
+        </div>
+      `,
+    });
+  }
+
+  private async sendMailSafe(options: { to: string; subject: string; html: string }) {
+    await this.sendEmail(options);
   }
 }

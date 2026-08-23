@@ -333,8 +333,11 @@ export default function LifeAtSITPage() {
       api.getNews().catch(() => null),
       api.getEvents().catch(() => []),
     ]).then(([heroRes, facRes, lifeRes, newsRes, eventsRes]) => {
-      if (heroRes?.imageUrl && heroRes.imageUrl.trim() !== '') {
-        setBgImage(heroRes.imageUrl.trim());
+      if (heroRes) {
+        setHero(heroRes);
+        if (heroRes.imageUrl && heroRes.imageUrl.trim() !== '') {
+          setBgImage(heroRes.imageUrl.trim());
+        }
       }
       if (facRes && facRes.length > 0) setFacilities(facRes);
       else setFacilities(fallbackFacilities);
@@ -351,9 +354,13 @@ export default function LifeAtSITPage() {
     });
   }, []);
 
-  const heroSubtitle = t.lifeAtSit.heroSubtitle;
+  const heroSubtitle = isLa
+    ? (hero?.subtitleLa || hero?.subtitle || t.lifeAtSit.heroSubtitle)
+    : (hero?.subtitle || t.lifeAtSit.heroSubtitle);
 
-  const rawTitle = t.lifeAtSit.heroTitle || (isLa ? 'ຊີວິດໃນ SIT' : 'Life at SIT');
+  const rawTitle = isLa
+    ? (hero?.titleLa || hero?.title || t.lifeAtSit.heroTitle || 'ຊີວິດໃນ SIT')
+    : (hero?.title || t.lifeAtSit.heroTitle || 'Life at SIT');
 
   let mainTitle = isLa ? 'ຊີວິດໃນ' : 'Life at';
   let subTitleAccent = 'SIT';
@@ -404,7 +411,7 @@ export default function LifeAtSITPage() {
         {/* ========================================================================= */}
         {/* 1. HERO SECTION */}
         {/* ========================================================================= */}
-        <section className="relative w-full min-h-[580px] md:h-[692px] bg-[#00001C] pt-36 pb-6 md:pt-44 md:pb-8 text-white overflow-hidden flex flex-col justify-end">
+        <section className="relative w-full min-h-[510px] md:h-[600px] bg-[#00001C] pt-32 pb-5 md:pt-36 md:pb-7 text-white overflow-hidden flex flex-col justify-end">
           {/* Background image & gradient overlay layers matching Academics / Collaborations */}
           <div className="absolute inset-0 z-0">
             {/* Dynamic background photo from Admin Dashboard (Blank by default) */}
@@ -422,7 +429,7 @@ export default function LifeAtSITPage() {
             {/* 3. Dark gradient overlay from bottom to transparent top */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#00001C] via-[#00001C]/40 to-transparent" />
             {/* 4. Large SIT Logo Watermark Emblem (opacity 0.1, rotated 90deg on upper right) */}
-            <div className="absolute -top-32 -right-32 md:-top-48 md:-right-24 w-[600px] h-[600px] md:w-[920px] md:h-[920px] opacity-10 pointer-events-none select-none z-0 rotate-90">
+            <div className="absolute -top-28 -right-28 md:-top-40 md:-right-20 w-[520px] h-[520px] md:w-[800px] md:h-[800px] opacity-10 pointer-events-none select-none z-0 rotate-90">
               <Image
                 src="/images/academics_desktopview/img_2.png"
                 alt="SIT Emblem Watermark"
@@ -433,7 +440,7 @@ export default function LifeAtSITPage() {
           </div>
 
           {/* Main Content Container (at bottom of hero) */}
-          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-4 md:pb-8">
+          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-3 md:pb-5">
             {/* Badge / Pill */}
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
@@ -450,7 +457,7 @@ export default function LifeAtSITPage() {
               </h1>
 
               {/* Next line: 'at SIT' */}
-              <div className="relative flex items-end min-h-[52px] pt-1">
+              <div className="relative flex items-end min-h-[48px] pt-1">
                 <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
                   {subTitleAccent}
                 </div>
@@ -474,9 +481,9 @@ export default function LifeAtSITPage() {
               </p>
             </div>
 
-            {/* 2x2 Grid of Facilities */}
+            {/* Grid of Facilities */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-              {displayFacilities.slice(0, 4).map((fac, idx) => {
+              {displayFacilities.map((fac, idx) => {
                 const facName = (isLa && fac.nameLa) ? fac.nameLa : fac.name;
                 const facDesc = (isLa && fac.descriptionLa) ? fac.descriptionLa : fac.description;
                 const imageSrc = fac.imageUrl || `/images/life_at_sit_desktopview/img_${(idx % 4) + 3}.jpg`;

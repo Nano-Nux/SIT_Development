@@ -13,9 +13,9 @@ export function StatsSection() {
     api.getDashboardStats().then(setStatsData).catch(console.error);
   }, []);
 
-  const totalPrograms = statsData?.programs || 4;
-  const totalFaculty = statsData?.faculty || 12;
-  const totalPartners = statsData?.partners || 8;
+  const totalPrograms = statsData?.overview?.totalPrograms || statsData?.counts?.totalPrograms || statsData?.programs || 4;
+  const totalFaculty = statsData?.overview?.totalFaculty || statsData?.counts?.totalFaculty || statsData?.faculty || 12;
+  const totalPartners = statsData?.overview?.totalPartners || statsData?.counts?.totalPartners || statsData?.partners || 8;
 
   const stats = [
     {

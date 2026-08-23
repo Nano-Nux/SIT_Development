@@ -26,7 +26,7 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
     }
   }, [data]);
 
-  const items = programs.slice(0, 3);
+  const items = programs;
 
   return (
     <section className="py-20 sm:py-28 bg-white">
@@ -103,7 +103,7 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
                           {t.academics.coreFocusAreas}
                         </h4>
                         <div className="flex flex-wrap gap-1.5">
-                          {focusAreas.slice(0, 3).map((fa, fidx) => (
+                          {focusAreas.map((fa, fidx) => (
                             <span
                               key={fidx}
                               className="text-[11px] font-medium bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md"

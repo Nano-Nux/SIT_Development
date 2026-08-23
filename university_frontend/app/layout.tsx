@@ -21,6 +21,16 @@ export const metadata: Metadata = {
   title: 'SIT University — Soutsaka Institute of Technology',
   description:
     'Empowering the next generation of leaders through innovation, excellence, and global perspective.',
+  icons: {
+    icon: [
+      { url: '/assets/sit-logo-icon.png', sizes: 'any' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/assets/sit-logo-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: ['/assets/sit-logo-icon.png'],
+  },
 };
 
 export default function RootLayout({

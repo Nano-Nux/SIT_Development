@@ -587,14 +587,25 @@ export interface ContactInfo {
   [key: string]: any;
 }
 
+export interface DashboardOverview {
+  totalApplications: number;
+  pendingApplications: number;
+  totalInquiries: number;
+  pendingInquiries: number;
+  totalPrograms: number;
+  totalFaculty: number;
+  totalNews: number;
+  totalEvents: number;
+  totalPartners: number;
+  totalSpotlights: number;
+}
+
 export interface DashboardStats {
-  applicationsCount: number;
-  pendingApplicationsCount: number;
-  requestInfoCount: number;
-  newsCount: number;
-  eventsCount: number;
-  programsCount: number;
-  facultyCount: number;
+  overview?: DashboardOverview;
+  counts?: DashboardOverview;
+  recentApplications?: ApplicationSubmission[];
+  recentInquiries?: RequestInfoSubmission[];
+  recentNews?: NewsArticle[];
   [key: string]: any;
 }
 

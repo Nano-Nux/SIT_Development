@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import {
@@ -133,13 +134,23 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
               <Menu className="w-5 h-5" />
             </button>
 
-            <Link href="/admin/dashboard" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0400CC] to-[#00B6FF] flex items-center justify-center shadow-md">
-                <GraduationCap className="w-5 h-5 text-white" />
+            <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-white/10 p-1.5 flex items-center justify-center shadow-md border border-white/15 group-hover:scale-105 transition-transform backdrop-blur-sm">
+                <Image
+                  src="/assets/sit-logo-icon.png"
+                  alt="SIT Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-contain"
+                  priority
+                />
               </div>
-              <span className="font-extrabold text-sm sm:text-base tracking-tight text-white">
-                SIT <span className="text-[#00B6FF]">CMS</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-white leading-none">
+                  SIT <span className="text-[#00B6FF]">CMS</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium">Administration Portal</span>
+              </div>
             </Link>
           </div>
 
@@ -181,8 +192,17 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         >
           {/* Mobile close button */}
           <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
-            <span className="font-bold text-xs uppercase text-slate-500">Navigation Menu</span>
-            <button onClick={() => setSidebarOpen(false)} className="p-1 rounded-lg text-slate-400">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/sit-logo-icon.png"
+                alt="SIT Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain"
+              />
+              <span className="font-bold text-xs uppercase text-slate-700">Admin Menu</span>
+            </div>
+            <button onClick={() => setSidebarOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
               <X className="w-5 h-5" />
             </button>
           </div>

@@ -28,7 +28,7 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
     }
   }, [data]);
 
-  const items = facilities.slice(0, 4);
+  const items = facilities;
 
   const handleFacilityClick = (facility: CampusFacilityItem) => {
     if (facility.actionType === 'MODAL') {

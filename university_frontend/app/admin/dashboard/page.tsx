@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import {
   FileCheck2,
@@ -39,26 +40,28 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const counts = stats?.counts || stats?.overview;
+
   const statCards = [
     {
       title: 'Total Applications',
-      value: stats?.counts?.totalApplications ?? 0,
-      sub: `${stats?.counts?.pendingApplications ?? 0} Pending Review`,
+      value: counts?.totalApplications ?? 0,
+      sub: `${counts?.pendingApplications ?? 0} Pending Review`,
       icon: FileCheck2,
       color: 'from-blue-600 to-indigo-600',
       href: '/admin/applications',
     },
     {
       title: 'Information Requests',
-      value: stats?.counts?.totalInquiries ?? 0,
-      sub: `${stats?.counts?.pendingInquiries ?? 0} Pending Contact`,
+      value: counts?.totalInquiries ?? 0,
+      sub: `${counts?.pendingInquiries ?? 0} Pending Contact`,
       icon: Inbox,
       color: 'from-cyan-500 to-blue-600',
       href: '/admin/request-info',
     },
     {
       title: 'Degree Programs',
-      value: stats?.counts?.totalPrograms ?? 0,
+      value: counts?.totalPrograms ?? 0,
       sub: 'Active Undergraduate & Graduate',
       icon: BookOpen,
       color: 'from-emerald-500 to-teal-600',
@@ -66,7 +69,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'Faculty & Mentors',
-      value: stats?.counts?.totalFaculty ?? 0,
+      value: counts?.totalFaculty ?? 0,
       sub: 'Published Profiles',
       icon: Users,
       color: 'from-purple-500 to-indigo-600',
@@ -74,7 +77,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'News Articles',
-      value: stats?.counts?.totalNews ?? 0,
+      value: counts?.totalNews ?? 0,
       sub: 'Published Stories',
       icon: Newspaper,
       color: 'from-amber-500 to-orange-600',
@@ -82,7 +85,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'Upcoming Events',
-      value: stats?.counts?.totalEvents ?? 0,
+      value: counts?.totalEvents ?? 0,
       sub: 'Active Calendar Events',
       icon: Calendar,
       color: 'from-rose-500 to-pink-600',
@@ -95,8 +98,14 @@ export default function AdminDashboardPage() {
       {/* Top Welcome Banner */}
       <div className="bg-gradient-to-r from-[#00001C] via-[#0400CC] to-[#00B6FF] rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-cyan-200 text-xs font-semibold border border-white/10">
+            <Image
+              src="/assets/sit-logo-icon.png"
+              alt="SIT Emblem"
+              width={18}
+              height={18}
+              className="w-4 h-4 object-contain"
+            />
             <span>SIT University Central CMS</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">

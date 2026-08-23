@@ -13,6 +13,7 @@ export default function CollaborationsPage() {
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [partners, setPartners] = useState<PartnerItem[]>([]);
+  const [heroData, setHeroData] = useState<HeroItem | null>(null);
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,16 +22,24 @@ export default function CollaborationsPage() {
       api.getHero('COLLABORATIONS').catch(() => null),
       api.getPartners().catch(() => []),
     ]).then(([heroRes, partnerRes]) => {
-      if (heroRes?.imageUrl && heroRes.imageUrl.trim() !== '') {
-        setBgImage(heroRes.imageUrl.trim());
+      if (heroRes) {
+        setHeroData(heroRes);
+        if (heroRes.imageUrl && heroRes.imageUrl.trim() !== '') {
+          setBgImage(heroRes.imageUrl.trim());
+        }
       }
       setPartners(partnerRes || []);
       setLoading(false);
     });
   }, []);
 
-  const rawTitle = t.collaborations.heroTitle || (isLa ? 'ການຮ່ວມມືກັບ SIT' : 'Collaboration with SIT');
-  const heroSubtitle = t.collaborations.heroSubtitle;
+  const heroSubtitle = isLa
+    ? (heroData?.subtitleLa || heroData?.subtitle || t.collaborations.heroSubtitle)
+    : (heroData?.subtitle || t.collaborations.heroSubtitle);
+
+  const rawTitle = isLa
+    ? (heroData?.titleLa || heroData?.title || t.collaborations.heroTitle || 'ການຮ່ວມມືກັບ SIT')
+    : (heroData?.title || t.collaborations.heroTitle || 'Collaboration with SIT');
 
   let mainTitle = isLa ? 'ການຮ່ວມມື' : 'Collaboration';
   let subTitleAccent = isLa ? 'ກັບ SIT' : 'with SIT';
@@ -48,6 +57,7 @@ export default function CollaborationsPage() {
     subTitleAccent = 'with SIT';
   } else {
     mainTitle = rawTitle.trim();
+    subTitleAccent = '';
   }
 
   const universityPartners = partners.filter((p) => p.type === 'UNIVERSITY');
@@ -59,7 +69,7 @@ export default function CollaborationsPage() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative w-full min-h-[580px] md:h-[692px] bg-[#00001C] pt-36 pb-6 md:pt-44 md:pb-8 text-white overflow-hidden flex flex-col justify-end">
+        <section className="relative w-full min-h-[510px] md:h-[600px] bg-[#00001C] pt-32 pb-5 md:pt-36 md:pb-7 text-white overflow-hidden flex flex-col justify-end">
           <div className="absolute inset-0 z-0">
             {/* Dynamic background photo from Admin Dashboard (Blank by default) */}
             {bgImage && (
@@ -76,7 +86,7 @@ export default function CollaborationsPage() {
           </div>
 
           {/* Main Content Container (at bottom of hero) */}
-          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-4 md:pb-8">
+          <div className="max-w-[1280px] w-full mx-auto px-6 relative z-10 space-y-3 md:space-y-4 mt-auto pb-3 md:pb-5">
             {/* Badge / Pill */}
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
@@ -93,14 +103,14 @@ export default function CollaborationsPage() {
               </h1>
 
               {/* Next line: 'with SIT' in the same row with DISCOVER PARTNERS in the middle */}
-              <div className="relative flex items-end min-h-[52px] pt-1">
+              <div className="relative flex items-end min-h-[48px] pt-1">
                 <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
                   {subTitleAccent}
                 </div>
 
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-1 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
                   <span>{t.collaborations.discoverPartners}</span>
-                  <div className="w-[1.5px] h-8 md:h-10 bg-gradient-to-b from-white/50 to-transparent mt-1.5" />
+                  <div className="w-[1.5px] h-7 md:h-9 bg-gradient-to-b from-white/50 to-transparent mt-1" />
                 </div>
               </div>
             </div>

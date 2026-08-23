@@ -118,17 +118,18 @@ export default function NewsDetailPage({
             {content}
           </div>
 
-          {/* Share & Actions */}
+          {/* Bottom Actions */}
           <div className="mt-12 pt-8 border-t border-slate-200 flex items-center justify-between">
             <Link
-              href="/apply"
-              className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all"
+              href="/news"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0400CC] hover:text-[#1E65FF] transition-colors"
             >
-              {t.common.applyNow}
+              <ArrowLeft className="w-4 h-4" />
+              <span>{t.news.backToAllNews}</span>
             </Link>
             <Link
               href="/news"
-              className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-[#0400CC]"
+              className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-[#0400CC] transition-colors"
             >
               {t.news.exploreMore}
             </Link>

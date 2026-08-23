@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/api';
-import { Sparkles, Save, CheckCircle2, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Save, CheckCircle2, AlertCircle, Image as ImageIcon, ExternalLink, Eye } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminHeroPage() {
@@ -30,13 +32,15 @@ export default function AdminHeroPage() {
   const [error, setError] = useState<string | null>(null);
 
   const pages = [
-    { code: 'HOME', name: 'Homepage Hero' },
-    { code: 'ABOUT', name: 'About SIT Page' },
-    { code: 'ACADEMICS', name: 'Academics Directory' },
-    { code: 'ADMISSIONS', name: 'Admissions Page' },
-    { code: 'LIFE_AT_SIT', name: 'Life at SIT Page' },
-    { code: 'COLLABORATIONS', name: 'Collaborations Page' },
+    { code: 'HOME', name: 'Homepage Hero', href: '/' },
+    { code: 'ABOUT', name: 'About SIT Page', href: '/about' },
+    { code: 'ACADEMICS', name: 'Academics Directory', href: '/academics' },
+    { code: 'ADMISSIONS', name: 'Admissions Page', href: '/admissions' },
+    { code: 'LIFE_AT_SIT', name: 'Life at SIT Page', href: '/life-at-sit' },
+    { code: 'COLLABORATIONS', name: 'Collaborations Page', href: '/collaborations' },
   ];
+
+  const currentPage = pages.find((p) => p.code === selectedPage);
 
   useEffect(() => {
     fetchHeroData(selectedPage);
@@ -125,21 +129,36 @@ export default function AdminHeroPage() {
         </p>
       </div>
 
-      {/* Page Tabs */}
-      <div className="flex flex-wrap gap-2 pb-2 border-b border-slate-200">
-        {pages.map((p) => (
-          <button
-            key={p.code}
-            onClick={() => setSelectedPage(p.code)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-              selectedPage === p.code
-                ? 'bg-[#0400CC] text-white shadow-md'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-            }`}
+      {/* Page Tabs & Live View Link */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-200">
+        <div className="flex flex-wrap gap-2">
+          {pages.map((p) => (
+            <button
+              key={p.code}
+              onClick={() => setSelectedPage(p.code)}
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                selectedPage === p.code
+                  ? 'bg-[#0400CC] text-white shadow-md'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+
+        {currentPage && (
+          <Link
+            href={currentPage.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#0400CC] bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors"
           >
-            {p.name}
-          </button>
-        ))}
+            <Eye className="w-3.5 h-3.5" />
+            <span>View Live Page</span>
+            <ExternalLink className="w-3 h-3 ml-0.5 opacity-70" />
+          </Link>
+        )}
       </div>
 
       {/* Hero Editor Form */}
@@ -426,6 +445,65 @@ export default function AdminHeroPage() {
               </button>
             </div>
           </form>
+        )}
+      </div>
+
+      {/* Live Banner Preview */}
+      <div className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white max-w-4xl space-y-4 border border-slate-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Eye className="w-5 h-5 text-blue-400" />
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+              Live Preview ({activeLangTab === 'en' ? 'English' : 'Lao'}) — {currentPage?.name}
+            </h3>
+          </div>
+          <span className="text-[10px] font-semibold uppercase px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+            Previewing: {selectedPage}
+          </span>
+        </div>
+
+        {selectedPage === 'HOME' ? (
+          <div className="grid grid-cols-4 gap-2 h-44 rounded-2xl overflow-hidden bg-[#00001C] p-2 border border-slate-700">
+            {[formData.imageUrl || '/images/home_desktopview/img_1.jpg',
+              formData.image2Url || '/images/home_desktopview/img_1.jpg',
+              formData.image3Url || '/images/home_desktopview/img_2.jpg',
+              formData.image4Url || '/images/home_desktopview/img_1.jpg'].map((img, i) => (
+              <div key={i} className="relative h-full rounded-lg overflow-hidden bg-slate-800">
+                <Image src={img} alt={`Panel ${i + 1}`} fill className="object-cover brightness-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0400CC]/80 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] font-black text-white/40 tracking-widest uppercase whitespace-nowrap">
+                  SIT UNIV
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="relative rounded-2xl overflow-hidden bg-[#00001C] p-6 sm:p-8 min-h-[180px] flex flex-col justify-center text-center border border-slate-700">
+            {formData.imageUrl && (
+              <div className="absolute inset-0 z-0">
+                <Image src={formData.imageUrl} alt="Background" fill className="object-cover opacity-25" />
+                <div className="absolute inset-0 bg-[#0400CC]/40" />
+              </div>
+            )}
+            <div className="relative z-10 space-y-2">
+              <span className="inline-block text-[11px] font-bold tracking-widest text-blue-300 uppercase">
+                {activeLangTab === 'en' ? (formData.subtitle || 'SUBTITLE') : (formData.subtitleLa || formData.subtitle || 'ຫົວຂໍ້ຍ່ອຍ')}
+              </span>
+              <h4 className="text-xl sm:text-2xl font-extrabold text-white">
+                {activeLangTab === 'en' ? (formData.title || 'Headline Title') : (formData.titleLa || formData.title || 'ຫົວຂໍ້ຫຼັກ')}
+              </h4>
+              <p className="text-xs text-white/80 max-w-xl mx-auto line-clamp-2">
+                {activeLangTab === 'en' ? (formData.description || 'Hero description...') : (formData.descriptionLa || formData.description || 'ເນື້ອຫາຄຳອະທິບາຍ...')}
+              </p>
+              {(formData.buttonText || formData.buttonTextLa) && (
+                <div className="pt-2">
+                  <span className="inline-block bg-[#0400CC] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow">
+                    {activeLangTab === 'en' ? (formData.buttonText || 'Button') : (formData.buttonTextLa || formData.buttonText || 'ປຸ່ມ')}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>

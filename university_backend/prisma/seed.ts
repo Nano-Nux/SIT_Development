@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
@@ -6,28 +7,41 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting SIT University database seeding...');
 
-  // 1. Admin Account
-  const passwordHash = await bcrypt.hash('admin123', 10);
+  // 1. Admin Account from .env
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@sit.edu.la').toLowerCase().trim();
+  const adminPassword = process.env.ADMIN_PASSWORD || 'AdminSecure2026!';
+  const adminName = process.env.ADMIN_NAME || 'SIT Super Admin';
+
+  // Remove legacy demo account
+  if (adminEmail !== 'admin@sit.edu.kh') {
+    await prisma.admin.deleteMany({ where: { email: 'admin@sit.edu.kh' } });
+  }
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   const admin = await prisma.admin.upsert({
-    where: { email: 'admin@sit.edu.kh' },
-    update: { passwordHash, name: 'SIT Super Admin', role: 'SUPER_ADMIN' },
+    where: { email: adminEmail },
+    update: { passwordHash, name: adminName, role: 'SUPER_ADMIN' },
     create: {
-      email: 'admin@sit.edu.kh',
+      email: adminEmail,
       passwordHash,
-      name: 'SIT Super Admin',
+      name: adminName,
       role: 'SUPER_ADMIN',
     },
   });
-  console.log('✅ Admin user created:', admin.email);
+  console.log('✅ Admin user created/synced:', admin.email);
 
   // 2. Hero Sections
   const heroes = [
     {
       page: 'HOME',
       title: 'Shaping Future Leaders Through Innovation & Excellence',
+      titleLa: 'ສ້າງຜູ້ນຳແຫ່ງອະນາຄົດຜ່ານນະວັດຕະກຳ ແລະ ຄວາມເປັນເລີດ',
       subtitle: 'WELCOME TO SIT UNIVERSITY',
+      subtitleLa: 'ຍິນດີຕ້ອນຮັບສູ່ ມະຫາວິທະຍາໄລ SIT',
       description: 'Empowering students with world-class education, practical industry mastery, state-of-the-art research laboratories, and global career opportunities.',
+      descriptionLa: 'ສ້າງຄວາມເຂັ້ມແຂງໃຫ້ນັກສຶກສາດ້ວຍການສຶກສາລະດັບໂລກ, ຄວາມຊຳນານໃນພາກປະຕິບັດ, ຫ້ອງທົດລອງວິໄຈທີ່ທັນສະໄໝ ແລະ ໂອກາດໃນອາຊີບລະດັບສາກົນ.',
       buttonText: 'Explore Programs',
+      buttonTextLa: 'ສຳຫຼວດຫຼັກສູດ',
       buttonUrl: '/academics',
       imageUrl: '/images/home_desktopview/img_1.jpg',
       image2Url: '/images/home_desktopview/img_1.jpg',
@@ -36,12 +50,16 @@ async function main() {
     },
     {
       page: 'ADMISSIONS',
-      title: 'Your Future Starts Here at SIT University',
+      title: 'WELCOME TO SIT ADMISSIONS',
+      titleLa: 'ຍິນດີຕ້ອນຮັບສູ່ ການຮັບສະໝັກນັກສຶກສາ SIT',
       subtitle: 'ADMISSIONS 2026-2027',
-      description: 'Join a vibrant community of thinkers, creators, and innovators. Discover academic requirements, scholarship opportunities, and simple application steps.',
+      subtitleLa: 'ການຮັບສະໝັກນັກສຶກສາ 2026-2027',
+      description: 'Admissions at SIT is designed with our student — you — in mind. That is why our process is simple, thoughtful, and grants you a lot of space for self-expression. We are not a university of the privileged, but indeed a university of talents.',
+      descriptionLa: 'ການຮັບສະໝັກທີ່ SIT ຖືກອອກແບບໂດຍຄຳນຶງເຖິງນັກສຶກສາ — ຕົວທ່ານ — ເປັນຫຼັກ. ດັ່ງນັ້ນ ຂະບວນການຂອງພວກເຮົາຈຶ່ງງ່າຍດາຍ, ເອົາໃຈໃສ່ ແລະ ເປີດໂອກາດໃຫ້ທ່ານໄດ້ສະແດງຄວາມສາມາດຢ່າງເຕັມທີ່. ພວກເຮົາບໍ່ແມ່ນມະຫາວິທະຍາໄລສຳລັບຄົນພິເສດ, ແຕ່ແມ່ນມະຫາວິທະຍາໄລສຳລັບຜູ້ມີຄວາມສາມາດ.',
       buttonText: 'Apply Now',
+      buttonTextLa: 'ເລີ່ມຕົ້ນການສະໝັກ',
       buttonUrl: '/apply',
-      imageUrl: '/images/admissions_desktopview/img_1.jpg',
+      imageUrl: '/images/home_desktopview/img_1.jpg',
     },
     {
       page: 'ABOUT',
@@ -50,31 +68,35 @@ async function main() {
       subtitle: 'DISCOVER SIT',
       subtitleLa: 'ຄົ້ນພົບ SIT',
       description: 'Building the future of Laos through excellence in technology, innovation, and leadership.',
-      descriptionLa: 'ສ້າງອະນາຄົດຂອງປະເທດລາວ ຜ່ານຄວາມເປັນເລີດດ້ານເຕັກໂນໂລຊີ, ນະວັດຕະກຳ ແລະ ຄວາມເປັນຜູ້ນຳ.',
+      descriptionLa: 'ສ້າງອະນາຄົດຂອງປະເທດລາວ ຜ່ານຄວາມເປັນເລີດທາງເຕັກໂນໂລຊີ, ນະວັດຕະກຳ ແລະ ຄວາມເປັນຜູ້ນຳ.',
       buttonText: 'Meet Leadership',
-      buttonUrl: '/about#leadership',
-      imageUrl: '/images/about/hero_bg.jpg',
+      buttonTextLa: 'ພົບກັບຄະນະຜູ້ບໍລິຫານ',
+      buttonUrl: '/about#members',
+      imageUrl: '/images/about_desktopview/img_1.jpg',
     },
     {
       page: 'ACADEMICS',
       title: 'Academic Programs at SIT',
       titleLa: 'ຫຼັກສູດວິຊາການ ທີ່ SIT',
       subtitle: 'EXCELLENCE IN EDUCATION',
-      subtitleLa: 'ຄວາມເປັນເລີດດ້ານການສຶກສາ',
-      description: 'Our degree programs blend rigorous academic foundations with hands-on project labs, international exchange, and direct corporate mentorship.',
-      buttonText: 'View Departments',
+      subtitleLa: 'ຄວາມເປັນເລີດທາງວິຊາການ',
+      description: 'Innovative curriculum blending rigorous academic foundations with hands-on project labs, international exchange, and direct corporate mentorship.',
+      descriptionLa: 'ຫຼັກສູດນະວັດຕະກຳທີ່ປະສົມປະສານພື້ນຖານວິຊາການອັນເຂັ້ມງວດ ເຂົ້າກັບຫ້ອງປະຕິບັດການຕົວຈິງ, ການແລກປ່ຽນສາກົນ ແລະ ການແນະນຳຈາກພາກທຸລະກິດ.',
+      buttonText: 'Our Departments',
+      buttonTextLa: 'ພາກວິຊາຂອງພວກເຮົາ',
       buttonUrl: '/academics#departments',
       imageUrl: '/images/academics_desktopview/img_1.jpg',
     },
     {
       page: 'LIFE_AT_SIT',
       title: 'Life at SIT',
-      titleLa: 'ຊີວິດທີ່ SIT',
+      titleLa: 'ຊີວິດໃນ SIT',
       subtitle: 'VIBRANT COMMUNITY',
       subtitleLa: 'ຊຸມຊົນທີ່ມີຊີວິດຊີວາ',
       description: 'More than just classrooms. Experience a vibrant ecosystem of culture, creativity, and connection where every day is an opportunity to grow.',
       descriptionLa: 'ຫຼາຍກວ່າຫ້ອງຮຽນ. ສຳຜັດກັບລະບົບນິເວດທີ່ມີຊີວິດຊີວາຂອງວັດທະນະທຳ, ຄວາມຄິດສ້າງສັນ ແລະ ການເຊື່ອມຕໍ່ ບ່ອນທີ່ທຸກມື້ແມ່ນໂອກາດໃນການເຕີບໃຫຍ່.',
       buttonText: 'Explore Clubs',
+      buttonTextLa: 'ສຳຫຼວດຊົມຮົມ',
       buttonUrl: '/life-at-sit#activities',
       imageUrl: '/images/life_at_sit_desktopview/img_1.jpg',
     },
@@ -82,10 +104,13 @@ async function main() {
       page: 'COLLABORATIONS',
       title: 'Collaboration with SIT',
       titleLa: 'ການຮ່ວມມືກັບ SIT',
-      subtitle: 'GLOBAL PARTNERSHIPS',
+      subtitle: 'GLOBAL REACH',
+      subtitleLa: 'ການເຊື່ອມໂຍງລະດັບໂລກ',
       description: 'Partnering with prestigious universities worldwide and Fortune 500 tech leaders to deliver international exchange, dual degrees, and direct hiring.',
-      buttonText: 'Partner With Us',
-      buttonUrl: '/collaborations#partner',
+      descriptionLa: 'SIT ຮ່ວມມືຢ່າງໃກ້ຊິດກັບມະຫາວິທະຍາໄລຊັ້ນນຳທົ່ວໂລກ ເພື່ອມອບໂອກາດແລກປ່ຽນສາກົນ, ຫຼັກສູດສອງປະລິນຍາ ແລະ ໂຄງການຄົ້ນຄວ້າຮ່ວມກັນໃຫ້ນັກສຶກສາ.',
+      buttonText: 'Discover Partners',
+      buttonTextLa: 'ຄົ້ນພົບພັນທະມິດ',
+      buttonUrl: '/collaborations#partners',
       imageUrl: '/images/collaborations_desktopview/img_1.jpg',
     },
   ];
