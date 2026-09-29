@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { api, HeroItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function AboutHero() {
   const { lang, t } = useLanguage();
-  const isLa = lang === 'LA';
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
@@ -20,17 +22,11 @@ export function AboutHero() {
       });
   }, []);
 
-  const subtitle = isLa
-    ? (heroData?.subtitleLa || heroData?.subtitle || t.about.heroSubtitle)
-    : (heroData?.subtitle || t.about.heroSubtitle);
-
-  const title = isLa
-    ? (heroData?.titleLa || heroData?.title || t.about.heroTitle)
-    : (heroData?.title || t.about.heroTitle);
-
-  const description = isLa
-    ? (heroData?.descriptionLa || heroData?.description || t.about.heroDesc)
-    : (heroData?.description || t.about.heroDesc);
+  const subtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.about.heroSubtitle);
+  const title = getLocalizedHeroText(heroData, 'title', lang, t.about.heroTitle);
+  const description = getLocalizedHeroText(heroData, 'description', lang, t.about.heroDesc);
+  const buttonText = getLocalizedHeroText(heroData, 'buttonText', lang);
+  const buttonUrl = heroData?.buttonUrl || '/about#members';
 
   const bgImage = heroData?.imageUrl?.trim() || null;
 

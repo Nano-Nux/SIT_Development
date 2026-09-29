@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CTABanner } from '@/components/home/CTABanner';
-import { Globe, Building2, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowRight, Globe, Building2, ExternalLink, MapPin } from 'lucide-react';
 import { api, PartnerItem, HeroItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function CollaborationsPage() {
@@ -33,9 +35,7 @@ export default function CollaborationsPage() {
     });
   }, []);
 
-  const heroSubtitle = isLa
-    ? (heroData?.subtitleLa || heroData?.subtitle || t.collaborations.heroSubtitle)
-    : (heroData?.subtitle || t.collaborations.heroSubtitle);
+  const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.collaborations.heroSubtitle);
 
   const rawTitle = isLa
     ? (heroData?.titleLa || heroData?.title || t.collaborations.heroTitle || 'ການຮ່ວມມືກັບ SIT')
@@ -44,17 +44,15 @@ export default function CollaborationsPage() {
   let mainTitle = isLa ? 'ການຮ່ວມມື' : 'Collaboration';
   let subTitleAccent = isLa ? 'ກັບ SIT' : 'with SIT';
 
-  if (rawTitle.toLowerCase().includes(' with sit')) {
-    const parts = rawTitle.split(/ with sit/i);
-    mainTitle = parts[0].trim();
-    subTitleAccent = 'with SIT';
-  } else if (rawTitle.includes(' ກັບ SIT') || rawTitle.includes(' ກັບ sit') || rawTitle.includes('ກັບ SIT')) {
-    const parts = rawTitle.split(/ ກັບ SIT| ກັບ sit|ກັບ SIT/);
-    mainTitle = parts[0].trim() || 'ການຮ່ວມມື';
-    subTitleAccent = 'ກັບ SIT';
-  } else if (rawTitle.toLowerCase() === 'collaboration with sit') {
-    mainTitle = 'Collaboration';
-    subTitleAccent = 'with SIT';
+  const englishTitleSuffix = rawTitle.trim().match(/^(.*?)(\s+with sit)$/i);
+  const laoTitleSuffix = rawTitle.trim().match(/^(.*?)(\s*ກັບ\s+sit)$/i);
+
+  if (englishTitleSuffix?.[1].trim()) {
+    mainTitle = englishTitleSuffix[1].trim();
+    subTitleAccent = englishTitleSuffix[2].trim();
+  } else if (laoTitleSuffix?.[1].trim()) {
+    mainTitle = laoTitleSuffix[1].trim();
+    subTitleAccent = laoTitleSuffix[2].trim();
   } else {
     mainTitle = rawTitle.trim();
     subTitleAccent = '';
@@ -103,16 +101,20 @@ export default function CollaborationsPage() {
               </h1>
 
               {/* Next line: 'with SIT' in the same row with DISCOVER PARTNERS in the middle */}
-              <div className="relative flex items-end min-h-[48px] pt-1">
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
-                  {subTitleAccent}
-                </div>
+              {(subTitleAccent || t.collaborations.discoverPartners) && (
+                <div className="relative flex items-end min-h-[48px] pt-1">
+                  {subTitleAccent && (
+                    <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
+                      {subTitleAccent}
+                    </div>
+                  )}
 
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
-                  <span>{t.collaborations.discoverPartners}</span>
-                  <div className="w-[1.5px] h-7 md:h-9 bg-gradient-to-b from-white/50 to-transparent mt-1" />
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
+                    <span>{t.collaborations.discoverPartners}</span>
+                    <div className="w-[1.5px] h-7 md:h-9 bg-gradient-to-b from-white/50 to-transparent mt-1" />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </section>

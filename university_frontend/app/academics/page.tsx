@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CTABanner } from '@/components/home/CTABanner';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { api, DepartmentItem, ProgramDirectorItem, SpotlightItem, HeroItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function AcademicsPage() {
@@ -40,9 +41,7 @@ export default function AcademicsPage() {
     });
   }, []);
 
-  const heroSubtitle = isLa
-    ? (heroData?.subtitleLa || heroData?.subtitle || t.academics.heroSubtitle)
-    : (heroData?.subtitle || t.academics.heroSubtitle);
+  const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.academics.heroSubtitle);
 
   const rawTitle = isLa
     ? (heroData?.titleLa || heroData?.title || t.academics.heroTitle || 'ຫຼັກສູດວິຊາການ ທີ່ SIT')
@@ -51,15 +50,16 @@ export default function AcademicsPage() {
   let mainTitle = isLa ? 'ຫຼັກສູດວິຊາການ' : 'Academic Programs';
   let subTitleAccent = isLa ? 'ທີ່ SIT' : 'at SIT';
 
-  if (rawTitle.toLowerCase().includes(' at sit')) {
-    const parts = rawTitle.split(/ at sit/i);
-    mainTitle = parts[0].trim();
-    subTitleAccent = 'at SIT';
-  } else if (rawTitle.includes(' ທີ່ SIT') || rawTitle.includes(' ທີ່ sit') || rawTitle.includes('ທີ່ SIT')) {
-    const parts = rawTitle.split(/ ທີ່ SIT| ທີ່ sit|ທີ່ SIT/);
-    mainTitle = parts[0].trim() || 'ຫຼັກສູດວິຊາການ';
-    subTitleAccent = 'ທີ່ SIT';
-  } else if (rawTitle === 'Academic Programs') {
+  const englishTitleSuffix = rawTitle.trim().match(/^(.*?)(\s+at sit)$/i);
+  const laoTitleSuffix = rawTitle.trim().match(/^(.*?)(\s*ທີ່\s*sit)$/i);
+
+  if (englishTitleSuffix?.[1].trim()) {
+    mainTitle = englishTitleSuffix[1].trim();
+    subTitleAccent = englishTitleSuffix[2].trim();
+  } else if (laoTitleSuffix?.[1].trim()) {
+    mainTitle = laoTitleSuffix[1].trim();
+    subTitleAccent = laoTitleSuffix[2].trim();
+  } else if (!heroData && rawTitle === 'Academic Programs') {
     mainTitle = 'Academic Programs';
     subTitleAccent = 'at SIT';
   } else {

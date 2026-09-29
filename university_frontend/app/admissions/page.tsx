@@ -10,10 +10,10 @@ import { AdmissionsMajorsSection } from '@/components/admissions/AdmissionsMajor
 import { FileText, UserCheck, MessageSquare, Send, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { api, HeroItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 
 export default function AdmissionsPage() {
   const { lang, t } = useLanguage();
-  const isLa = lang === 'LA';
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
@@ -47,23 +47,14 @@ export default function AdmissionsPage() {
     },
   ];
 
-  const heroSubtitle = isLa
-    ? (heroData?.subtitleLa || heroData?.subtitle || t.admissions.heroSubtitle)
-    : (heroData?.subtitle || t.admissions.heroSubtitle);
-
-  const welcomeHeading = isLa
-    ? (heroData?.titleLa || heroData?.title || t.admissions.welcomeHeading)
-    : (heroData?.title || t.admissions.welcomeHeading);
-
-  const customDescription = isLa
-    ? (heroData?.descriptionLa || heroData?.description)
-    : heroData?.description;
+  const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.admissions.heroSubtitle);
+  const welcomeHeading = getLocalizedHeroText(heroData, 'title', lang, t.admissions.welcomeHeading);
+  const defaultDescription = [t.admissions.welcomeP1, t.admissions.welcomeP2].filter(Boolean).join('\n\n');
+  const customDescription = getLocalizedHeroText(heroData, 'description', lang, defaultDescription);
 
   const showcaseImage = heroData?.imageUrl?.trim() || '/images/home_desktopview/img_1.jpg';
 
-  const buttonText = isLa
-    ? (heroData?.buttonTextLa || heroData?.buttonText)
-    : heroData?.buttonText;
+  const buttonText = getLocalizedHeroText(heroData, 'buttonText', lang);
   const buttonUrl = heroData?.buttonUrl || '/apply';
 
   return (
@@ -97,18 +88,11 @@ export default function AdmissionsPage() {
             </h1>
 
             <div className="text-base sm:text-lg text-[#4A5565] leading-relaxed space-y-4 max-w-3xl mx-auto">
-              {customDescription ? (
-                customDescription.split('\n\n').map((paragraph, idx) => (
-                  <p key={idx} className={idx > 0 ? 'font-semibold text-[#00001C]' : ''}>
-                    {paragraph}
-                  </p>
-                ))
-              ) : (
-                <>
-                  <p>{t.admissions.welcomeP1}</p>
-                  <p className="font-semibold text-[#00001C]">{t.admissions.welcomeP2}</p>
-                </>
-              )}
+              {customDescription.split(/\n\s*\n/).map((paragraph, idx) => (
+                <p key={idx} className={idx > 0 ? 'font-semibold text-[#00001C]' : ''}>
+                  {paragraph}
+                </p>
+              ))}
             </div>
 
             {buttonText && (

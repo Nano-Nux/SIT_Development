@@ -26,6 +26,7 @@ import {
   Maximize2,
 } from 'lucide-react';
 import { api, CampusFacility, StudentLifeActivity, HeroData, NewsArticle, EventItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 
 // Fallback Campus Facilities matching Figma design
 const fallbackFacilities: CampusFacility[] = [
@@ -354,9 +355,7 @@ export default function LifeAtSITPage() {
     });
   }, []);
 
-  const heroSubtitle = isLa
-    ? (hero?.subtitleLa || hero?.subtitle || t.lifeAtSit.heroSubtitle)
-    : (hero?.subtitle || t.lifeAtSit.heroSubtitle);
+  const heroSubtitle = getLocalizedHeroText(hero, 'subtitle', lang, t.lifeAtSit.heroSubtitle);
 
   const rawTitle = isLa
     ? (hero?.titleLa || hero?.title || t.lifeAtSit.heroTitle || 'ຊີວິດໃນ SIT')
@@ -365,27 +364,19 @@ export default function LifeAtSITPage() {
   let mainTitle = isLa ? 'ຊີວິດໃນ' : 'Life at';
   let subTitleAccent = 'SIT';
 
-  if (/ sit$/i.test(rawTitle.trim())) {
-    mainTitle = rawTitle.trim().replace(/ sit$/i, '').trim();
-    subTitleAccent = 'SIT';
-  } else if (rawTitle.toLowerCase() === 'life at sit' || rawTitle.toLowerCase() === 'life') {
-    mainTitle = 'Life at';
-    subTitleAccent = 'SIT';
-  } else if (rawTitle.includes('ໃນ SIT') || rawTitle.includes('ໃນ sit')) {
-    const parts = rawTitle.split(/ໃນ SIT|ໃນ sit/i);
-    mainTitle = `${parts[0].trim()} ໃນ`.trim();
-    subTitleAccent = 'SIT';
-  } else if (rawTitle.includes('ທີ່ SIT') || rawTitle.includes('ທີ່ sit')) {
-    const parts = rawTitle.split(/ທີ່ SIT|ທີ່ sit/i);
-    mainTitle = `${parts[0].trim()} ທີ່`.trim();
-    subTitleAccent = 'SIT';
-  } else if (rawTitle === 'ຊີວິດ' || rawTitle === 'ຊີວິດໃນ SIT' || rawTitle === 'ຊີວິດ ທີ່ SIT') {
-    mainTitle = 'ຊີວິດໃນ';
-    subTitleAccent = 'SIT';
+  const sitTitleSuffix = rawTitle.trim().match(/^(.*?)(\s+sit)$/i);
+
+  if (sitTitleSuffix?.[1].trim()) {
+    mainTitle = sitTitleSuffix[1].trim();
+    subTitleAccent = sitTitleSuffix[2].trim();
   } else {
     mainTitle = rawTitle.trim();
-    subTitleAccent = 'SIT';
+    subTitleAccent = '';
   }
+
+  const heroDescription = getLocalizedHeroText(hero, 'description', lang, t.lifeAtSit.heroDesc);
+  const buttonText = getLocalizedHeroText(hero, 'buttonText', lang);
+  const buttonUrl = hero?.buttonUrl || '/life-at-sit#activities';
 
   const displayFacilities = facilities.length > 0 ? facilities : fallbackFacilities;
 
@@ -457,11 +448,13 @@ export default function LifeAtSITPage() {
               </h1>
 
               {/* Next line: 'at SIT' */}
-              <div className="relative flex items-end min-h-[48px] pt-1">
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
-                  {subTitleAccent}
+              {subTitleAccent && (
+                <div className="relative flex items-end min-h-[48px] pt-1">
+                  <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
+                    {subTitleAccent}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </section>

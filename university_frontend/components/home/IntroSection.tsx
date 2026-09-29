@@ -1,11 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { api, HeroItem } from '@/lib/api';
+import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function IntroSection() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const [heroData, setHeroData] = useState<HeroItem | null>(null);
+
+  useEffect(() => {
+    api.getHero('HOME')
+      .then((hero) => setHeroData(hero || null))
+      .catch(() => setHeroData(null));
+  }, []);
+
+  const subtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.home.welcomeSubtitle);
+  const title = getLocalizedHeroText(heroData, 'title', lang, t.home.welcomeTitle);
+  const description = getLocalizedHeroText(heroData, 'description', lang, t.home.welcomeDesc);
 
   return (
     <section className="relative w-full bg-[#EFFFFF] py-20 md:py-28 overflow-hidden">
@@ -29,14 +44,16 @@ export function IntroSection() {
 
         {/* Stacked Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#00001C] uppercase leading-tight">
-          {t.home.welcomeSubtitle}
-          <span className="block text-[#0400CC] mt-1">{t.home.welcomeTitle}</span>
+          {subtitle}
+          <span className="block text-[#0400CC] mt-1">{title}</span>
         </h2>
 
         {/* Paragraph */}
         <p className="mt-8 text-base sm:text-lg md:text-xl text-[#4A5565] leading-relaxed max-w-[850px] mx-auto font-normal">
-          {t.home.welcomeDesc}
+          {description}
         </p>
+
+    
       </div>
     </section>
   );

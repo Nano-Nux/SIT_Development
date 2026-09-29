@@ -263,7 +263,7 @@ export default function AdminHeroPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Action Button Text (EN)
@@ -291,7 +291,7 @@ export default function AdminHeroPage() {
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             ) : (
               /* Lao Fields */
@@ -345,7 +345,7 @@ export default function AdminHeroPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       ຂໍ້ຄວາມເທິງປຸ່ມ (Lao Button Text)
@@ -373,7 +373,7 @@ export default function AdminHeroPage() {
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
 
