@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { api } from '@/lib/api';
-import { Sparkles, Save, CheckCircle2, AlertCircle, Image as ImageIcon, ExternalLink, Eye } from 'lucide-react';
+import { Sparkles, Save, CheckCircle2, AlertCircle, Video, ExternalLink, Eye } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/ImageUpload';
+import { VideoUpload } from '@/components/ui/VideoUpload';
+import { HeroVideo } from '@/components/ui/HeroVideo';
 
 export default function AdminHeroPage() {
   const [selectedPage, setSelectedPage] = useState('HOME');
@@ -25,9 +27,11 @@ export default function AdminHeroPage() {
     image2Url: '',
     image3Url: '',
     image4Url: '',
+    bgVideoUrl: '',
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,10 +68,11 @@ export default function AdminHeroPage() {
           buttonText: data.buttonText || '',
           buttonTextLa: data.buttonTextLa || '',
           buttonUrl: data.buttonUrl || '',
-          imageUrl: data.imageUrl || '',
+          imageUrl: data.page === 'HOME' ? '' : data.imageUrl || '',
           image2Url: data.image2Url || '',
           image3Url: data.image3Url || '',
           image4Url: data.image4Url || '',
+          bgVideoUrl: data.bgVideoUrl || '',
         });
       } else {
         setFormData({
@@ -85,6 +90,7 @@ export default function AdminHeroPage() {
           image2Url: '',
           image3Url: '',
           image4Url: '',
+          bgVideoUrl: '',
         });
       }
     } catch (err: any) {
@@ -101,12 +107,16 @@ export default function AdminHeroPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading || saving || loading) return;
     setSaving(true);
     setError(null);
     setSuccess(false);
 
     try {
-      await api.upsertHero(formData);
+      await api.upsertHero({
+        ...formData,
+        imageUrl: selectedPage === 'HOME' ? undefined : formData.imageUrl,
+      });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err: any) {
@@ -125,7 +135,7 @@ export default function AdminHeroPage() {
           Hero Sections Manager
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Customize headlines, subheadings, background imagery, and CTA actions for each main university page in English and Lao.
+          Customize the homepage video, headlines, background imagery, and CTA actions for each main university page in English and Lao.
         </p>
       </div>
 
@@ -135,6 +145,7 @@ export default function AdminHeroPage() {
           {pages.map((p) => (
             <button
               key={p.code}
+              disabled={uploading || saving || loading}
               onClick={() => setSelectedPage(p.code)}
               className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 selectedPage === p.code
@@ -377,49 +388,20 @@ export default function AdminHeroPage() {
               </div>
             )}
 
-            {/* Images Section */}
+            {/* Hero Media */}
             {selectedPage === 'HOME' ? (
               <div className="border-t border-slate-200 pt-6 space-y-4">
                 <div className="flex items-center gap-2">
-                  <ImageIcon className="w-5 h-5 text-[#0400CC]" />
+                  <Video className="w-5 h-5 text-[#0400CC]" />
                   <h3 className="text-sm font-extrabold text-[#00001C] uppercase tracking-wider">
-                    Homepage 4-Panel Hero Showcase Images (SeaweedFS)
+                    Homepage Hero Video
                   </h3>
                 </div>
                 <p className="text-xs text-slate-500">
-                  Upload images directly to SeaweedFS in full original quality for each of the 4 showcase panels on the homepage.
+                  Upload the video visitors will see at the top of the homepage.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <ImageUpload
-                    label="Panel 1 Image (Left)"
-                    value={formData.imageUrl}
-                    onChange={(url) => setFormData({ ...formData, imageUrl: url })}
-                    placeholder="/images/home_desktopview/img_1.jpg"
-                    aspectRatio="portrait"
-                  />
-                  <ImageUpload
-                    label="Panel 2 Image"
-                    value={formData.image2Url}
-                    onChange={(url) => setFormData({ ...formData, image2Url: url })}
-                    placeholder="/images/home_desktopview/img_1.jpg"
-                    aspectRatio="portrait"
-                  />
-                  <ImageUpload
-                    label="Panel 3 Image"
-                    value={formData.image3Url}
-                    onChange={(url) => setFormData({ ...formData, image3Url: url })}
-                    placeholder="/images/home_desktopview/img_2.jpg"
-                    aspectRatio="portrait"
-                  />
-                  <ImageUpload
-                    label="Panel 4 Image (Right)"
-                    value={formData.image4Url}
-                    onChange={(url) => setFormData({ ...formData, image4Url: url })}
-                    placeholder="/images/home_desktopview/img_1.jpg"
-                    aspectRatio="portrait"
-                  />
-                </div>
+                <VideoUpload value={formData.bgVideoUrl} onChange={(bgVideoUrl) => setFormData((prev) => ({ ...prev, bgVideoUrl }))} onUploadingChange={setUploading} disabled={saving} />
               </div>
             ) : (
               <div className="border-t border-slate-200 pt-6 space-y-3">
@@ -437,10 +419,10 @@ export default function AdminHeroPage() {
             <div className="pt-4 border-t border-slate-100 flex justify-end">
               <button
                 type="submit"
-                disabled={saving}
+                disabled={saving || uploading}
                 className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] disabled:opacity-60 text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-md transition-all cursor-pointer"
               >
-                {saving ? 'Saving Changes...' : 'Save Banner Updates'}
+                {uploading ? 'Uploading Video...' : saving ? 'Saving Changes...' : 'Save Banner Updates'}
                 <Save className="w-4 h-4" />
               </button>
             </div>
@@ -463,20 +445,7 @@ export default function AdminHeroPage() {
         </div>
 
         {selectedPage === 'HOME' ? (
-          <div className="grid grid-cols-4 gap-2 h-44 rounded-2xl overflow-hidden bg-[#00001C] p-2 border border-slate-700">
-            {[formData.imageUrl || '/images/home_desktopview/img_1.jpg',
-              formData.image2Url || '/images/home_desktopview/img_1.jpg',
-              formData.image3Url || '/images/home_desktopview/img_2.jpg',
-              formData.image4Url || '/images/home_desktopview/img_1.jpg'].map((img, i) => (
-              <div key={i} className="relative h-full rounded-lg overflow-hidden bg-slate-800">
-                <Image src={img} alt={`Panel ${i + 1}`} fill className="object-cover brightness-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0400CC]/80 via-transparent to-transparent" />
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] font-black text-white/40 tracking-widest uppercase whitespace-nowrap">
-                  SIT UNIV
-                </div>
-              </div>
-            ))}
-          </div>
+          <HeroVideo key={formData.bgVideoUrl || 'video'} src={formData.bgVideoUrl} className="aspect-video w-full rounded-2xl border border-slate-700" />
         ) : (
           <div className="relative rounded-2xl overflow-hidden bg-[#00001C] p-6 sm:p-8 min-h-[180px] flex flex-col justify-center text-center border border-slate-700">
             {formData.imageUrl && (

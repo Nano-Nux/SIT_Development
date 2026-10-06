@@ -7,6 +7,8 @@ import { SectionHeader } from '../ui/SectionHeader';
 import { Modal } from '../ui/Modal';
 import { api, CampusFacilityItem } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
+import { ImageGallery } from '@/components/ui/ImageGallery';
+import { getGalleryImages } from '@/lib/image-gallery';
 
 interface CampusFacilitiesSectionProps {
   data?: CampusFacilityItem[];
@@ -59,14 +61,11 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
               >
                 <div>
                   <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
-                    <img
-                      src={fac.imageUrl || `/images/life_at_sit_desktopview/img_${idx + 1}.jpg`}
+                    <ImageGallery
+                      images={getGalleryImages(fac, `/images/life_at_sit_desktopview/img_${idx + 1}.jpg`)}
                       alt={name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      aspectRatio="aspect-[16/10]"
                     />
-                    <span className="absolute top-2.5 right-2.5 bg-[#00001C]/80 text-white text-[10px] font-bold px-2.5 py-0.5 rounded backdrop-blur-sm uppercase">
-                      {fac.actionType}
-                    </span>
                   </div>
 
                   <div className="p-5">
@@ -113,15 +112,13 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
           maxWidth="lg"
         >
           <div className="space-y-4">
-            {selectedFacility.imageUrl && (
-              <div className="rounded-xl overflow-hidden aspect-video bg-slate-100">
-                <img
-                  src={selectedFacility.imageUrl}
-                  alt={isLa && selectedFacility.nameLa ? selectedFacility.nameLa : selectedFacility.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            <ImageGallery
+              key={selectedFacility.id}
+              images={getGalleryImages(selectedFacility)}
+              alt={isLa && selectedFacility.nameLa ? selectedFacility.nameLa : selectedFacility.name}
+              fit="contain"
+              className="rounded-xl"
+            />
             <p className="text-sm text-slate-700 leading-relaxed">
               {isLa
                 ? (selectedFacility.modalContentLa || selectedFacility.descriptionLa || selectedFacility.modalContent || selectedFacility.description)

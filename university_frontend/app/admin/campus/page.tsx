@@ -4,20 +4,23 @@ import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Building2, Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
-import { ImageUpload } from '@/components/ui/ImageUpload';
+import { MultiImageUpload } from '@/components/ui/MultiImageUpload';
+import { getGalleryImages } from '@/lib/image-gallery';
 
 export default function AdminCampusPage() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
   const [formData, setFormData] = useState({
     name: '',
     nameLa: '',
     description: '',
     descriptionLa: '',
-    imageUrl: '',
+    imageUrls: [] as string[],
     actionType: 'MODAL',
     destinationUrl: '',
     modalTitle: '',
@@ -51,7 +54,7 @@ export default function AdminCampusPage() {
       nameLa: '',
       description: '',
       descriptionLa: '',
-      imageUrl: '',
+      imageUrls: [],
       actionType: 'MODAL',
       destinationUrl: '',
       modalTitle: '',
@@ -71,7 +74,7 @@ export default function AdminCampusPage() {
       nameLa: item.nameLa || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
-      imageUrl: item.imageUrl || '',
+      imageUrls: getGalleryImages(item),
       actionType: item.actionType || 'MODAL',
       destinationUrl: item.destinationUrl || '',
       modalTitle: item.modalTitle || '',
@@ -95,6 +98,8 @@ export default function AdminCampusPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading || saving) return;
+    setSaving(true);
     try {
       if (editingItem) {
         await api.updateCampusFacility(editingItem.id, formData);
@@ -105,6 +110,8 @@ export default function AdminCampusPage() {
       loadItems();
     } catch (e) {
       alert('Failed to save campus facility');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -182,7 +189,9 @@ export default function AdminCampusPage() {
 
       <Modal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          if (!uploading && !saving) setModalOpen(false);
+        }}
         title={editingItem ? 'Edit Campus Facility' : 'Add Campus Facility'}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -373,18 +382,18 @@ export default function AdminCampusPage() {
             </div>
           )}
 
-          <ImageUpload
-            label="Facility Photo / Diagram (SeaweedFS)"
-            value={formData.imageUrl}
-            onChange={(url) => setFormData({ ...formData, imageUrl: url })}
-            placeholder="/images/life_at_sit_desktopview/img_1.jpg"
-            helpText="Uploaded to SeaweedFS in raw original quality."
-            aspectRatio="video"
+          <MultiImageUpload
+            label="Facility Images"
+            value={formData.imageUrls}
+            onChange={(imageUrls) => setFormData((prev) => ({ ...prev, imageUrls }))}
+            onUploadingChange={setUploading}
+            disabled={saving}
           />
 
           <div className="pt-4 flex justify-end gap-3">
             <button
               type="button"
+              disabled={uploading || saving}
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
@@ -392,9 +401,10 @@ export default function AdminCampusPage() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer"
+              disabled={uploading || saving}
+              className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer disabled:opacity-50"
             >
-              Save Facility
+              {uploading ? 'Uploading Images...' : saving ? 'Saving...' : 'Save Facility'}
             </button>
           </div>
         </form>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Rethink_Sans, Noto_Sans_Lao } from 'next/font/google';
+import '@fontsource-variable/google-sans/wght.css';
 import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
 

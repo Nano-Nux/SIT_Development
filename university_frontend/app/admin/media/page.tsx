@@ -35,7 +35,7 @@ export default function AdminMediaPage() {
     setLoadingMedia(true);
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('sit_admin_token') : null;
-      const res = await fetch('http://localhost:5000/api/uploads', {
+      const res = await fetch(`${api.client.baseUrl}/uploads`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (res.ok) {

@@ -34,6 +34,7 @@ export interface HeroData {
   image2Url?: string;
   image3Url?: string;
   image4Url?: string;
+  bgVideoUrl?: string;
   backgroundMedia?: string;
   ctaText?: string;
   ctaLink?: string;
@@ -270,6 +271,7 @@ export interface CampusFacility {
   descriptionLa?: string;
   images?: string[];
   imageUrl?: string;
+  imageUrls?: string[];
   virtualTourUrl?: string;
   modalTitle?: string;
   modalTitleLa?: string;
@@ -297,6 +299,7 @@ export interface NewsArticle {
   categoryLa?: string;
   image?: string;
   imageUrl?: string;
+  imageUrls?: string[];
   views: number;
   isPublished?: boolean;
   isFeatured?: boolean;

@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { api, CampusFacility, StudentLifeActivity, HeroData, NewsArticle, EventItem } from '@/lib/api';
 import { getLocalizedHeroText } from '@/lib/hero-content';
+import { ImageGallery } from '@/components/ui/ImageGallery';
+import { getGalleryImages } from '@/lib/image-gallery';
 
 // Fallback Campus Facilities matching Figma design
 const fallbackFacilities: CampusFacility[] = [
@@ -479,37 +481,30 @@ export default function LifeAtSITPage() {
               {displayFacilities.map((fac, idx) => {
                 const facName = (isLa && fac.nameLa) ? fac.nameLa : fac.name;
                 const facDesc = (isLa && fac.descriptionLa) ? fac.descriptionLa : fac.description;
-                const imageSrc = fac.imageUrl || `/images/life_at_sit_desktopview/img_${(idx % 4) + 3}.jpg`;
+                const images = getGalleryImages(fac, `/images/life_at_sit_desktopview/img_${(idx % 4) + 3}.jpg`);
 
                 return (
                   <div
                     key={fac.id || idx}
-                    onClick={() => handleFacilityClick(fac)}
-                    className="group relative h-[320px] sm:h-[380px] md:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 cursor-pointer bg-[#00001C] flex flex-col justify-end p-6 sm:p-8"
+                    className="group relative h-[320px] sm:h-[380px] md:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 bg-[#00001C] flex flex-col justify-end p-6 sm:p-8"
                   >
                     {/* Background Image */}
                     <div className="absolute inset-0 z-0">
-                      <Image
-                        src={imageSrc}
-                        alt={facName}
-                        fill
-                        unoptimized
-                        className="object-cover object-center group-hover:scale-105 transition-all duration-700 brightness-95 group-hover:brightness-100"
-                      />
+                      <ImageGallery images={images} alt={facName} aspectRatio="h-full" className="h-full" />
                     </div>
 
                     {/* Dark Gradient Overlay for optimal contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#00001C] via-[#00001C]/60 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#00001C] via-[#00001C]/60 to-transparent z-10 pointer-events-none" />
 
                     {/* Content */}
                     <div className="relative z-20 space-y-2.5">
                       <div className="flex items-center justify-between">
                         <h3 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
-                          {facName}
+                          <button type="button" onClick={() => handleFacilityClick(fac)} className="text-left cursor-pointer hover:underline focus-visible:outline-2 focus-visible:outline-white">{facName}</button>
                         </h3>
-                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shrink-0 ml-3">
+                        <button type="button" onClick={() => handleFacilityClick(fac)} aria-label={isLa ? `ເບິ່ງ ${facName}` : `Explore ${facName}`} className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white shrink-0 ml-3 cursor-pointer focus-visible:outline-2 focus-visible:outline-white">
                           <Maximize2 className="w-4 h-4" />
-                        </span>
+                        </button>
                       </div>
                       {facDesc && (
                         <p className="text-xs sm:text-sm text-white/80 line-clamp-2 leading-relaxed">
@@ -686,15 +681,12 @@ export default function LifeAtSITPage() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="relative aspect-[16/9] w-full bg-slate-900">
-              <Image
-                src={selectedFacility.imageUrl || '/images/life_at_sit_desktopview/img_3.jpg'}
-                alt={selectedFacility.name}
-                fill
-                unoptimized
-                className="object-cover"
-              />
-            </div>
+            <ImageGallery
+              key={selectedFacility.id}
+              images={getGalleryImages(selectedFacility, '/images/life_at_sit_desktopview/img_3.jpg')}
+              alt={isLa && selectedFacility.nameLa ? selectedFacility.nameLa : selectedFacility.name}
+              fit="contain"
+            />
 
             <div className="p-6 sm:p-8 space-y-4">
               <span className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#0400CC] bg-[#EFFFFF] px-3 py-1 rounded-md">

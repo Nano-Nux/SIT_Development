@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Newspaper, Plus, Edit2, Trash2, Calendar, Eye, ExternalLink } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
-import { ImageUpload } from '@/components/ui/ImageUpload';
+import { MultiImageUpload } from '@/components/ui/MultiImageUpload';
+import { getGalleryImages } from '@/lib/image-gallery';
 import Link from 'next/link';
 
 export default function AdminNewsPage() {
@@ -12,6 +13,8 @@ export default function AdminNewsPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
   const [formData, setFormData] = useState({
     title: '',
@@ -23,7 +26,7 @@ export default function AdminNewsPage() {
     contentLa: '',
     category: 'Academics',
     categoryLa: '',
-    imageUrl: '',
+    imageUrls: [] as string[],
     author: 'SIT Communications Team',
     authorLa: '',
   });
@@ -35,7 +38,7 @@ export default function AdminNewsPage() {
   const loadItems = async () => {
     setLoading(true);
     try {
-      const data = await api.getNews();
+      const data = await api.getNews({ all: true });
       setItems(data.items || []);
     } catch (e) {
       console.error(e);
@@ -57,7 +60,7 @@ export default function AdminNewsPage() {
       contentLa: '',
       category: 'Academics',
       categoryLa: 'ດ້ານວິຊາການ',
-      imageUrl: '',
+      imageUrls: [],
       author: 'SIT Communications Team',
       authorLa: 'ທີມງານສື່ສານ SIT',
     });
@@ -77,7 +80,7 @@ export default function AdminNewsPage() {
       contentLa: item.contentLa || '',
       category: item.category || 'Academics',
       categoryLa: item.categoryLa || '',
-      imageUrl: item.imageUrl || '',
+      imageUrls: getGalleryImages(item),
       author: item.author || 'SIT Communications Team',
       authorLa: item.authorLa || '',
     });
@@ -96,6 +99,8 @@ export default function AdminNewsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading || saving) return;
+    setSaving(true);
     try {
       if (editingItem) {
         await api.updateNews(editingItem.id, formData);
@@ -106,6 +111,8 @@ export default function AdminNewsPage() {
       loadItems();
     } catch (e) {
       alert('Failed to save news article');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -213,7 +220,9 @@ export default function AdminNewsPage() {
 
       <Modal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          if (!uploading && !saving) setModalOpen(false);
+        }}
         title={editingItem ? 'Edit News Article' : 'Write News Article'}
         maxWidth="2xl"
       >
@@ -401,18 +410,18 @@ export default function AdminNewsPage() {
             </div>
           )}
 
-          <ImageUpload
-            label="Featured Image (SeaweedFS)"
-            value={formData.imageUrl}
-            onChange={(url) => setFormData({ ...formData, imageUrl: url })}
-            placeholder="/images/home_desktopview/img_1.jpg"
-            helpText="Upload directly to SeaweedFS (100% original quality preserved). Stored in PostgreSQL as URL."
-            aspectRatio="video"
+          <MultiImageUpload
+            label="Article Images"
+            value={formData.imageUrls}
+            onChange={(imageUrls) => setFormData((prev) => ({ ...prev, imageUrls }))}
+            onUploadingChange={setUploading}
+            disabled={saving}
           />
 
           <div className="pt-4 flex justify-end gap-3">
             <button
               type="button"
+              disabled={uploading || saving}
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
@@ -420,9 +429,10 @@ export default function AdminNewsPage() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer"
+              disabled={uploading || saving}
+              className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer disabled:opacity-50"
             >
-              Publish Article
+              {uploading ? 'Uploading Images...' : saving ? 'Saving...' : 'Publish Article'}
             </button>
           </div>
         </form>

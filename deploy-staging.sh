@@ -83,12 +83,16 @@ if [ ! -f .env ]; then
   cp .env.example .env
 fi
 
-# Set backend PORT and S3 public URL
+# Set backend PORT and the public backend URL used to serve S3 media.
 sed -i '/^PORT=/d' .env 2>/dev/null || true
 echo "PORT=${BACKEND_PORT}" >> .env
 
 sed -i '/^S3_PUBLIC_URL=/d' .env 2>/dev/null || true
 echo "S3_PUBLIC_URL=http://${NAT_PUBLIC_IP}:${BACKEND_PORT}/uploads" >> .env
+
+# Local-disk fallback files also need a browser-reachable backend URL.
+sed -i '/^BACKEND_PUBLIC_URL=/d' .env 2>/dev/null || true
+echo "BACKEND_PUBLIC_URL=http://${NAT_PUBLIC_IP}:${BACKEND_PORT}" >> .env
 
 npm install --production=false
 npx prisma generate

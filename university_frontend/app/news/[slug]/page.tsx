@@ -8,6 +8,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Calendar, User, Eye, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { newsApi, NewsArticle } from '@/lib/api';
+import { ImageGallery } from '@/components/ui/ImageGallery';
+import { getGalleryImages } from '@/lib/image-gallery';
 
 export default function NewsDetailPage({
   params,
@@ -95,16 +97,12 @@ export default function NewsDetailPage({
             </div>
           </div>
 
-          {/* Main Image */}
-          {article.imageUrl && (
-            <div className="rounded-3xl overflow-hidden shadow-xl aspect-video bg-slate-100 mb-10 border border-slate-200">
-              <img
-                src={article.imageUrl}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+          <ImageGallery
+            images={getGalleryImages(article)}
+            alt={title}
+            fit="contain"
+            className="rounded-3xl shadow-xl mb-10 border border-slate-200"
+          />
 
           {/* Article Summary Lead */}
           {summary && (

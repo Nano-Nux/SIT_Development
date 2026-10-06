@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { imageGalleryData } from '../common/image-gallery';
 
 @Injectable()
 export class NewsService {
@@ -67,7 +68,7 @@ export class NewsService {
         contentLa: data.contentLa,
         category: data.category || 'General',
         categoryLa: data.categoryLa,
-        imageUrl: data.imageUrl,
+        ...imageGalleryData(data),
         author: data.author || 'SIT Communications',
         authorLa: data.authorLa,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
@@ -90,7 +91,7 @@ export class NewsService {
         contentLa: data.contentLa,
         category: data.category,
         categoryLa: data.categoryLa,
-        imageUrl: data.imageUrl,
+        ...imageGalleryData(data),
         author: data.author,
         authorLa: data.authorLa,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : undefined,

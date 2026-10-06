@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
@@ -16,7 +16,11 @@ async function bootstrap() {
   });
 
   // API prefix
-  app.setGlobalPrefix('api');
+  // Keep public media URLs at /uploads/:filename while the rest of the API
+  // remains under /api.
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: 'uploads/:filename', method: RequestMethod.GET }],
+  });
 
   // Global validation
   app.useGlobalPipes(
@@ -30,6 +34,7 @@ async function bootstrap() {
   // Serve static files from uploads folder
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
+    fallthrough: true,
   });
 
   const port = process.env.PORT || 5000;

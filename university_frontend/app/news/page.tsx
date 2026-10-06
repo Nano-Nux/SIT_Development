@@ -8,6 +8,8 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Calendar, Search, ArrowRight, Eye, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { newsApi, NewsArticle } from '@/lib/api';
+import { ImageGallery } from '@/components/ui/ImageGallery';
+import { getGalleryImages } from '@/lib/image-gallery';
 
 export default function NewsPage() {
   const { lang, t } = useLanguage();
@@ -111,10 +113,10 @@ export default function NewsPage() {
                     >
                       <div>
                         <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
-                          <img
-                            src={item.imageUrl || `/images/home_desktopview/img_${(idx % 3) + 1}.jpg`}
+                          <ImageGallery
+                            images={getGalleryImages(item, `/images/home_desktopview/img_${(idx % 3) + 1}.jpg`)}
                             alt={title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            aspectRatio="aspect-[16/10]"
                           />
                           <span className="absolute top-3 left-3 bg-[#0400CC] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                             {categoryName}

@@ -6,20 +6,22 @@ export class HeroService {
   constructor(private prisma: PrismaService) {}
 
   async findByPage(page: string) {
-    return this.prisma.hero.findUnique({
+    const hero = await this.prisma.hero.findUnique({
       where: { page: page.toUpperCase() },
     });
+    return this.omitHomePoster(hero);
   }
 
   async findAll() {
-    return this.prisma.hero.findMany({
+    const heroes = await this.prisma.hero.findMany({
       orderBy: { createdAt: 'asc' },
     });
+    return heroes.map((hero) => this.omitHomePoster(hero));
   }
 
   async upsert(page: string, data: any) {
     const pageKey = page.toUpperCase();
-    return this.prisma.hero.upsert({
+    const hero = await this.prisma.hero.upsert({
       where: { page: pageKey },
       update: {
         title: data.title,
@@ -31,7 +33,7 @@ export class HeroService {
         buttonText: data.buttonText,
         buttonTextLa: data.buttonTextLa,
         buttonUrl: data.buttonUrl,
-        imageUrl: data.imageUrl,
+        imageUrl: pageKey === 'HOME' ? null : data.imageUrl,
         image2Url: data.image2Url,
         image3Url: data.image3Url,
         image4Url: data.image4Url,
@@ -49,7 +51,7 @@ export class HeroService {
         buttonText: data.buttonText,
         buttonTextLa: data.buttonTextLa,
         buttonUrl: data.buttonUrl,
-        imageUrl: data.imageUrl,
+        imageUrl: pageKey === 'HOME' ? null : data.imageUrl,
         image2Url: data.image2Url,
         image3Url: data.image3Url,
         image4Url: data.image4Url,
@@ -57,5 +59,15 @@ export class HeroService {
         isActive: data.isActive !== undefined ? data.isActive : true,
       },
     });
+    return this.omitHomePoster(hero);
+  }
+
+  private omitHomePoster<T extends { page: string; imageUrl?: string | null }>(
+    hero: T | null,
+  ): Omit<T, 'imageUrl'> | T | null {
+    if (!hero || hero.page.toUpperCase() !== 'HOME') return hero;
+    const homepageHero = { ...hero };
+    Reflect.deleteProperty(homepageHero, 'imageUrl');
+    return homepageHero;
   }
 }

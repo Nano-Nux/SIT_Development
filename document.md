@@ -250,7 +250,7 @@ SIT_Development/
 | `S3_FORCE_PATH_STYLE`| No| `true` | Required for SeaweedFS / MinIO path-style URLs |
 | `S3_ACCESS_KEY_ID` | No | `any` | S3 access key ID |
 | `S3_SECRET_ACCESS_KEY`| No| `any` | S3 secret access key |
-| `S3_PUBLIC_URL` | No | `http://localhost:8333/university-media` | Publicly accessible URL prefix for images |
+| `S3_PUBLIC_URL` | No | `http://localhost:5000/uploads` | Public backend URL that serves uploaded files from SeaweedFS or local disk |
 | `RESEND_API_KEY` | No | `re_123456789...` | API key from Resend for transactional emails |
 | `RESEND_FROM_EMAIL` | No | `SIT Admissions <onboarding@resend.dev>` | Verified sender address for outgoing emails |
 | `ADMIN_NOTIFICATION_EMAIL`| No | `admissions@sit.edu.la` | Target mailbox receiving new application alerts |
@@ -414,13 +414,14 @@ Upload Request
      ├─► Check S3 / SeaweedFS availability
      │        │
      │        ├─► [Available] ──► Upload to SeaweedFS S3 Bucket ('university-media')
-     │        │                   └── Return S3 Public Asset URL
+     │        │                   └── Return Backend Media URL (/uploads/filename)
      │        │
      │        └─► [Unavailable] ─► Save to Local 'university_backend/uploads/'
      │                            └── Return Local Static Asset URL (/uploads/filename)
 ```
 
 - **SeaweedFS In Local/Staging**: Run via `docker compose -f seaweedfs-compose.yml up -d`. Exposes S3 API on port `8333` and Web Filer on port `8888`.
+- **Public Media Route**: `/uploads/:filename` serves local files directly and proxies SeaweedFS S3 or Filer objects through the backend, so clients do not need direct storage access.
 - **Zero-Failure Fallback**: If Docker is not running or S3 is unavailable, the backend gracefully stores files to `university_backend/uploads/` and serves them statically via NestJS static asset middleware. No upload request will ever crash due to missing storage containers.
 
 ---
@@ -667,7 +668,7 @@ tar -czvf "uploads_backup_$(date +%Y%m%d).tar.gz" university_backend/uploads/
 | Symptom / Error | Cause | Resolution |
 | :--- | :--- | :--- |
 | **`PrismaClientInitializationError`** | Invalid `DATABASE_URL` or network timeout to PostgreSQL | Verify database host is reachable; ensure SSL mode (`?sslmode=require`) is specified if using cloud Postgres. |
-| **Images show broken / 404** | Backend uploads path mismatch or S3 container not running | Check if `S3_PUBLIC_URL` or backend port in `.env` matches your running backend host. Verify `/uploads` folder exists. |
+| **Images show broken / 404** | Backend media URL mismatch or storage unavailable | Check `S3_PUBLIC_URL`, `BACKEND_PUBLIC_URL`, backend logs, and the `/uploads/:filename` response. |
 | **CORS error on API requests** | Frontend origin not accepted by backend | Check `app.enableCors()` in `main.ts`. By default it allows all origins (`origin: true`). |
 | **`UnauthorizedException` on Admin** | JWT token expired or missing `Authorization` header | Log out and log back in at `/admin/login` to obtain a fresh token. |
 | **Email notifications not arriving** | Missing or invalid `RESEND_API_KEY` | Provide a valid Resend API key in `university_backend/.env` and verify sending domain at resend.com. |

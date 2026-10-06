@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { imageGalleryData } from '../common/image-gallery';
 
 @Injectable()
 export class CampusFacilitiesService {
@@ -24,7 +25,7 @@ export class CampusFacilitiesService {
         nameLa: data.nameLa,
         description: data.description,
         descriptionLa: data.descriptionLa,
-        imageUrl: data.imageUrl,
+        ...imageGalleryData(data),
         actionType: data.actionType ? data.actionType.toUpperCase() : 'MODAL',
         destinationUrl: data.destinationUrl,
         modalTitle: data.modalTitle,
@@ -45,7 +46,7 @@ export class CampusFacilitiesService {
         nameLa: data.nameLa,
         description: data.description,
         descriptionLa: data.descriptionLa,
-        imageUrl: data.imageUrl,
+        ...imageGalleryData(data),
         actionType: data.actionType ? data.actionType.toUpperCase() : undefined,
         destinationUrl: data.destinationUrl,
         modalTitle: data.modalTitle,
