@@ -24,6 +24,7 @@ import {
 import { Modal } from '@/components/ui/Modal';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 import Link from 'next/link';
+import { getDepartmentHref, getExternalDepartmentUrl } from '@/lib/department-links';
 
 interface BoxStatForm {
   value: string;
@@ -39,12 +40,14 @@ export default function AdminDepartmentsPage() {
   const [editingItem, setEditingItem] = useState<Department | null>(null);
   const [modalTab, setModalTab] = useState<'basic' | 'description' | 'heroBoxes' | 'focusAreas' | 'careerOutcomes'>('basic');
   const [activeLang, setActiveLang] = useState<'en' | 'la'>('en');
+  const [isExternal, setIsExternal] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     nameLa: '',
     slug: '',
+    externalUrl: '',
     description: '',
     descriptionLa: '',
     heroImage: '',
@@ -120,6 +123,7 @@ export default function AdminDepartmentsPage() {
   };
 
   const handleOpenCreate = () => {
+    setIsExternal(false);
     setEditingItem(null);
     setModalTab('basic');
     setActiveLang('en');
@@ -127,6 +131,7 @@ export default function AdminDepartmentsPage() {
       name: '',
       nameLa: '',
       slug: '',
+      externalUrl: '',
       description: '',
       descriptionLa: '',
       heroImage: '',
@@ -173,6 +178,7 @@ export default function AdminDepartmentsPage() {
   };
 
   const handleOpenEdit = (item: Department) => {
+    setIsExternal(Boolean(item.externalUrl));
     setEditingItem(item);
     setModalTab('basic');
     setActiveLang('en');
@@ -189,6 +195,7 @@ export default function AdminDepartmentsPage() {
       name: item.name || item.title || '',
       nameLa: item.nameLa || item.titleLa || '',
       slug: item.slug || '',
+      externalUrl: item.externalUrl || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
       heroImage: item.heroImage || '',
@@ -310,6 +317,17 @@ export default function AdminDepartmentsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const externalUrl = isExternal ? getExternalDepartmentUrl(formData.externalUrl) : null;
+    if (isExternal && !externalUrl) {
+      alert('Enter a valid external website URL starting with https:// or http://, without credentials.');
+      return;
+    }
+    if (!formData.name.trim() || !formData.slug.trim()) {
+      setModalTab('basic');
+      setActiveLang('en');
+      alert('Enter a department name and URL slug.');
+      return;
+    }
 
     // Assemble Hero Box-descriptions array if any value exists
     const hasHeroBoxesEn = formData.heroBox1Value || formData.heroBox2Value || formData.heroBox3Value || formData.heroBox4Value;
@@ -339,6 +357,7 @@ export default function AdminDepartmentsPage() {
       name: formData.name,
       nameLa: formData.nameLa || null,
       slug: formData.slug.trim().toLowerCase(),
+      externalUrl,
       description: formData.description,
       descriptionLa: formData.descriptionLa || null,
       heroImage: formData.heroImage || null,
@@ -447,7 +466,8 @@ export default function AdminDepartmentsPage() {
                       {item.nameLa && (
                         <p className="text-xs font-bold text-[#0400CC] mt-0.5">{item.nameLa}</p>
                       )}
-                      <span className="text-xs font-mono text-[#0400CC] block mt-1">/departments/{item.slug}</span>
+                      <span className="text-xs font-mono text-[#0400CC] block mt-1 break-all">{getDepartmentHref(item)}</span>
+                      {item.externalUrl && <span className="text-xs font-semibold text-emerald-700">External Website</span>}
                     </div>
 
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
@@ -487,11 +507,12 @@ export default function AdminDepartmentsPage() {
                 {/* Bottom Actions */}
                 <div className="p-5 pt-3 border-t border-slate-100 flex items-center justify-between mt-2 bg-slate-50/50">
                   <Link
-                    href={`/departments/${item.slug}`}
+                    href={getDepartmentHref(item)}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-xs font-bold text-[#0400CC] hover:underline flex items-center gap-1"
                   >
-                    <span>View Public Page</span>
+                    <span>{item.externalUrl ? 'Visit External Website' : 'View Public Page'}</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Link>
 
@@ -527,6 +548,37 @@ export default function AdminDepartmentsPage() {
         title={editingItem ? `Edit Department: ${editingItem.name}` : 'Create Department / Major'}
       >
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-3 rounded-xl border border-slate-200 p-4">
+            <label htmlFor="department-link-destination" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Link destination
+            </label>
+            <select
+              id="department-link-destination"
+              value={isExternal ? 'external' : 'internal'}
+              onChange={(e) => setIsExternal(e.target.value === 'external')}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
+            >
+              <option value="internal">Department page on this website</option>
+              <option value="external">External website</option>
+            </select>
+            {isExternal && (
+              <div className="space-y-2">
+                <label htmlFor="department-external-url" className="block text-xs font-bold text-slate-700">
+                  External website URL <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="department-external-url"
+                  type="url"
+                  required
+                  value={formData.externalUrl}
+                  onChange={(e) => setFormData({ ...formData, externalUrl: e.target.value })}
+                  placeholder="https://example.com"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
+                />
+                <p className="text-xs text-slate-500">Clicking this department in navigation or department cards opens this website in the same tab. Page content is optional.</p>
+              </div>
+            )}
+          </div>
           {/* Top Modal Sub-Navigation Tabs */}
           <div className="flex flex-wrap gap-1 border-b border-slate-200 pb-2">
             {[
@@ -630,7 +682,7 @@ export default function AdminDepartmentsPage() {
                     placeholder="e.g. it, ba-economics, communication-arts"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-mono"
                   />
-                  <span className="text-[11px] text-slate-400 mt-1 block">Live at: /departments/{formData.slug || 'slug'}</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block break-all">{isExternal ? `Links to: ${formData.externalUrl || 'Enter a website URL above'}` : `Live at: /departments/${formData.slug || 'slug'}`}</span>
                 </div>
 
                 <div>
@@ -674,10 +726,10 @@ export default function AdminDepartmentsPage() {
               {activeLang === 'en' ? (
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Department Overview Description (EN) <span className="text-red-500">*</span>
+                    Department Overview Description (EN) {!isExternal && <span className="text-red-500">*</span>}
                   </label>
                   <textarea
-                    required
+                    required={!isExternal}
                     rows={5}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}

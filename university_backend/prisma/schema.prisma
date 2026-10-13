@@ -74,6 +74,7 @@ model Department {
   name                  String
   nameLa                String?
   slug                  String    @unique
+  externalUrl           String?
   description           String    @db.Text
   descriptionLa         String?   @db.Text
   heroImage             String?

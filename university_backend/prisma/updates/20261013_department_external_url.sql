@@ -1,0 +1,1 @@
+ALTER TABLE "Department" ADD COLUMN IF NOT EXISTS "externalUrl" TEXT;

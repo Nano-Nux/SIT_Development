@@ -13,6 +13,7 @@ import {
 import { MobileNav } from './MobileNav';
 import { useLanguage } from '@/context/LanguageContext';
 import { api, Department } from '@/lib/api';
+import { getDepartmentHref } from '@/lib/department-links';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,7 +54,7 @@ export function Header() {
         .filter((d) => d.isActive !== false)
         .map((d) => ({
           name: (lang === 'LA' ? (d.nameLa || d.name) : (d.name || d.nameLa)) || d.slug || 'Department',
-          href: `/departments/${d.slug}`,
+          href: getDepartmentHref(d),
         }))
     : [
         { name: t.nav.deptIT, href: '/departments/it' },

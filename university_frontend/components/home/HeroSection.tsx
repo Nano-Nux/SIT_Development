@@ -13,11 +13,11 @@ export function HeroSection() {
 
   return (
     <section className="relative w-full bg-[#00001C] pt-[90px] sm:pt-[105px] overflow-hidden">
-      <div className="w-full max-w-[1280px] mx-auto h-[480px] sm:h-[600px] md:h-[720px] px-2 sm:px-4">
+      <div className="w-full h-[480px] sm:h-[600px] md:h-[720px]">
         <HeroVideo
           key={hero?.bgVideoUrl || 'video'}
           src={hero?.bgVideoUrl}
-          className="h-full w-full rounded-md sm:rounded-lg"
+          className="h-full w-full"
         />
       </div>
     </section>

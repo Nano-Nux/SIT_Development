@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { ArrowRight, Laptop, Briefcase, Film, BookOpen } from 'lucide-react';
 import { SectionHeader } from '../ui/SectionHeader';
 import { useLanguage } from '@/context/LanguageContext';
+import { getDepartmentHref } from '@/lib/department-links';
 
 interface Department {
   id: string;
   name: string;
   nameLa?: string | null;
   slug: string;
+  externalUrl?: string | null;
   description: string;
   descriptionLa?: string | null;
   heroImage?: string | null;
@@ -102,7 +104,7 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
 
                 <div className="p-6 sm:p-7 pt-0">
                   <Link
-                    href={`/departments/${dept.slug}`}
+                    href={getDepartmentHref(dept)}
                     className="w-full inline-flex items-center justify-center gap-2 bg-[#0400CC]/10 hover:bg-[#0400CC] text-[#0400CC] hover:text-white font-bold text-xs sm:text-sm py-3 rounded-xl transition-all cursor-pointer"
                   >
                     <span>{t.academics.exploreDeptHub}</span>

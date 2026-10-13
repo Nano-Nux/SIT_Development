@@ -1,5 +1,11 @@
 # Image galleries and homepage video
 
+## Department external websites
+
+`20261013_department_external_url.sql` adds the optional `Department.externalUrl` column without changing existing departments. Apply it with `npx prisma db execute --file prisma/updates/20261013_department_external_url.sql --schema prisma/schema.prisma`, then run `npx prisma generate` and restart the backend. The existing `npx prisma db push` workflow also applies this schema change.
+
+In Departments & Majors, select **External website** under **Link destination** and enter an HTTP/HTTPS URL. Header navigation (desktop and mobile), department cards, and direct department page visits use this destination. Switching back to **Department page on this website** clears the URL when saved.
+
 From `university_backend`, apply the additive gallery schema update and regenerate the client:
 
 ```sh

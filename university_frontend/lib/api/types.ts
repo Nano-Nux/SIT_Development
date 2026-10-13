@@ -73,6 +73,7 @@ export interface Department {
   title?: string;
   titleLa?: string;
   slug: string;
+  externalUrl?: string | null;
   description?: string;
   descriptionLa?: string;
   heroImage?: string;

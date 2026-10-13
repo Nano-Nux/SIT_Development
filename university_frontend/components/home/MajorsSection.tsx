@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { api, MajorItem } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
+import { getDepartmentHref } from '@/lib/department-links';
 
 export function MajorsSection({ data }: { data?: any[] }) {
   const [majors, setMajors] = useState<any[]>(data || []);
@@ -84,7 +85,7 @@ export function MajorsSection({ data }: { data?: any[] }) {
             return (
               <Link
                 key={major.id || idx}
-                href={`/departments/${deptSlug}`}
+                href={getDepartmentHref({ slug: deptSlug, externalUrl: major.externalUrl })}
                 className="group relative h-[380px] sm:h-[460px] md:h-[520px] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col justify-end p-6 sm:p-8 bg-[#00001C]"
               >
                 {/* Background Photo */}

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -95,6 +95,23 @@ export class DepartmentsService {
     return dept;
   }
 
+  private formatExternalUrl(value: unknown): string | null | undefined {
+    if (value === undefined) return undefined;
+    if (value === null || value === '') return null;
+    if (typeof value === 'string') {
+      if (!value.trim()) return null;
+      try {
+        const url = new URL(value.trim());
+        if (['http:', 'https:'].includes(url.protocol) && !url.username && !url.password) {
+          return url.href;
+        }
+      } catch {
+        // Invalid URLs are rejected below.
+      }
+    }
+    throw new BadRequestException('External website URL must be a valid HTTP or HTTPS URL without credentials');
+  }
+
   private formatJsonField(value: any): string | null | undefined {
     if (value === undefined) return undefined;
     if (value === null || value === '') return null;
@@ -113,6 +130,7 @@ export class DepartmentsService {
         name: data.name,
         nameLa: data.nameLa,
         slug,
+        externalUrl: this.formatExternalUrl(data.externalUrl),
         description: data.description,
         descriptionLa: data.descriptionLa,
         heroImage: data.heroImage,
@@ -145,6 +163,7 @@ export class DepartmentsService {
         name: data.name,
         nameLa: data.nameLa,
         slug: data.slug,
+        externalUrl: this.formatExternalUrl(data.externalUrl),
         description: data.description,
         descriptionLa: data.descriptionLa,
         heroImage: data.heroImage,

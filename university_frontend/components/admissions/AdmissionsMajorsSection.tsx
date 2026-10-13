@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ArrowRight, Sparkles, GraduationCap } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
+import { getDepartmentHref } from '@/lib/department-links';
 
 interface MajorItem {
   id?: string;
@@ -14,6 +15,7 @@ interface MajorItem {
   title?: string;
   titleLa?: string;
   slug?: string;
+  externalUrl?: string | null;
   description?: string;
   descriptionLa?: string;
   imageUrl?: string;
@@ -162,7 +164,7 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
 
             const programParam = encodeURIComponent(major.name || major.title || '');
             const applyLink = `/apply?major=${deptSlug}${programParam ? `&program=${programParam}` : ''}`;
-            const detailLink = `/departments/${deptSlug}`;
+            const detailLink = getDepartmentHref({ slug: deptSlug, externalUrl: major.externalUrl });
 
             const imgUrl =
               major.imageUrl ||

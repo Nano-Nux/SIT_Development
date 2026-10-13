@@ -32,7 +32,7 @@ export const en = {
   nav: {
     newsEvents: 'News & Events',
     alumni: 'Alumni',
-    careers: 'Careers',
+    careers: 'Contact us',
     home: 'HOME',
     academics: 'ACADEMICS',
     allPrograms: 'All Academic Programs',
@@ -67,7 +67,7 @@ export const en = {
     academicCalendar: 'Academic Calendar',
     library: 'Library',
     campusMap: 'Campus Map',
-    careersAtSIT: 'Careers at SIT',
+    careersAtSIT: 'Contact us',
     alumniNetwork: 'Alumni Network',
     colleges: 'COLLEGES',
     collegeEngineering: 'College of Engineering',

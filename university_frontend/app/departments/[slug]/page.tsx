@@ -26,6 +26,7 @@ import {
   Code2,
 } from 'lucide-react';
 import { api, Department, ProgramItem, FacultyMember, BoxStatItem } from '@/lib/api';
+import { getExternalDepartmentUrl } from '@/lib/department-links';
 
 interface DeptPageProps {
   params: Promise<{ slug: string }>;
@@ -43,6 +44,11 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
     setLoading(true);
     api.getDepartment(slug)
       .then((res) => {
+        const externalUrl = getExternalDepartmentUrl(res.externalUrl);
+        if (externalUrl) {
+          window.location.replace(externalUrl);
+          return;
+        }
         setDepartment(res);
       })
       .catch((err) => {
