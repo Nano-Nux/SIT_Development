@@ -537,6 +537,7 @@ export interface SocialLinksData {
 }
 
 export interface ContactLocation {
+  mapEmbedUrl?: string;
   id: string;
   title: string;
   titleLa?: string;

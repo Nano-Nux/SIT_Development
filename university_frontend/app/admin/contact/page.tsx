@@ -23,17 +23,12 @@ import {
   Eye,
   ArrowUp,
   ArrowDown,
-  Globe,
-  ExternalLink,
-  Info,
   Building2,
-  Headphones,
-  Navigation,
-  Sparkles,
   RefreshCw,
   Copy,
   Check,
 } from 'lucide-react';
+import { cleanMapEmbedUrl, isGoogleMapEmbedUrl, withLegacyCampusMap } from '@/lib/contact-locations';
 import { Modal } from '@/components/ui/Modal';
 
 export default function AdminContactPage() {
@@ -41,7 +36,7 @@ export default function AdminContactPage() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'locations' | 'map' | 'phones' | 'emails' | 'hours'>('locations');
+  const [activeTab, setActiveTab] = useState<'locations' | 'phones' | 'emails' | 'hours'>('locations');
   const [previewModal, setPreviewModal] = useState(false);
   const [previewLang, setPreviewLang] = useState<'en' | 'la'>('en');
 
@@ -50,8 +45,7 @@ export default function AdminContactPage() {
   const [phones, setPhones] = useState<ContactPhone[]>([]);
   const [emails, setEmails] = useState<ContactEmail[]>([]);
   const [officeHours, setOfficeHours] = useState<ContactOfficeHour[]>([]);
-  const [mapEmbedUrl, setMapEmbedUrl] = useState<string>('');
-  const [mapInput, setMapInput] = useState<string>('');
+  const [locationMapInput, setLocationMapInput] = useState('');
 
   // Modals for CRUD
   const [locationModal, setLocationModal] = useState(false);
@@ -142,7 +136,7 @@ export default function AdminContactPage() {
           isPrimary: true,
         },
       ]);
-      setLocations(parsedLocs);
+      setLocations(withLegacyCampusMap(parsedLocs, data.mapEmbedUrl));
 
       // Parse phones
       const parsedPhones = parseArrayField<ContactPhone>(data.phones, [
@@ -205,12 +199,6 @@ export default function AdminContactPage() {
       ]);
       setOfficeHours(parsedHours);
 
-      // Map Embed URL
-      const mapUrl =
-        data.mapEmbedUrl ||
-        'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3794.7802457390835!2d102.6286178751789!3d17.98895818300444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x312467e7bd8e66a5%3A0xf85c9af1fa1bea14!2sSoutsaka%20Institute%20of%20Technology!5e0!3m2!1sen!2sth!4v1787336679429!5m2!1sen!2sth';
-      setMapEmbedUrl(mapUrl);
-      setMapInput(mapUrl);
     } catch (err: any) {
       setError(err.message || 'Failed to load contact information.');
     } finally {
@@ -223,17 +211,6 @@ export default function AdminContactPage() {
     setSuccess(false);
     setError(null);
     try {
-      // Clean map input
-      let finalMapUrl = mapEmbedUrl.trim();
-      const iframeMatch = mapInput.match(/src=["']([^"']+)["']/i);
-      if (iframeMatch && iframeMatch[1]) {
-        finalMapUrl = iframeMatch[1];
-        setMapEmbedUrl(finalMapUrl);
-      } else if (mapInput.trim()) {
-        finalMapUrl = mapInput.trim();
-        setMapEmbedUrl(finalMapUrl);
-      }
-
       // Determine primary fallback values
       const primaryLoc = locations.find((l) => l.isPrimary) || locations[0];
       const address = primaryLoc ? primaryLoc.address : '';
@@ -250,7 +227,7 @@ export default function AdminContactPage() {
         email,
         officeHours: hours,
         officeHoursLa: hoursLa,
-        mapEmbedUrl: finalMapUrl,
+        mapEmbedUrl: primaryLoc?.mapEmbedUrl || '',
         locations: JSON.stringify(locations),
         phones: JSON.stringify(phones),
         emails: JSON.stringify(emails),
@@ -280,6 +257,7 @@ export default function AdminContactPage() {
       notes: '',
       notesLa: '',
     });
+    setLocationMapInput('');
     setLocationLangTab('en');
     setLocationModal(true);
   };
@@ -287,6 +265,7 @@ export default function AdminContactPage() {
   const openEditLocation = (loc: ContactLocation) => {
     setEditingLocationId(loc.id);
     setLocationForm({ ...loc });
+    setLocationMapInput(loc.mapEmbedUrl || '');
     setLocationLangTab('en');
     setLocationModal(true);
   };
@@ -297,11 +276,17 @@ export default function AdminContactPage() {
       return;
     }
 
+    if (!isGoogleMapEmbedUrl(locationMapInput)) {
+      alert('Please paste a Google Maps embed URL or iframe from Share > Embed a map.');
+      return;
+    }
+    const savedLocation = { ...locationForm, mapEmbedUrl: cleanMapEmbedUrl(locationMapInput) };
+
     let updated: ContactLocation[];
     if (editingLocationId) {
       updated = locations.map((loc) => {
         if (loc.id === editingLocationId) {
-          return { ...locationForm };
+          return savedLocation;
         }
         if (locationForm.isPrimary) {
           return { ...loc, isPrimary: false };
@@ -310,7 +295,7 @@ export default function AdminContactPage() {
       });
     } else {
       const newLoc: ContactLocation = {
-        ...locationForm,
+        ...savedLocation,
         id: locationForm.id || `loc-${Date.now()}`,
         isPrimary: Boolean(locationForm.isPrimary),
       };
@@ -581,17 +566,6 @@ export default function AdminContactPage() {
     setOfficeHours(nextArr);
   };
 
-  // Map Embed URL extraction helper
-  const handleMapInputChange = (value: string) => {
-    setMapInput(value);
-    const iframeMatch = value.match(/src=["']([^"']+)["']/i);
-    if (iframeMatch && iframeMatch[1]) {
-      setMapEmbedUrl(iframeMatch[1]);
-    } else if (value.trim().startsWith('http')) {
-      setMapEmbedUrl(value.trim());
-    }
-  };
-
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(id);
@@ -620,7 +594,7 @@ export default function AdminContactPage() {
             Contact Us & Locations
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
-            Configure campus physical locations (array), single Google Maps interactive embed, phone numbers (array), direct emails (array), and office working hours.
+            Manage campus locations with their own Google Maps, phone numbers, emails, and office hours.
           </p>
         </div>
 
@@ -683,19 +657,7 @@ export default function AdminContactPage() {
           }`}
         >
           <MapPin className="w-4 h-4" />
-          <span>Locations ({locations.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('map')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeTab === 'map'
-              ? 'bg-white text-[#0400CC] shadow-sm'
-              : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <Navigation className="w-4 h-4" />
-          <span>Google Map (1)</span>
+          <span>Locations & Maps ({locations.length})</span>
         </button>
 
         <button
@@ -745,10 +707,10 @@ export default function AdminContactPage() {
               <div>
                 <h2 className="text-lg font-bold text-[#00001C] flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-[#0400CC]" />
-                  <span>Campus Locations (Multiple / Array)</span>
+                  <span>Campus Locations & Google Maps</span>
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Manage multiple physical campus addresses, administration buildings, and regional study centers.
+                  Add each campus address and its Google Map together.
                 </p>
               </div>
               <button
@@ -868,96 +830,16 @@ export default function AdminContactPage() {
                         </button>
                       </div>
                     </div>
+                    {loc.mapEmbedUrl ? (
+                      <iframe src={loc.mapEmbedUrl} title={`${loc.title} map`} loading="lazy"
+                        className="mt-4 w-full h-60 rounded-xl border-0" />
+                    ) : (
+                      <p className="mt-3 text-xs text-slate-500">No map configured. Edit this campus to add its Google Map.</p>
+                    )}
                   </div>
                 ))}
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================
-          TAB 2: GOOGLE MAP (SINGLE)
-      ======================================================== */}
-      {activeTab === 'map' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-            <div className="pb-5 border-b border-slate-100">
-              <h2 className="text-lg font-bold text-[#00001C] flex items-center gap-2">
-                <Navigation className="w-5 h-5 text-[#0400CC]" />
-                <span>Google Map Embed (Single Location Map)</span>
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                There is only one primary Google Map for the university. Paste either the direct embed URL or full iframe HTML code from Google Maps.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Google Map Embed URL or &lt;iframe&gt; Code
-                </label>
-                <textarea
-                  rows={3}
-                  value={mapInput}
-                  onChange={(e) => handleMapInputChange(e.target.value)}
-                  placeholder='Paste Google Map Embed URL (e.g. https://www.google.com/maps/embed?pb=...) or full <iframe src="..." /> code'
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-xs sm:text-sm font-mono text-slate-800 bg-slate-50/50"
-                />
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-                  <span>Clean Extracted URL: <span className="font-mono text-slate-700">{mapEmbedUrl || 'None'}</span></span>
-                  {mapEmbedUrl && (
-                    <a
-                      href={mapEmbedUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[#0400CC] hover:underline font-semibold"
-                    >
-                      <span>Open in Browser</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Guide Card */}
-              <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 flex items-start gap-3 text-xs text-slate-700">
-                <Info className="w-4 h-4 text-[#0400CC] shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="font-bold text-[#00001C]">How to get your Google Maps Embed URL:</p>
-                  <ol className="list-decimal list-inside space-y-0.5 text-slate-600 pl-1">
-                    <li>Search for SIT University or your campus on <strong>Google Maps</strong>.</li>
-                    <li>Click the <strong>Share</strong> button on the left panel.</li>
-                    <li>Switch to the <strong>&quot;Embed a map&quot;</strong> tab.</li>
-                    <li>Click <strong>&quot;Copy HTML&quot;</strong> and paste it directly into the input box above.</li>
-                  </ol>
-                </div>
-              </div>
-
-              {/* Live Map Preview Card */}
-              <div className="space-y-2 pt-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Live Map Preview</span>
-                <div className="rounded-2xl border border-slate-200 overflow-hidden h-80 sm:h-96 w-full bg-slate-100 relative shadow-inner">
-                  {mapEmbedUrl ? (
-                    <iframe
-                      src={mapEmbedUrl}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen={false}
-                      loading="lazy"
-                      title="Google Map Preview"
-                      className="w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
-                      <Navigation className="w-8 h-8 text-slate-300" />
-                      <span className="text-xs font-medium">No valid Google Map URL provided</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -1413,6 +1295,31 @@ export default function AdminContactPage() {
               </div>
             )}
 
+            <div className="space-y-3">
+              <label htmlFor="campusMap" className="block text-xs font-bold text-slate-700">
+                Google Map for this campus
+              </label>
+              <textarea
+                id="campusMap"
+                rows={3}
+                value={locationMapInput}
+                onChange={(event) => setLocationMapInput(event.target.value)}
+                placeholder='Paste a Google Maps embed URL or full <iframe> code'
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-mono"
+              />
+              <p className="text-xs text-slate-500">
+                In Google Maps, select this campus, then Share ? Embed a map ? Copy HTML.
+                Leave blank to remove this campus map.
+              </p>
+              {locationMapInput.trim() && !isGoogleMapEmbedUrl(locationMapInput) && (
+                <p className="text-xs text-red-600">Use the embed URL or iframe from Google Maps.</p>
+              )}
+              {locationMapInput.trim() && isGoogleMapEmbedUrl(locationMapInput) && (
+                <iframe src={cleanMapEmbedUrl(locationMapInput)} title={`${locationForm.title || 'Campus'} map preview`}
+                  loading="lazy" className="w-full h-60 rounded-xl border-0" />
+              )}
+            </div>
+
             <div className="pt-2 flex items-center gap-2">
               <input
                 type="checkbox"
@@ -1809,6 +1716,10 @@ export default function AdminContactPage() {
                       <p className="text-xs text-slate-600">
                         {previewLang === 'la' && loc.addressLa ? loc.addressLa : loc.address}
                       </p>
+                      {loc.mapEmbedUrl && (
+                        <iframe src={loc.mapEmbedUrl} title={`${loc.title} map preview`} loading="lazy"
+                          className="w-full h-48 rounded-xl border-0" />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1871,19 +1782,7 @@ export default function AdminContactPage() {
                 </div>
               </div>
 
-              {/* Map Preview */}
-              {mapEmbedUrl && (
-                <div className="rounded-2xl border border-slate-200 overflow-hidden h-60 w-full bg-slate-200">
-                  <iframe
-                    src={mapEmbedUrl}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    loading="lazy"
-                    title="Map"
-                  />
-                </div>
-              )}
+
             </div>
 
             <div className="flex justify-end">

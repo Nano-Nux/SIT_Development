@@ -1,5 +1,6 @@
 'use client';
 
+import { withLegacyCampusMap } from '@/lib/contact-locations';
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -83,7 +84,7 @@ export default function ContactPage() {
     if (typeof field === 'string') {
       try {
         const parsed = JSON.parse(field);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       } catch (e) {}
     }
     return fallback;
@@ -104,10 +105,10 @@ export default function ContactPage() {
       isPrimary: true,
     },
   ];
-  const locations: ContactLocation[] = parseArray<ContactLocation>(
+  const locations: ContactLocation[] = withLegacyCampusMap(parseArray<ContactLocation>(
     contactInfo?.locations,
     defaultLocations
-  );
+  ), contactInfo?.mapEmbedUrl);
 
   // Phones array
   const defaultPhones: ContactPhone[] = [
@@ -160,10 +161,6 @@ export default function ContactPage() {
     contactInfo?.officeHoursList,
     defaultHours
   );
-
-  const mapEmbedUrl =
-    contactInfo?.mapEmbedUrl ||
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3794.7802457390835!2d102.6286178751789!3d17.98895818300444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x312467e7bd8e66a5%3A0xf85c9af1fa1bea14!2sSoutsaka%20Institute%20of%20Technology!5e0!3m2!1sen!2sth!4v1787336679429!5m2!1sen!2sth';
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -245,6 +242,11 @@ export default function ContactPage() {
                                 )}
                               </div>
                             </div>
+                            {loc.mapEmbedUrl && (
+                              <iframe src={loc.mapEmbedUrl} title={`${title} map`} loading="lazy"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                className="mt-4 w-full h-56 rounded-xl border-0" />
+                            )}
                           </div>
                         );
                       })}
@@ -622,21 +624,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Map Embed Section (Single Google Map) */}
-        {mapEmbedUrl && (
-          <section className="h-96 w-full bg-slate-200 relative">
-            <iframe
-              src={mapEmbedUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={false}
-              loading="lazy"
-              title="SIT University Map"
-              className="w-full h-full grayscale-[0.15]"
-            />
-          </section>
-        )}
+
       </main>
       <Footer />
     </div>

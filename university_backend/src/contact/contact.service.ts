@@ -1,16 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
-function cleanMapEmbedUrl(urlOrIframe?: string): string {
-  if (!urlOrIframe) return '';
-  const trimmed = urlOrIframe.trim();
-  // Check if user pasted full <iframe ... src="..." ...></iframe>
-  const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
-  if (srcMatch && srcMatch[1]) {
-    return srcMatch[1];
-  }
-  return trimmed;
-}
+import { cleanMapEmbedUrl, normalizeLocations } from './contact-locations';
 
 @Injectable()
 export class ContactService {
@@ -100,7 +91,7 @@ export class ContactService {
 
       return {
         ...info,
-        locations,
+        locations: JSON.stringify(normalizeLocations(locations, info.mapEmbedUrl)),
         phones,
         emails,
         officeHoursList,
@@ -174,7 +165,7 @@ export class ContactService {
       },
     ];
 
-    return {
+    const defaults = {
       address:
         'Building 123, Russian Federation Boulevard (110), Sangkat Teuk Thla, Khan Sen Sok, Phnom Penh, Kingdom of Cambodia',
       addressLa: 'ອາຄານ 123, ຖະໜົນນະວັດຕະກຳ, ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ',
@@ -201,18 +192,20 @@ export class ContactService {
         whatsapp: '',
       }),
     };
+    return {
+      ...defaults,
+      locations: JSON.stringify(normalizeLocations(defaultLocs, defaults.mapEmbedUrl)),
+    };
   }
 
   async updateContactInfo(data: any) {
     const info = await this.prisma.contactInfo.findFirst();
 
     // Stringify array/object fields if passed as array or object
-    const locations =
-      data.locations !== undefined
-        ? typeof data.locations === 'string'
-          ? data.locations
-          : JSON.stringify(data.locations || [])
-        : undefined;
+    const campusLocations = data.locations !== undefined
+      ? normalizeLocations(data.locations ?? [], info?.mapEmbedUrl || '', true)
+      : undefined;
+    const locations = campusLocations !== undefined ? JSON.stringify(campusLocations) : undefined;
 
     const phones =
       data.phones !== undefined
@@ -242,8 +235,10 @@ export class ContactService {
           : JSON.stringify(data.socialLinks || {})
         : undefined;
 
-    const mapEmbedUrl =
-      data.mapEmbedUrl !== undefined
+    const primaryCampus = campusLocations?.find((location) => location.isPrimary) || campusLocations?.[0];
+    const mapEmbedUrl = campusLocations !== undefined
+      ? primaryCampus?.mapEmbedUrl || ''
+      : data.mapEmbedUrl !== undefined
         ? cleanMapEmbedUrl(data.mapEmbedUrl)
         : undefined;
 

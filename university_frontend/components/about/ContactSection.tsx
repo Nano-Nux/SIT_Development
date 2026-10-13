@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { MapPin, Phone, Mail, Clock, ExternalLink, Send, CheckCircle2 } from 'lucide-react';
 import { api, ContactInfo } from '@/lib/api';
+import { withLegacyCampusMap } from '@/lib/contact-locations';
+import { ContactLocation } from '@/lib/api/types';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function ContactSection({ data }: { data?: ContactInfo | null }) {
@@ -50,10 +51,14 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
   const phone = contact?.phone || t.about.phoneNumbers;
   const email = contact?.email || t.about.emailAddresses;
   const officeHours = (isLa && contact?.officeHoursLa) ? contact.officeHoursLa : (contact?.officeHours || t.about.officeHoursTimes);
-  const googleMapsUrl = contact?.mapUrl || 'https://maps.google.com/?q=Soutsaka+Institute+of+Technology+Vientiane';
-  const mapEmbedUrl =
-    contact?.mapEmbedUrl ||
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3794.7802457390835!2d102.6286178751789!3d17.98895818300444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x312467e7bd8e66a5%3A0xf85c9af1fa1bea14!2sSoutsaka%20Institute%20of%20Technology!5e0!3m2!1sen!2sth!4v1787336679429!5m2!1sen!2sth';
+  let campusLocations: ContactLocation[] = [{ id: 'main', title: t.about.ourLocation, address, isPrimary: true }];
+  if (contact?.locations != null) {
+    try {
+      const parsed = typeof contact.locations === 'string' ? JSON.parse(contact.locations) : contact.locations;
+      if (Array.isArray(parsed)) campusLocations = parsed;
+    } catch {}
+  }
+  const locations = withLegacyCampusMap(campusLocations, contact?.mapEmbedUrl);
 
   return (
     <section id="contact" className="w-full bg-white">
@@ -73,18 +78,19 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
             </div>
 
             <div className="space-y-6">
-              {/* Location */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
-                  <MapPin className="w-6 h-6" />
+              {locations.map((location) => (
+                <div key={location.id} className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-[#00001C]">{isLa && location.titleLa ? location.titleLa : location.title}</h4>
+                    <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
+                      {isLa && location.addressLa ? location.addressLa : location.address}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-lg font-bold text-[#00001C]">{t.about.ourLocation}</h4>
-                  <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
-                    {address}
-                  </p>
-                </div>
-              </div>
+              ))}
 
               {/* Phone */}
               <div className="flex items-start gap-4">
@@ -127,42 +133,28 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
             </div>
           </div>
 
-          {/* Right Map Preview Card */}
-          <div className="lg:col-span-6">
-            <div className="relative aspect-[4/3] w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-100 min-h-[340px]">
-              {mapEmbedUrl ? (
-                <iframe
-                  src={mapEmbedUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  title="Soutsaka Institute of Technology Campus Map"
-                  className="w-full h-full"
-                />
-              ) : (
-                <img
-                  src="/images/about/campus_map.jpg"
-                  alt="SIT Campus Map"
-                  className="w-full h-full object-cover"
-                />
-              )}
-
-              {/* Bottom "Open in Google Maps" Button */}
-              <div className="absolute bottom-5 right-5 z-10">
-                <a
-                  href={googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white/95 hover:bg-white text-[#00001C] hover:text-[#0400CC] text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-lg border border-slate-200 transition-all cursor-pointer backdrop-blur-sm"
-                >
-                  <span>{t.about.openInGoogleMaps}</span>
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
+          <div className="lg:col-span-6 space-y-6">
+            {locations.map((location) => {
+              const title = isLa && location.titleLa ? location.titleLa : location.title;
+              const campusAddress = isLa && location.addressLa ? location.addressLa : location.address;
+              return (
+                <div key={location.id} className="rounded-3xl overflow-hidden shadow-lg border border-slate-200">
+                  <div className="p-5 space-y-2">
+                    <h4 className="text-lg font-bold text-[#00001C]">{title}</h4>
+                    <p className="text-sm text-[#4A5565]">{campusAddress}</p>
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${location.title} ${location.address}`)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-bold text-[#0400CC]">
+                      {t.about.openInGoogleMaps}<ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                  {location.mapEmbedUrl && (
+                    <iframe src={location.mapEmbedUrl} title={`${title} map`} loading="lazy" allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin" className="w-full h-80 border-0" />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
