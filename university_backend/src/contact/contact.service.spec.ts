@@ -63,4 +63,62 @@ describe('Contact campus maps', () => {
     await expect(service.updateContactInfo({ locations: [{ mapEmbedUrl: 'https://example.com/maps/embed' }] }))
       .rejects.toBeInstanceOf(BadRequestException);
   });
+  it('migrates shared contact details into only the primary campus', async () => {
+    const result = await service.getContactInfo();
+    const [main, second] = JSON.parse(result.locations!);
+    expect(main.phones[0].number).toBe('123');
+    expect(main.emails[0].email).toBe('info@example.com');
+    expect(main.officeHoursList).toHaveLength(2);
+    expect(second.phones).toEqual([]);
+    expect(second.emails).toEqual([]);
+    expect(second.officeHoursList).toEqual([]);
+  });
+
+  it('saves and reloads independent full campus sections and synchronizes the primary', async () => {
+    const main = { id: 'main', title: 'Main', address: 'Main address', isPrimary: false, mapEmbedUrl: mainMap,
+      phones: [{ id: 'p1', number: '111', label: 'Admissions' }],
+      emails: [{ id: 'e1', email: 'main@example.com' }],
+      officeHoursList: [{ id: 'h1', days: 'Monday', hours: '8-5' }] };
+    const second = { id: 'second', title: 'Second', address: 'Second address', isPrimary: true, mapEmbedUrl: secondMap,
+      phones: [{ id: 'p2', number: '222', label: 'Office' }],
+      emails: [{ id: 'e2', email: 'second@example.com' }],
+      officeHoursList: [{ id: 'h2', days: 'Tuesday', hours: '9-6' }] };
+    await service.updateContactInfo({ locations: JSON.stringify([second, main]) });
+    const result = await service.getContactInfo();
+    expect(JSON.parse(result.locations!)).toEqual([second, main]);
+    expect(result.phone).toBe('222');
+    expect(result.email).toBe('second@example.com');
+    expect(result.officeHours).toBe('Tuesday: 9-6');
+    expect(JSON.parse(result.phones!)).toEqual(second.phones);
+  });
+
+  it('does not restore explicitly removed contact rows on reload', async () => {
+    await service.updateContactInfo({ locations: [{ id: 'main', address: 'Main address', isPrimary: true,
+      mapEmbedUrl: mainMap, phones: [], emails: [], officeHoursList: [] }] });
+    const result = await service.getContactInfo();
+    const campus = JSON.parse(result.locations!)[0];
+    expect(campus.phones).toEqual([]);
+    expect(campus.emails).toEqual([]);
+    expect(campus.officeHoursList).toEqual([]);
+    expect(result.phone).toBe('');
+    expect(result.email).toBe('');
+    expect(result.officeHours).toBe('');
+  });
+
+  it('clears all primary contact details when all sections are deleted', async () => {
+    await service.updateContactInfo({ locations: [] });
+    const result = await service.getContactInfo();
+    expect(result.address).toBe('');
+    expect(result.phone).toBe('');
+    expect(result.email).toBe('');
+    expect(JSON.parse(result.phones!)).toEqual([]);
+  });
+
+  it('rejects malformed campus contact rows', async () => {
+    await expect(service.updateContactInfo({ locations: [{ phones: 'not an array' }] }))
+      .rejects.toBeInstanceOf(BadRequestException);
+    await expect(service.updateContactInfo({ locations: [{ phones: [{ id: 'empty', number: '' }] }] }))
+      .rejects.toBeInstanceOf(BadRequestException);
+  });
+
 });

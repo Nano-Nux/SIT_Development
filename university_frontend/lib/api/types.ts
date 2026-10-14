@@ -537,6 +537,9 @@ export interface SocialLinksData {
 }
 
 export interface ContactLocation {
+  phones?: ContactPhone[];
+  emails?: ContactEmail[];
+  officeHoursList?: ContactOfficeHour[];
   mapEmbedUrl?: string;
   id: string;
   title: string;

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Clock, ExternalLink, Send, CheckCircle2 } from 'lucide-react';
+import { Send, CheckCircle2 } from 'lucide-react';
 import { api, ContactInfo } from '@/lib/api';
-import { withLegacyCampusMap } from '@/lib/contact-locations';
-import { ContactLocation } from '@/lib/api/types';
+import { getCampusContacts } from '@/lib/contact-locations';
+import { CampusContactCard } from '@/components/contact/CampusContactCard';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function ContactSection({ data }: { data?: ContactInfo | null }) {
@@ -47,116 +47,20 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
     });
   };
 
-  const address = (isLa && contact?.addressLa) ? contact.addressLa : (contact?.address || t.about.locationAddress);
-  const phone = contact?.phone || t.about.phoneNumbers;
-  const email = contact?.email || t.about.emailAddresses;
-  const officeHours = (isLa && contact?.officeHoursLa) ? contact.officeHoursLa : (contact?.officeHours || t.about.officeHoursTimes);
-  let campusLocations: ContactLocation[] = [{ id: 'main', title: t.about.ourLocation, address, isPrimary: true }];
-  if (contact?.locations != null) {
-    try {
-      const parsed = typeof contact.locations === 'string' ? JSON.parse(contact.locations) : contact.locations;
-      if (Array.isArray(parsed)) campusLocations = parsed;
-    } catch {}
-  }
-  const locations = withLegacyCampusMap(campusLocations, contact?.mapEmbedUrl);
+  const locations = getCampusContacts(contact);
 
   return (
     <section id="contact" className="w-full bg-white">
-      {/* Top Contact Info & Map Section */}
-      <div className="py-20 sm:py-28 max-w-[1280px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Info Column */}
-          <div className="lg:col-span-6 space-y-8">
-            <div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-                {t.about.contactTitle}{' '}
-                <span className="text-[#0400CC]">{t.about.contactHighlight}</span>
-              </h2>
-              <p className="mt-4 text-base sm:text-lg text-[#4A5565] leading-relaxed">
-                {t.about.contactDesc}
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {locations.map((location) => (
-                <div key={location.id} className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-[#00001C]">{isLa && location.titleLa ? location.titleLa : location.title}</h4>
-                    <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
-                      {isLa && location.addressLa ? location.addressLa : location.address}
-                    </p>
-                  </div>
-                </div>
-              ))}
-
-              {/* Phone */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-[#00001C]">{t.about.phone}</h4>
-                  <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
-                    {phone}
-                  </p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-[#00001C]">{t.about.email}</h4>
-                  <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
-                    {email}
-                  </p>
-                </div>
-              </div>
-
-              {/* Office Hours */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFFFFF] flex items-center justify-center text-[#0400CC] shrink-0">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-[#00001C]">{t.about.officeHours}</h4>
-                  <p className="text-sm sm:text-base text-[#4A5565] whitespace-pre-line leading-relaxed mt-0.5">
-                    {officeHours}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6 space-y-6">
-            {locations.map((location) => {
-              const title = isLa && location.titleLa ? location.titleLa : location.title;
-              const campusAddress = isLa && location.addressLa ? location.addressLa : location.address;
-              return (
-                <div key={location.id} className="rounded-3xl overflow-hidden shadow-lg border border-slate-200">
-                  <div className="p-5 space-y-2">
-                    <h4 className="text-lg font-bold text-[#00001C]">{title}</h4>
-                    <p className="text-sm text-[#4A5565]">{campusAddress}</p>
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${location.title} ${location.address}`)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-bold text-[#0400CC]">
-                      {t.about.openInGoogleMaps}<ExternalLink className="w-4 h-4" />
-                    </a>
-                  </div>
-                  {location.mapEmbedUrl && (
-                    <iframe src={location.mapEmbedUrl} title={`${title} map`} loading="lazy" allowFullScreen
-                      referrerPolicy="strict-origin-when-cross-origin" className="w-full h-80 border-0" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+      <div className="py-20 sm:py-28 max-w-[1280px] mx-auto px-6 space-y-10">
+        <div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
+            {t.about.contactTitle} <span className="text-[#0400CC]">{t.about.contactHighlight}</span>
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-[#4A5565] leading-relaxed">{t.about.contactDesc}</p>
         </div>
+        {locations.map((campus) => (
+          <CampusContactCard key={campus.id} campus={campus} isLa={isLa} labels={t.contact} wide />
+        ))}
       </div>
 
       {/* Bottom Send Us A Message Form Section */}

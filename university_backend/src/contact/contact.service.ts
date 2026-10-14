@@ -91,7 +91,7 @@ export class ContactService {
 
       return {
         ...info,
-        locations: JSON.stringify(normalizeLocations(locations, info.mapEmbedUrl)),
+        locations: JSON.stringify(normalizeLocations(locations, info.mapEmbedUrl, false, { phones, emails, officeHoursList })),
         phones,
         emails,
         officeHoursList,
@@ -194,7 +194,7 @@ export class ContactService {
     };
     return {
       ...defaults,
-      locations: JSON.stringify(normalizeLocations(defaultLocs, defaults.mapEmbedUrl)),
+      locations: JSON.stringify(normalizeLocations(defaultLocs, defaults.mapEmbedUrl, false, defaults)),
     };
   }
 
@@ -203,30 +203,24 @@ export class ContactService {
 
     // Stringify array/object fields if passed as array or object
     const campusLocations = data.locations !== undefined
-      ? normalizeLocations(data.locations ?? [], info?.mapEmbedUrl || '', true)
+      ? normalizeLocations(data.locations ?? [], info?.mapEmbedUrl || '', true, {
+          phones: data.phones ?? info?.phones ?? (info?.phone || '').split('/').map((number) => number.trim()).filter(Boolean)
+            .map((number, index) => ({ id: `phone-${index}`, number, label: '' })),
+          emails: data.emails ?? info?.emails ?? (info?.email || '').split('/').map((email) => email.trim()).filter(Boolean)
+            .map((email, index) => ({ id: `email-${index}`, email, label: '' })),
+          officeHoursList: data.officeHoursList ?? info?.officeHoursList ?? (info?.officeHours
+            ? [{ id: 'hours', days: 'Office Hours', hours: info.officeHours, hoursLa: info.officeHoursLa || '' }] : []),
+        })
       : undefined;
     const locations = campusLocations !== undefined ? JSON.stringify(campusLocations) : undefined;
 
-    const phones =
-      data.phones !== undefined
-        ? typeof data.phones === 'string'
-          ? data.phones
-          : JSON.stringify(data.phones || [])
-        : undefined;
-
-    const emails =
-      data.emails !== undefined
-        ? typeof data.emails === 'string'
-          ? data.emails
-          : JSON.stringify(data.emails || [])
-        : undefined;
-
-    const officeHoursList =
-      data.officeHoursList !== undefined
-        ? typeof data.officeHoursList === 'string'
-          ? data.officeHoursList
-          : JSON.stringify(data.officeHoursList || [])
-        : undefined;
+    const primaryCampus = campusLocations?.find((location) => location.isPrimary) || campusLocations?.[0];
+    const phones = campusLocations !== undefined ? JSON.stringify(primaryCampus?.phones || [])
+      : data.phones !== undefined ? JSON.stringify(typeof data.phones === 'string' ? JSON.parse(data.phones) : data.phones || []) : undefined;
+    const emails = campusLocations !== undefined ? JSON.stringify(primaryCampus?.emails || [])
+      : data.emails !== undefined ? JSON.stringify(typeof data.emails === 'string' ? JSON.parse(data.emails) : data.emails || []) : undefined;
+    const officeHoursList = campusLocations !== undefined ? JSON.stringify(primaryCampus?.officeHoursList || [])
+      : data.officeHoursList !== undefined ? JSON.stringify(typeof data.officeHoursList === 'string' ? JSON.parse(data.officeHoursList) : data.officeHoursList || []) : undefined;
 
     const socialLinks =
       data.socialLinks !== undefined
@@ -235,7 +229,6 @@ export class ContactService {
           : JSON.stringify(data.socialLinks || {})
         : undefined;
 
-    const primaryCampus = campusLocations?.find((location) => location.isPrimary) || campusLocations?.[0];
     const mapEmbedUrl = campusLocations !== undefined
       ? primaryCampus?.mapEmbedUrl || ''
       : data.mapEmbedUrl !== undefined
@@ -290,6 +283,15 @@ export class ContactService {
             .join(', ');
         }
       } catch (e) {}
+    }
+
+    if (campusLocations !== undefined) {
+      syncAddress = primaryCampus?.address || '';
+      syncAddressLa = primaryCampus?.addressLa || '';
+      syncPhone = (primaryCampus?.phones || []).map((row) => row.number).filter(Boolean).join(' / ');
+      syncEmail = (primaryCampus?.emails || []).map((row) => row.email).filter(Boolean).join(' / ');
+      syncOfficeHours = (primaryCampus?.officeHoursList || []).map((row) => `${row.days}: ${row.hours}`).join(', ');
+      syncOfficeHoursLa = (primaryCampus?.officeHoursList || []).map((row) => `${row.daysLa || row.days}: ${row.hoursLa || row.hours}`).join(', ');
     }
 
     if (info) {

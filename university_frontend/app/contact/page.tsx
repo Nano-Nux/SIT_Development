@@ -1,28 +1,18 @@
 'use client';
 
-import { withLegacyCampusMap } from '@/lib/contact-locations';
+import { getCampusContacts } from '@/lib/contact-locations';
+import { CampusContactCard } from '@/components/contact/CampusContactCard';
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
+
 import {
-  ContactLocation,
-  ContactPhone,
-  ContactEmail,
-  ContactOfficeHour,
-} from '@/lib/api/types';
-import {
-  MapPin,
-  Phone,
-  Mail,
-  Clock,
   Send,
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  Building2,
-  ExternalLink,
 } from 'lucide-react';
 
 export default function ContactPage() {
@@ -77,90 +67,7 @@ export default function ContactPage() {
     }
   };
 
-  // Helper to parse array fields
-  const parseArray = <T,>(field: any, fallback: T[]): T[] => {
-    if (!field) return fallback;
-    if (Array.isArray(field)) return field;
-    if (typeof field === 'string') {
-      try {
-        const parsed = JSON.parse(field);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {}
-    }
-    return fallback;
-  };
-
-  // Locations array
-  const defaultLocations: ContactLocation[] = [
-    {
-      id: 'loc-1',
-      title: 'Main Campus',
-      titleLa: 'ວິທະຍາເຂດຫຼັກ',
-      address:
-        contactInfo?.address ||
-        'Building 123, Russian Federation Boulevard (110), Sangkat Teuk Thla, Khan Sen Sok, Phnom Penh, Kingdom of Cambodia',
-      addressLa:
-        contactInfo?.addressLa ||
-        'ອາຄານ 123, ຖະໜົນນະວັດຕະກຳ, ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ',
-      isPrimary: true,
-    },
-  ];
-  const locations: ContactLocation[] = withLegacyCampusMap(parseArray<ContactLocation>(
-    contactInfo?.locations,
-    defaultLocations
-  ), contactInfo?.mapEmbedUrl);
-
-  // Phones array
-  const defaultPhones: ContactPhone[] = [
-    {
-      id: 'phone-1',
-      number: contactInfo?.phone || '+856 21 123 456',
-      label: 'General Inquiries',
-      labelLa: 'ສອບຖາມທົ່ວໄປ',
-      isPrimary: true,
-    },
-  ];
-  const phones: ContactPhone[] = parseArray<ContactPhone>(
-    contactInfo?.phones,
-    defaultPhones
-  );
-
-  // Emails array
-  const defaultEmails: ContactEmail[] = [
-    {
-      id: 'email-1',
-      email: contactInfo?.email || 'info@sit.edu.la',
-      label: 'Admissions & Inquiries',
-      labelLa: 'ສອບຖາມ ແລະ ຮັບສະໝັກ',
-      isPrimary: true,
-    },
-  ];
-  const emails: ContactEmail[] = parseArray<ContactEmail>(
-    contactInfo?.emails,
-    defaultEmails
-  );
-
-  // Office Hours array
-  const defaultHours: ContactOfficeHour[] = [
-    {
-      id: 'oh-1',
-      days: 'Monday - Friday',
-      daysLa: 'ວັນຈັນ - ວັນສຸກ',
-      hours: '8:00 AM - 5:00 PM',
-      hoursLa: '8:00 ໂມງເຊົ້າ - 5:00 ໂມງແລງ',
-    },
-    {
-      id: 'oh-2',
-      days: 'Saturday',
-      daysLa: 'ວັນເສົາ',
-      hours: '8:00 AM - 12:00 PM',
-      hoursLa: '8:00 ໂມງເຊົ້າ - 12:00 ໂມງທ່ຽງ',
-    },
-  ];
-  const officeHoursList: ContactOfficeHour[] = parseArray<ContactOfficeHour>(
-    contactInfo?.officeHoursList,
-    defaultHours
-  );
+  const locations = getCampusContacts(contactInfo);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -190,177 +97,9 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               {/* Left Column: Contact Cards */}
               <div className="lg:col-span-5 space-y-6">
-                {/* Campus Locations Card */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-                  <h3 className="text-xl font-bold text-[#00001C] pb-4 border-b border-slate-100 flex items-center justify-between">
-                    <span>{t.contact.campusDetails}</span>
-                    <span className="text-xs font-semibold text-[#0400CC] bg-blue-50 px-2.5 py-1 rounded-full">
-                      {locations.length} {locations.length === 1 ? 'Campus' : 'Campuses'}
-                    </span>
-                  </h3>
-
-                  <div className="space-y-5 text-sm">
-                    {/* Multiple Locations list */}
-                    <div className="space-y-4">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                        {t.contact.campusLocation}
-                      </span>
-                      {locations.map((loc, idx) => {
-                        const title = (isLa && loc.titleLa) ? loc.titleLa : loc.title;
-                        const address = (isLa && loc.addressLa) ? loc.addressLa : loc.address;
-                        const notes = (isLa && loc.notesLa) ? loc.notesLa : loc.notes;
-
-                        return (
-                          <div
-                            key={loc.id || idx}
-                            className={`p-4 rounded-2xl border transition-all ${
-                              loc.isPrimary
-                                ? 'border-[#0400CC]/30 bg-blue-50/20'
-                                : 'border-slate-100 bg-slate-50/70'
-                            }`}
-                          >
-                            <div className="flex items-start gap-3.5">
-                              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-[#0400CC] shrink-0 mt-0.5">
-                                <MapPin className="w-4 h-4" />
-                              </div>
-                              <div className="space-y-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-bold text-slate-900 text-sm">{title}</span>
-                                  {loc.isPrimary && (
-                                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                                      Primary
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="font-medium text-slate-700 text-xs sm:text-sm leading-snug">
-                                  {address}
-                                </p>
-                                {notes && (
-                                  <p className="text-[11px] text-slate-500 italic mt-0.5">
-                                    {notes}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            {loc.mapEmbedUrl && (
-                              <iframe src={loc.mapEmbedUrl} title={`${title} map`} loading="lazy"
-                                referrerPolicy="strict-origin-when-cross-origin"
-                                className="mt-4 w-full h-56 rounded-xl border-0" />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Phone Contacts (Array) */}
-                    <div className="pt-2 border-t border-slate-100 space-y-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                        {t.contact.phoneContacts}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2.5">
-                        {phones.map((phone, idx) => {
-                          const label = (isLa && phone.labelLa) ? phone.labelLa : phone.label;
-                          return (
-                            <a
-                              key={phone.id || idx}
-                              href={`tel:${phone.number.replace(/[^\d+]/g, '')}`}
-                              className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 transition-all text-xs sm:text-sm group"
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                  <Phone className="w-4 h-4" />
-                                </div>
-                                <div className="min-w-0">
-                                  {label && (
-                                    <span className="text-[11px] font-semibold text-slate-400 block truncate">
-                                      {label}
-                                    </span>
-                                  )}
-                                  <span className="font-bold text-slate-900 group-hover:text-[#0400CC] transition-colors">
-                                    {phone.number}
-                                  </span>
-                                </div>
-                              </div>
-                              <span className="text-[11px] text-[#0400CC] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                                Call
-                              </span>
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Email Contacts (Array) */}
-                    <div className="pt-2 border-t border-slate-100 space-y-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                        {t.contact.directEmail}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2.5">
-                        {emails.map((email, idx) => {
-                          const label = (isLa && email.labelLa) ? email.labelLa : email.label;
-                          return (
-                            <a
-                              key={email.id || idx}
-                              href={`mailto:${email.email}`}
-                              className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 transition-all text-xs sm:text-sm group"
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0400CC] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                  <Mail className="w-4 h-4" />
-                                </div>
-                                <div className="min-w-0">
-                                  {label && (
-                                    <span className="text-[11px] font-semibold text-slate-400 block truncate">
-                                      {label}
-                                    </span>
-                                  )}
-                                  <span className="font-bold text-slate-900 group-hover:text-[#0400CC] transition-colors truncate block">
-                                    {email.email}
-                                  </span>
-                                </div>
-                              </div>
-                              <span className="text-[11px] text-[#0400CC] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                                Email
-                              </span>
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Office Hours (Array) */}
-                    <div className="pt-2 border-t border-slate-100 space-y-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                        {t.contact.officeHours}
-                      </span>
-                      <div className="space-y-2">
-                        {officeHoursList.map((hour, idx) => {
-                          const days = (isLa && hour.daysLa) ? hour.daysLa : hour.days;
-                          const hours = (isLa && hour.hoursLa) ? hour.hoursLa : hour.hours;
-                          const notes = (isLa && hour.notesLa) ? hour.notesLa : hour.notes;
-
-                          return (
-                            <div
-                              key={hour.id || idx}
-                              className="flex items-start justify-between gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs sm:text-sm"
-                            >
-                              <div className="flex items-center gap-2.5">
-                                <Clock className="w-4 h-4 text-amber-500 shrink-0" />
-                                <div>
-                                  <span className="font-semibold text-slate-800">{days}</span>
-                                  {notes && (
-                                    <span className="text-[11px] text-slate-400 block">{notes}</span>
-                                  )}
-                                </div>
-                              </div>
-                              <span className="font-bold text-[#0400CC] shrink-0">{hours}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                {locations.map((campus) => (
+                  <CampusContactCard key={campus.id} campus={campus} isLa={isLa} labels={t.contact} />
+                ))}
 
                 {/* Social Media Links Card */}
                 {(() => {
