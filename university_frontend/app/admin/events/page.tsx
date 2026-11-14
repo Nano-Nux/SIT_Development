@@ -256,7 +256,7 @@ export default function AdminEventsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -268,7 +268,7 @@ export default function AdminEventsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -311,7 +311,7 @@ export default function AdminEventsPage() {
                   type="text"
                   value={formData.titleZh}
                   onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                  placeholder="请输入中文标题"
+                  placeholder="Enter Chinese title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -325,7 +325,7 @@ export default function AdminEventsPage() {
                     type="text"
                     value={formData.timeZh}
                     onChange={(e) => setFormData({ ...formData, timeZh: e.target.value })}
-                    placeholder="请输入中文时间段"
+                    placeholder="Enter Chinese time"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -337,7 +337,7 @@ export default function AdminEventsPage() {
                     type="text"
                     value={formData.locationZh}
                     onChange={(e) => setFormData({ ...formData, locationZh: e.target.value })}
-                    placeholder="请输入中文场地位置"
+                    placeholder="Enter Chinese location"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -351,7 +351,7 @@ export default function AdminEventsPage() {
                   rows={2}
                   value={formData.summaryZh}
                   onChange={(e) => setFormData({ ...formData, summaryZh: e.target.value })}
-                  placeholder="请输入中文摘要"
+                  placeholder="Enter Chinese summary"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -364,7 +364,7 @@ export default function AdminEventsPage() {
                   rows={5}
                   value={formData.contentZh}
                   onChange={(e) => setFormData({ ...formData, contentZh: e.target.value })}
-                  placeholder="请输入中文正文"
+                  placeholder="Enter Chinese content"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -449,13 +449,13 @@ export default function AdminEventsPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຫົວຂໍ້ກິດຈະກຳ (Lao Event Title)')}
+                  {tr('Lao Event Title')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleLa}
                   onChange={(e) => setFormData({ ...formData, titleLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ກອງປະຊຸມສຳມະນາເຕັກໂນໂລຊີ SIT ປະຈຳປີ 2026"
+                  placeholder="Enter Lao title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -463,25 +463,25 @@ export default function AdminEventsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ເວລາຈັດງານ (Lao Time Window)')}
+                    {tr('Lao Time Window')}
                   </label>
                   <input
                     type="text"
                     value={formData.timeLa}
                     onChange={(e) => setFormData({ ...formData, timeLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: 09:00 ໂມງເຊົ້າ - 04:00 ໂມງແລງ"
+                    placeholder="Enter Lao time"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ສະຖານທີ່ຈັດງານ (Lao Venue Location)')}
+                    {tr('Lao Venue Location')}
                   </label>
                   <input
                     type="text"
                     value={formData.locationLa}
                     onChange={(e) => setFormData({ ...formData, locationLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ຫໍປະຊຸມ A, ວິທະຍາເຂດ SIT"
+                    placeholder="Enter Lao location"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -489,26 +489,26 @@ export default function AdminEventsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຫຍໍ້ (Lao Summary Brief)')}
+                  {tr('Lao Summary Brief')}
                 </label>
                 <textarea
                   rows={2}
                   value={formData.summaryLa}
                   onChange={(e) => setFormData({ ...formData, summaryLa: e.target.value })}
-                  placeholder="ເນື້ອຫາຫຍໍ້ສຳລັບສະແດງໃນກາດກິດຈະກຳ..."
+                  placeholder="Enter Lao summary"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ລາຍລະອຽດກິດຈະກຳທັງໝົດ (Lao Full Event Description)')}
+                  {tr('Lao Full Event Description')}
                 </label>
                 <textarea
                   rows={5}
                   value={formData.contentLa}
                   onChange={(e) => setFormData({ ...formData, contentLa: e.target.value })}
-                  placeholder="ກຳນົດເວລາລະອຽດ, ຫົວຂໍ້ບັນຍາຍ ແລະ ວິທະຍາກອນ..."
+                  placeholder="Enter Lao content"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

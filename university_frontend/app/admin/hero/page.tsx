@@ -236,7 +236,7 @@ export default function AdminHeroPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                <span>{tr('🇱🇦 ພາສາລາວ (Lao)')}</span>
+                <span>{tr('Lao')}</span>
                 {formData.titleLa && (
                   <span
                     className="w-2 h-2 rounded-full bg-emerald-500"
@@ -253,7 +253,7 @@ export default function AdminHeroPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                <span>{tr('中文 (Chinese)')}</span>
+                <span>{tr('Chinese')}</span>
                 {formData.titleZh && (
                   <span
                     className="w-2 h-2 rounded-full bg-emerald-500"
@@ -286,7 +286,7 @@ export default function AdminHeroPage() {
                       name="subtitleZh"
                       value={formData.subtitleZh}
                       onChange={handleChange}
-                      placeholder="请输入中文副标题"
+                      placeholder="Enter Chinese subtitle"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
@@ -300,7 +300,7 @@ export default function AdminHeroPage() {
                       name="titleZh"
                       value={formData.titleZh}
                       onChange={handleChange}
-                      placeholder="请输入中文标题"
+                      placeholder="Enter Chinese title"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-semibold"
                     />
                   </div>
@@ -315,7 +315,7 @@ export default function AdminHeroPage() {
                     rows={3}
                     value={formData.descriptionZh}
                     onChange={handleChange}
-                    placeholder="请输入中文说明"
+                    placeholder="Enter Chinese description"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -444,7 +444,7 @@ export default function AdminHeroPage() {
               <div className="space-y-6 p-5 rounded-2xl bg-amber-50/40 border border-amber-200/80">
                 <div className="flex items-center justify-between pb-2 border-b border-amber-200">
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
-                    {tr('ຊ່ອງປ້ອນຂໍ້ມູນພາສາລາວ (Lao Content Fields)')}
+                    {tr('Lao Content Fields')}
                   </span>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">
                     {tr('LA')}
@@ -454,28 +454,28 @@ export default function AdminHeroPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      {tr('ຫົວຂໍ້ຍ່ອຍ / ປ້າຍຂໍ້ຄວາມ (Lao Subtitle)')}
+                      {tr('Lao Subtitle')}
                     </label>
                     <input
                       type="text"
                       name="subtitleLa"
                       value={formData.subtitleLa}
                       onChange={handleChange}
-                      placeholder="ຕົວຢ່າງ: ຍິນດີຕ້ອນຮັບສູ່ ມະຫາວິທະຍາໄລ SIT"
+                      placeholder="Enter Lao subtitle"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      {tr('ຫົວຂໍ້ຫຼັກ (Lao Headline Title)')}
+                      {tr('Lao Headline Title')}
                     </label>
                     <input
                       type="text"
                       name="titleLa"
                       value={formData.titleLa}
                       onChange={handleChange}
-                      placeholder="ຕົວຢ່າງ: ສ້າງຜູ້ນຳແຫ່ງອະນາຄົດຜ່ານນະວັດຕະກຳ ແລະ ຄວາມເປັນເລີດ"
+                      placeholder="Enter Lao title"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-semibold"
                     />
                   </div>
@@ -483,14 +483,14 @@ export default function AdminHeroPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
+                    {tr('Lao Description')}
                   </label>
                   <textarea
                     name="descriptionLa"
                     rows={3}
                     value={formData.descriptionLa}
                     onChange={handleChange}
-                    placeholder="ຂຽນເນື້ອຫາຄຳອະທິບາຍສຳລັບປ້າຍໂຄສະນາ..."
+                    placeholder="Enter Lao description"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -622,28 +622,28 @@ export default function AdminHeroPage() {
               <span className="inline-block text-[11px] font-bold tracking-widest text-blue-300 uppercase">
                 {tr(
                   activeLangTab === 'zh'
-                    ? formData.subtitleZh || formData.subtitle || '中文'
+                    ? formData.subtitleZh || formData.subtitle || 'Chinese'
                     : activeLangTab === 'en'
                       ? formData.subtitle || tr('SUBTITLE')
-                      : formData.subtitleLa || formData.subtitle || 'ຫົວຂໍ້ຍ່ອຍ',
+                      : formData.subtitleLa || formData.subtitle || 'Chinese content',
                 )}
               </span>
               <h4 className="text-xl sm:text-2xl font-extrabold text-white">
                 {tr(
                   activeLangTab === 'zh'
-                    ? formData.titleZh || formData.title || '中文'
+                    ? formData.titleZh || formData.title || 'Chinese'
                     : activeLangTab === 'en'
                       ? formData.title || tr('Headline Title')
-                      : formData.titleLa || formData.title || 'ຫົວຂໍ້ຫຼັກ',
+                      : formData.titleLa || formData.title || 'Chinese content',
                 )}
               </h4>
               <p className="text-xs text-white/80 max-w-xl mx-auto line-clamp-2">
                 {tr(
                   activeLangTab === 'zh'
-                    ? formData.descriptionZh || formData.description || '中文'
+                    ? formData.descriptionZh || formData.description || 'Chinese'
                     : activeLangTab === 'en'
                       ? formData.description || tr('Hero description...')
-                      : formData.descriptionLa || formData.description || 'ເນື້ອຫາຄຳອະທິບາຍ...',
+                      : formData.descriptionLa || formData.description || '...',
                 )}
               </p>
               {(formData.buttonText || formData.buttonTextLa) && (
@@ -651,10 +651,10 @@ export default function AdminHeroPage() {
                   <span className="inline-block bg-[#0400CC] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow">
                     {tr(
                       activeLangTab === 'zh'
-                        ? formData.buttonTextZh || formData.buttonText || '中文'
+                        ? formData.buttonTextZh || formData.buttonText || 'Chinese'
                         : activeLangTab === 'en'
                           ? formData.buttonText || tr('Button')
-                          : formData.buttonTextLa || formData.buttonText || 'ປຸ່ມ',
+                          : formData.buttonTextLa || formData.buttonText || 'Chinese content',
                     )}
                   </span>
                 </div>

@@ -319,7 +319,7 @@ export default function AdminProgramsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -331,7 +331,7 @@ export default function AdminProgramsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -346,7 +346,7 @@ export default function AdminProgramsPage() {
                   type="text"
                   value={formData.nameZh}
                   onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                  placeholder="请输入中文名称"
+                  placeholder="Enter Chinese name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -360,7 +360,7 @@ export default function AdminProgramsPage() {
                     type="text"
                     value={formData.degreeZh}
                     onChange={(e) => setFormData({ ...formData, degreeZh: e.target.value })}
-                    placeholder="请输入中文学位名称"
+                    placeholder="Enter Chinese degree"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -372,7 +372,7 @@ export default function AdminProgramsPage() {
                     type="text"
                     value={formData.durationZh}
                     onChange={(e) => setFormData({ ...formData, durationZh: e.target.value })}
-                    placeholder="请输入中文学制"
+                    placeholder="Enter Chinese duration"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -386,7 +386,7 @@ export default function AdminProgramsPage() {
                   rows={3}
                   value={formData.descriptionZh}
                   onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
-                  placeholder="请输入中文说明"
+                  placeholder="Enter Chinese description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -399,7 +399,7 @@ export default function AdminProgramsPage() {
                   type="text"
                   value={formData.coreFocusAreasZh}
                   onChange={(e) => setFormData({ ...formData, coreFocusAreasZh: e.target.value })}
-                  placeholder="请输入中文重点领域，以逗号分隔"
+                  placeholder="Enter Chinese core focus areas"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -482,13 +482,13 @@ export default function AdminProgramsPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ຫຼັກສູດ (Lao Program Name)')}
+                  {tr('Lao Program Name')}
                 </label>
                 <input
                   type="text"
                   value={formData.nameLa}
                   onChange={(e) => setFormData({ ...formData, nameLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ປະລິນຍາຕີ ວິທະຍາສາດຄອມພິວເຕີ"
+                  placeholder="Enter Lao name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -496,25 +496,25 @@ export default function AdminProgramsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ວຸດທິປະລິນຍາ (Lao Degree)')}
+                    {tr('Lao Degree')}
                   </label>
                   <input
                     type="text"
                     value={formData.degreeLa}
                     onChange={(e) => setFormData({ ...formData, degreeLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ປະລິນຍາຕີ ວິທະຍາສາດ"
+                    placeholder="Enter Lao degree"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ໄລຍະເວລາຮຽນ (Lao Duration)')}
+                    {tr('Lao Duration')}
                   </label>
                   <input
                     type="text"
                     value={formData.durationLa}
                     onChange={(e) => setFormData({ ...formData, durationLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: 4 ປີ"
+                    placeholder="Enter Lao duration"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -522,26 +522,26 @@ export default function AdminProgramsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
+                  {tr('Lao Description')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionLa}
                   onChange={(e) => setFormData({ ...formData, descriptionLa: e.target.value })}
-                  placeholder="ອະທິບາຍພາບລວມຂອງຫຼັກສູດເປັນພາສາລາວ..."
+                  placeholder="Enter Lao description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຂະແໜງການຮຽນຮູ້ຫຼັກ (Lao Core Focus Areas - Comma separated)')}
+                  {tr('Lao Core Focus Areas - Comma separated')}
                 </label>
                 <input
                   type="text"
                   value={formData.coreFocusAreasLa}
                   onChange={(e) => setFormData({ ...formData, coreFocusAreasLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ປັນຍາປະດິດ, ສະຖາປັດຕະຍະກຳຄລາວ, ຄວາມປອດໄພທາງໄຊເບີ"
+                  placeholder="Enter Lao core focus areas"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

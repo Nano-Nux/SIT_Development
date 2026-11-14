@@ -382,7 +382,7 @@ export default function AdminPartnersPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao Content)')}
+              {tr('Lao Content')}
               {formData.nameLa && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
             </button>
             <button
@@ -430,7 +430,7 @@ export default function AdminPartnersPage() {
                   type="text"
                   value={formData.nameZh}
                   onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                  placeholder="请输入中文名称"
+                  placeholder="Enter Chinese name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -443,7 +443,7 @@ export default function AdminPartnersPage() {
                   type="text"
                   value={formData.countryZh}
                   onChange={(e) => setFormData({ ...formData, countryZh: e.target.value })}
-                  placeholder="请输入中文国家或地区"
+                  placeholder="Enter Chinese country"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -482,26 +482,26 @@ export default function AdminPartnersPage() {
             <div className="space-y-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ສະຖາບັນ / ຊື່ອົງກອນ (Lao Partner Name)')}
+                  {tr('Lao Partner Name')}
                 </label>
                 <input
                   type="text"
                   value={formData.nameLa}
                   onChange={(e) => setFormData({ ...formData, nameLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ມະຫາວິທະຍາໄລ ຊິ ຈ້ຽນ ຫຼື ບໍລິສັດ ເບຍລາວ ຈຳກັດ"
+                  placeholder="Enter Lao name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ປະເທດ / ພາກພື້ນ (Lao Country / Region)')}
+                  {tr('Lao Country / Region')}
                 </label>
                 <input
                   type="text"
                   value={formData.countryLa}
                   onChange={(e) => setFormData({ ...formData, countryLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ໄຕ້ຫວັນ, ໄທ, ສິງກະໂປ, ສາກົນ"
+                  placeholder="Enter Lao country"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

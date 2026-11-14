@@ -228,7 +228,7 @@ export default function AdminStudentLifePage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -240,7 +240,7 @@ export default function AdminStudentLifePage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -271,13 +271,13 @@ export default function AdminStudentLifePage() {
                 }}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm bg-white"
               >
-                <option value="Academic">{tr('Academic (ວິຊາການ)')}</option>
-                <option value="Arts">{tr('Arts & Music (ສິລະປະ & ດົນຕີ)')}</option>
-                <option value="Creative">{tr('Creative & Media (ຄວາມຄິດສ້າງສັນ)')}</option>
-                <option value="Leadership">{tr('Leadership & Governance (ຄວາມເປັນຜູ້ນຳ)')}</option>
-                <option value="Sports">{tr('Sports & Athletics (ກິລາ)')}</option>
-                <option value="Volunteerism">{tr('Volunteerism (ຈິດອາສາ)')}</option>
-                <option value="Clubs & Societies">{tr('Clubs & Societies (ຊົມຮົມທົ່ວໄປ)')}</option>
+                <option value="Academic">{tr('Academic')}</option>
+                <option value="Arts">{tr('Arts & Music ( & )')}</option>
+                <option value="Creative">{tr('Creative & Media')}</option>
+                <option value="Leadership">{tr('Leadership & Governance')}</option>
+                <option value="Sports">{tr('Sports & Athletics')}</option>
+                <option value="Volunteerism">{tr('Volunteerism')}</option>
+                <option value="Clubs & Societies">{tr('Clubs & Societies')}</option>
               </select>
             </div>
             <div>
@@ -303,7 +303,7 @@ export default function AdminStudentLifePage() {
                   type="text"
                   value={formData.titleZh}
                   onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                  placeholder="请输入中文标题"
+                  placeholder="Enter Chinese title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -316,7 +316,7 @@ export default function AdminStudentLifePage() {
                   rows={3}
                   value={formData.descriptionZh}
                   onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
-                  placeholder="请输入中文说明"
+                  placeholder="Enter Chinese description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -329,7 +329,7 @@ export default function AdminStudentLifePage() {
                   type="text"
                   value={formData.categoryZh}
                   onChange={(e) => setFormData({ ...formData, categoryZh: e.target.value })}
-                  placeholder="请输入中文分类"
+                  placeholder="Enter Chinese category"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -370,39 +370,39 @@ export default function AdminStudentLifePage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ກິດຈະກຳ / ຊົມຮົມ (Lao Activity Title)')}
+                  {tr('Lao Activity Title')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleLa}
                   onChange={(e) => setFormData({ ...formData, titleLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ຊົມຮົມ AI & ຫຸ່ນຍົນ"
+                  placeholder="Enter Lao title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
+                  {tr('Lao Description')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionLa}
                   onChange={(e) => setFormData({ ...formData, descriptionLa: e.target.value })}
-                  placeholder="ອະທິບາຍເປົ້າໝາຍຊົມຮົມ ແລະ ກິດຈະກຳປະຈຳອາທິດ..."
+                  placeholder="Enter Lao description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ໝວດໝູ່ພາສາລາວ (Lao Category)')}
+                  {tr('Lao Category')}
                 </label>
                 <input
                   type="text"
                   value={formData.categoryLa}
                   onChange={(e) => setFormData({ ...formData, categoryLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ຊົມຮົມ & ສະໂມສອນ"
+                  placeholder="Enter Lao category"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

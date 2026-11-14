@@ -116,24 +116,24 @@ const phoneFields: RowField<ContactPhone>[] = [
   { key: 'number', label: 'Phone number', required: true, type: 'tel' },
   { key: 'label', label: 'Label (English)' },
   { key: 'labelLa', label: 'Label (Lao)' },
-  { key: 'labelZh', label: 'Label (中文)' },
+  { key: 'labelZh', label: 'Label (Chinese)' },
 ];
 const emailFields: RowField<ContactEmail>[] = [
   { key: 'email', label: 'Email address', required: true, type: 'email' },
   { key: 'label', label: 'Label (English)' },
   { key: 'labelLa', label: 'Label (Lao)' },
-  { key: 'labelZh', label: 'Label (中文)' },
+  { key: 'labelZh', label: 'Label (Chinese)' },
 ];
 const hourFields: RowField<ContactOfficeHour>[] = [
   { key: 'days', label: 'Days (English)', required: true },
   { key: 'daysLa', label: 'Days (Lao)' },
-  { key: 'daysZh', label: 'Days (中文)' },
+  { key: 'daysZh', label: 'Days (Chinese)' },
   { key: 'hours', label: 'Hours (English)', required: true },
   { key: 'hoursLa', label: 'Hours (Lao)' },
-  { key: 'hoursZh', label: 'Hours (中文)' },
+  { key: 'hoursZh', label: 'Hours (Chinese)' },
   { key: 'notes', label: 'Notes (English)' },
   { key: 'notesLa', label: 'Notes (Lao)' },
-  { key: 'notesZh', label: 'Notes (中文)' },
+  { key: 'notesZh', label: 'Notes (Chinese)' },
 ];
 
 export default function AdminContactPage() {
@@ -373,13 +373,13 @@ export default function AdminContactPage() {
                 [
                   ['title', 'Campus name (English)', true],
                   ['titleLa', 'Campus name (Lao)', false],
-                  ['titleZh', 'Campus name (中文)', false],
+                  ['titleZh', 'Campus name (Chinese)', false],
                   ['address', 'Address (English)', true],
                   ['addressLa', 'Address (Lao)', false],
-                  ['addressZh', 'Address (中文)', false],
+                  ['addressZh', 'Address (Chinese)', false],
                   ['notes', 'Building / location notes (English)', false],
                   ['notesLa', 'Building / location notes (Lao)', false],
-                  ['notesZh', 'Building / location notes (中文)', false],
+                  ['notesZh', 'Building / location notes (Chinese)', false],
                 ] as const
               ).map(([key, label, required]) => (
                 <label key={key} className="space-y-1 text-xs font-semibold text-slate-600">
@@ -504,7 +504,7 @@ export default function AdminContactPage() {
                   className={`${buttonClass} ${previewLang === language ? 'bg-[#0400CC] text-white hover:bg-[#030099]' : ''}`}
                   onClick={() => setPreviewLang(language)}
                 >
-                  {tr(language === 'zh' ? '中文' : language === 'en' ? tr('English') : 'Lao')}
+                  {tr(language === 'zh' ? 'Chinese' : language === 'en' ? tr('English') : 'Lao')}
                 </button>
               ))}
             </div>

@@ -339,7 +339,7 @@ export default function AdminAboutPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {founder.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -351,7 +351,7 @@ export default function AdminAboutPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {founder.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -366,7 +366,7 @@ export default function AdminAboutPage() {
                   type="text"
                   value={founder.nameZh}
                   onChange={(e) => setFounder({ ...founder, nameZh: e.target.value })}
-                  placeholder="请输入中文名称"
+                  placeholder="Enter Chinese name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -378,7 +378,7 @@ export default function AdminAboutPage() {
                   type="text"
                   value={founder.designationZh}
                   onChange={(e) => setFounder({ ...founder, designationZh: e.target.value })}
-                  placeholder="请输入中文职务"
+                  placeholder="Enter Chinese designation"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -390,7 +390,7 @@ export default function AdminAboutPage() {
                   rows={3}
                   value={founder.quoteZh}
                   onChange={(e) => setFounder({ ...founder, quoteZh: e.target.value })}
-                  placeholder="请输入中文寄语"
+                  placeholder="Enter Chinese quote"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -402,7 +402,7 @@ export default function AdminAboutPage() {
                   rows={5}
                   value={founder.biographyZh}
                   onChange={(e) => setFounder({ ...founder, biographyZh: e.target.value })}
-                  placeholder="请输入中文个人简介"
+                  placeholder="Enter Chinese biography"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -466,49 +466,49 @@ export default function AdminAboutPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ເຕັມຜູ້ກໍ່ຕັ້ງ (Lao Founder Full Name)')}
+                  {tr('Lao Founder Full Name')}
                 </label>
                 <input
                   type="text"
                   value={founder.nameLa}
                   onChange={(e) => setFounder({ ...founder, nameLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ທ່ານ ດຣ. ທະນູສອນ ໂພນອາມາດ"
+                  placeholder="Enter Lao name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຕຳແໜ່ງ (Lao Designation)')}
+                  {tr('Lao Designation')}
                 </label>
                 <input
                   type="text"
                   value={founder.designationLa}
                   onChange={(e) => setFounder({ ...founder, designationLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ຜູ້ກໍ່ຕັ້ງ ແລະ ປະທານສະພາບໍລິຫານ"
+                  placeholder="Enter Lao designation"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຄຳຄົມ / ຄຳປາໄສຜູ້ກໍ່ຕັ້ງ (Lao Quote)')}
+                  {tr('Lao Quote')}
                 </label>
                 <textarea
                   rows={3}
                   value={founder.quoteLa}
                   onChange={(e) => setFounder({ ...founder, quoteLa: e.target.value })}
-                  placeholder="ຄຳປາໄສສ້າງແຮງບັນດານໃຈຈາກຜູ້ກໍ່ຕັ້ງ..."
+                  placeholder="Enter Lao quote"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊີວະປະຫວັດຜູ້ກໍ່ຕັ້ງ (Lao Biography)')}
+                  {tr('Lao Biography')}
                 </label>
                 <textarea
                   rows={5}
                   value={founder.biographyLa}
                   onChange={(e) => setFounder({ ...founder, biographyLa: e.target.value })}
-                  placeholder="ປະຫວັດຄວາມເປັນມາ ແລະ ຜົນງານ..."
+                  placeholder="Enter Lao biography"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -563,7 +563,7 @@ export default function AdminAboutPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {visionMission.visionLa && (
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               )}
@@ -577,7 +577,7 @@ export default function AdminAboutPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {visionMission.visionZh && (
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               )}
@@ -594,7 +594,7 @@ export default function AdminAboutPage() {
                   rows={4}
                   value={visionMission.visionZh}
                   onChange={(e) => setVisionMission({ ...visionMission, visionZh: e.target.value })}
-                  placeholder="请输入中文内容"
+                  placeholder="Enter Chinese vision"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -608,7 +608,7 @@ export default function AdminAboutPage() {
                   onChange={(e) =>
                     setVisionMission({ ...visionMission, missionZh: e.target.value })
                   }
-                  placeholder="请输入中文内容"
+                  placeholder="Enter Chinese mission"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -622,7 +622,7 @@ export default function AdminAboutPage() {
                   onChange={(e) =>
                     setVisionMission({ ...visionMission, corePillarsZh: e.target.value })
                   }
-                  placeholder="请输入中文核心支柱，以逗号分隔"
+                  placeholder="Enter Chinese core pillars"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -675,19 +675,19 @@ export default function AdminAboutPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ວິໄສທັດຂອງສະຖາບັນ (Lao Vision Statement)')}
+                  {tr('Lao Vision Statement')}
                 </label>
                 <textarea
                   rows={4}
                   value={visionMission.visionLa}
                   onChange={(e) => setVisionMission({ ...visionMission, visionLa: e.target.value })}
-                  placeholder="ວິໄສທັດຂອງມະຫາວິທະຍາໄລເປັນພາສາລາວ..."
+                  placeholder="Enter Lao vision"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ພັນທະກິດຂອງສະຖາບັນ (Lao Mission Statement)')}
+                  {tr('Lao Mission Statement')}
                 </label>
                 <textarea
                   rows={4}
@@ -695,13 +695,13 @@ export default function AdminAboutPage() {
                   onChange={(e) =>
                     setVisionMission({ ...visionMission, missionLa: e.target.value })
                   }
-                  placeholder="ພັນທະກິດຂອງມະຫາວິທະຍາໄລເປັນພາສາລາວ..."
+                  placeholder="Enter Lao mission"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ເສົາຄ້ຳຫຼັກ (Lao Core Pillars - ຂັ້ນດ້ວຍຈຸດ)
+                  Lao Core Pillars
                 </label>
                 <input
                   type="text"
@@ -709,7 +709,7 @@ export default function AdminAboutPage() {
                   onChange={(e) =>
                     setVisionMission({ ...visionMission, corePillarsLa: e.target.value })
                   }
-                  placeholder="ຕົວຢ່າງ: ຄຸນນະພາບມາດຕະຖານສາກົນ, ນະວັດຕະກຳເຕັກໂນໂລຊີ, ຄວາມເປັນຜູ້ນຳທີ່ມີຈັນຍາບັນ"
+                  placeholder="Enter Lao core pillars"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm"
                 />
               </div>
@@ -820,7 +820,7 @@ export default function AdminAboutPage() {
                       : 'text-slate-600 hover:text-[#00001C]'
                   }`}
                 >
-                  {tr('🇱🇦 ພາສາລາວ (Lao)')}
+                  {tr('Lao')}
                   {memberForm.nameLa && (
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   )}
@@ -834,7 +834,7 @@ export default function AdminAboutPage() {
                       : 'text-slate-600 hover:text-[#00001C]'
                   }`}
                 >
-                  {tr('中文 (Chinese)')}
+                  {tr('Chinese')}
                   {memberForm.nameZh && (
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   )}
@@ -866,7 +866,7 @@ export default function AdminAboutPage() {
                       type="text"
                       value={memberForm.nameZh}
                       onChange={(e) => setMemberForm({ ...memberForm, nameZh: e.target.value })}
-                      placeholder="请输入中文名称"
+                      placeholder="Enter Chinese name"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -878,7 +878,7 @@ export default function AdminAboutPage() {
                       type="text"
                       value={memberForm.positionZh}
                       onChange={(e) => setMemberForm({ ...memberForm, positionZh: e.target.value })}
-                      placeholder="请输入中文职位"
+                      placeholder="Enter Chinese position"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -892,7 +892,7 @@ export default function AdminAboutPage() {
                       onChange={(e) =>
                         setMemberForm({ ...memberForm, biographyZh: e.target.value })
                       }
-                      placeholder="请输入中文个人简介"
+                      placeholder="Enter Chinese biography"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -904,7 +904,7 @@ export default function AdminAboutPage() {
                       type="text"
                       value={memberForm.categoryZh}
                       onChange={(e) => setMemberForm({ ...memberForm, categoryZh: e.target.value })}
-                      placeholder="请输入中文分类"
+                      placeholder="Enter Chinese category"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -956,31 +956,31 @@ export default function AdminAboutPage() {
                 <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ຊື່ເຕັມ (Lao Full Name)')}
+                      {tr('Lao Full Name')}
                     </label>
                     <input
                       type="text"
                       value={memberForm.nameLa}
                       onChange={(e) => setMemberForm({ ...memberForm, nameLa: e.target.value })}
-                      placeholder="ຕົວຢ່າງ: ສຈ. ສົມລິດ ບຸ່ງນະໂພນ"
+                      placeholder="Enter Lao name"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ຕຳແໜ່ງ (Lao Position)')}
+                      {tr('Lao Position')}
                     </label>
                     <input
                       type="text"
                       value={memberForm.positionLa}
                       onChange={(e) => setMemberForm({ ...memberForm, positionLa: e.target.value })}
-                      placeholder="ຕົວຢ່າງ: ຮອງປະທານສະພາບໍລິຫານ"
+                      placeholder="Enter Lao position"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ຊີວະປະຫວັດ (Lao Biography)')}
+                      {tr('Lao Biography')}
                     </label>
                     <textarea
                       rows={3}
@@ -988,19 +988,19 @@ export default function AdminAboutPage() {
                       onChange={(e) =>
                         setMemberForm({ ...memberForm, biographyLa: e.target.value })
                       }
-                      placeholder="ຊີວະປະຫວັດຫຍໍ້..."
+                      placeholder="Enter Lao biography"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ໝວດໝູ່ພາສາລາວ (Lao Category)')}
+                      {tr('Lao Category')}
                     </label>
                     <input
                       type="text"
                       value={memberForm.categoryLa}
                       onChange={(e) => setMemberForm({ ...memberForm, categoryLa: e.target.value })}
-                      placeholder="ຕົວຢ່າງ: ສະພາບໍລິຫານ"
+                      placeholder="Enter Lao category"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -1114,7 +1114,7 @@ export default function AdminAboutPage() {
                       : 'text-slate-600 hover:text-[#00001C]'
                   }`}
                 >
-                  {tr('🇱🇦 ພາສາລາວ (Lao)')}
+                  {tr('Lao')}
                   {historyForm.titleLa && (
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   )}
@@ -1128,7 +1128,7 @@ export default function AdminAboutPage() {
                       : 'text-slate-600 hover:text-[#00001C]'
                   }`}
                 >
-                  {tr('中文 (Chinese)')}
+                  {tr('Chinese')}
                   {historyForm.titleZh && (
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   )}
@@ -1174,7 +1174,7 @@ export default function AdminAboutPage() {
                       type="text"
                       value={historyForm.titleZh}
                       onChange={(e) => setHistoryForm({ ...historyForm, titleZh: e.target.value })}
-                      placeholder="请输入中文标题"
+                      placeholder="Enter Chinese title"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -1188,7 +1188,7 @@ export default function AdminAboutPage() {
                       onChange={(e) =>
                         setHistoryForm({ ...historyForm, descriptionZh: e.target.value })
                       }
-                      placeholder="请输入中文说明"
+                      placeholder="Enter Chinese description"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
@@ -1230,19 +1230,19 @@ export default function AdminAboutPage() {
                 <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ຫົວຂໍ້ປະຫວັດສາດ (Lao Milestone Title)')}
+                      {tr('Lao Milestone Title')}
                     </label>
                     <input
                       type="text"
                       value={historyForm.titleLa}
                       onChange={(e) => setHistoryForm({ ...historyForm, titleLa: e.target.value })}
-                      placeholder="ຕົວຢ່າງ: ການສ້າງຕັ້ງມະຫາວິທະຍາໄລ SIT"
+                      placeholder="Enter Lao title"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ລາຍລະອຽດ (Lao Description)')}
+                      {tr('Lao Description')}
                     </label>
                     <textarea
                       rows={3}
@@ -1250,7 +1250,7 @@ export default function AdminAboutPage() {
                       onChange={(e) =>
                         setHistoryForm({ ...historyForm, descriptionLa: e.target.value })
                       }
-                      placeholder="ລາຍລະອຽດເຫດການສຳຄັນເປັນພາສາລາວ..."
+                      placeholder="Enter Lao description"
                       className="w-full px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm"
                     />
                   </div>

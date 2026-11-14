@@ -279,7 +279,7 @@ export default function AdminNewsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -291,7 +291,7 @@ export default function AdminNewsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -320,7 +320,7 @@ export default function AdminNewsPage() {
                   type="text"
                   value={formData.titleZh}
                   onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                  placeholder="请输入中文标题"
+                  placeholder="Enter Chinese title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -334,7 +334,7 @@ export default function AdminNewsPage() {
                     type="text"
                     value={formData.categoryZh}
                     onChange={(e) => setFormData({ ...formData, categoryZh: e.target.value })}
-                    placeholder="请输入中文分类"
+                    placeholder="Enter Chinese category"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -346,7 +346,7 @@ export default function AdminNewsPage() {
                     type="text"
                     value={formData.authorZh}
                     onChange={(e) => setFormData({ ...formData, authorZh: e.target.value })}
-                    placeholder="请输入中文内容"
+                    placeholder="Enter Chinese author"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -360,7 +360,7 @@ export default function AdminNewsPage() {
                   rows={2}
                   value={formData.summaryZh}
                   onChange={(e) => setFormData({ ...formData, summaryZh: e.target.value })}
-                  placeholder="请输入中文摘要"
+                  placeholder="Enter Chinese summary"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -373,7 +373,7 @@ export default function AdminNewsPage() {
                   rows={6}
                   value={formData.contentZh}
                   onChange={(e) => setFormData({ ...formData, contentZh: e.target.value })}
-                  placeholder="请输入中文正文"
+                  placeholder="Enter Chinese content"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -458,13 +458,13 @@ export default function AdminNewsPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຫົວຂໍ້ຂ່າວສານ (Lao Article Headline)')}
+                  {tr('Lao Article Headline')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleLa}
                   onChange={(e) => setFormData({ ...formData, titleLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: SIT ເປີດໂຕຫ້ອງທົດລອງຄວາມປອດໄພທາງໄຊເບີຂັ້ນສູງ"
+                  placeholder="Enter Lao title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -472,25 +472,25 @@ export default function AdminNewsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ໝວດໝູ່ (Lao Category)')}
+                    {tr('Lao Category')}
                   </label>
                   <input
                     type="text"
                     value={formData.categoryLa}
                     onChange={(e) => setFormData({ ...formData, categoryLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ດ້ານວິຊາການ, ຜົນສຳເລັດນັກສຶກສາ"
+                    placeholder="Enter Lao category"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ຜູ້ຂຽນ / ແຫຼ່ງຂ່າວ (Lao Author)')}
+                    {tr('Lao Author')}
                   </label>
                   <input
                     type="text"
                     value={formData.authorLa}
                     onChange={(e) => setFormData({ ...formData, authorLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ທີມງານສື່ສານ SIT"
+                    placeholder="Enter Lao author"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -498,26 +498,26 @@ export default function AdminNewsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຫຍໍ້ (Lao Summary Lead)')}
+                  {tr('Lao Summary Lead')}
                 </label>
                 <textarea
                   rows={2}
                   value={formData.summaryLa}
                   onChange={(e) => setFormData({ ...formData, summaryLa: e.target.value })}
-                  placeholder="ເນື້ອຫາຫຍໍ້ 1-2 ປະໂຫຍກສຳລັບສະແດງໃນກາດ..."
+                  placeholder="Enter Lao summary"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຂ່າວທັງໝົດ (Lao Full Article Body)')}
+                  {tr('Lao Full Article Body')}
                 </label>
                 <textarea
                   rows={6}
                   value={formData.contentLa}
                   onChange={(e) => setFormData({ ...formData, contentLa: e.target.value })}
-                  placeholder="ເນື້ອຫາຂ່າວສານລະອຽດທັງໝົດເປັນພາສາລາວ..."
+                  placeholder="Enter Lao content"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

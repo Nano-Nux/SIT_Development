@@ -212,7 +212,7 @@ export default function AdminCoreValuesPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -224,7 +224,7 @@ export default function AdminCoreValuesPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -239,7 +239,7 @@ export default function AdminCoreValuesPage() {
                   type="text"
                   value={formData.titleZh}
                   onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                  placeholder="请输入中文标题"
+                  placeholder="Enter Chinese title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -252,7 +252,7 @@ export default function AdminCoreValuesPage() {
                   rows={3}
                   value={formData.descriptionZh}
                   onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
-                  placeholder="请输入中文说明"
+                  placeholder="Enter Chinese description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -293,26 +293,26 @@ export default function AdminCoreValuesPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຫົວຂໍ້ຄ່ານິຍົມ (Lao Title)')}
+                  {tr('Lao Title')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleLa}
                   onChange={(e) => setFormData({ ...formData, titleLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ຄວາມຊື່ສັດ & ຈັນຍາບັນ"
+                  placeholder="Enter Lao title"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
+                  {tr('Lao Description')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionLa}
                   onChange={(e) => setFormData({ ...formData, descriptionLa: e.target.value })}
-                  placeholder="ອະທິບາຍຄ່ານິຍົມຫຼັກນີ້ເປັນພາສາລາວ..."
+                  placeholder="Enter Lao description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

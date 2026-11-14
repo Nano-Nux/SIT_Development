@@ -251,7 +251,7 @@ export default function AdminCampusPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('🇱🇦 ພາສາລາວ (Lao)')}
+              {tr('Lao')}
               {formData.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
             <button
@@ -263,7 +263,7 @@ export default function AdminCampusPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              {tr('中文 (Chinese)')}
+              {tr('Chinese')}
               {formData.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
@@ -305,7 +305,7 @@ export default function AdminCampusPage() {
                   type="text"
                   value={formData.nameZh}
                   onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                  placeholder="请输入中文名称"
+                  placeholder="Enter Chinese name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -318,7 +318,7 @@ export default function AdminCampusPage() {
                   rows={2}
                   value={formData.descriptionZh}
                   onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
-                  placeholder="请输入中文说明"
+                  placeholder="Enter Chinese description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -333,7 +333,7 @@ export default function AdminCampusPage() {
                       type="text"
                       value={formData.modalTitleZh}
                       onChange={(e) => setFormData({ ...formData, modalTitleZh: e.target.value })}
-                      placeholder="请输入中文弹窗标题"
+                      placeholder="Enter Chinese modal title"
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
@@ -345,7 +345,7 @@ export default function AdminCampusPage() {
                       rows={3}
                       value={formData.modalContentZh}
                       onChange={(e) => setFormData({ ...formData, modalContentZh: e.target.value })}
-                      placeholder="请输入中文弹窗详细内容"
+                      placeholder="Enter Chinese modal content"
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
@@ -419,26 +419,26 @@ export default function AdminCampusPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ສະຖານທີ່ (Lao Facility Name)')}
+                  {tr('Lao Facility Name')}
                 </label>
                 <input
                   type="text"
                   value={formData.nameLa}
                   onChange={(e) => setFormData({ ...formData, nameLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ສູນນະວັດຕະກຳທັນສະໄໝ"
+                  placeholder="Enter Lao name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ເນື້ອຫາຄຳອະທິບາຍຫຍໍ້ (Lao Summary Description)')}
+                  {tr('Lao Summary Description')}
                 </label>
                 <textarea
                   rows={2}
                   value={formData.descriptionLa}
                   onChange={(e) => setFormData({ ...formData, descriptionLa: e.target.value })}
-                  placeholder="ຄຳອະທິບາຍຫຍໍ້ເປັນພາສາລາວ..."
+                  placeholder="Enter Lao description"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -447,25 +447,25 @@ export default function AdminCampusPage() {
                 <>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ຫົວຂໍ້ປ໊ອບອັບ (Lao Modal Title)')}
+                      {tr('Lao Modal Title')}
                     </label>
                     <input
                       type="text"
                       value={formData.modalTitleLa}
                       onChange={(e) => setFormData({ ...formData, modalTitleLa: e.target.value })}
-                      placeholder="ຕົວຢ່າງ: ຢ້ຽມຊົມສູນນະວັດຕະກຳ & ສິ່ງອຳນວຍຄວາມສະດວກ"
+                      placeholder="Enter Lao modal title"
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      {tr('ເນື້ອຫາລະອຽດໃນປ໊ອບອັບ (Lao Modal Detailed Content)')}
+                      {tr('Lao Modal Detailed Content')}
                     </label>
                     <textarea
                       rows={3}
                       value={formData.modalContentLa}
                       onChange={(e) => setFormData({ ...formData, modalContentLa: e.target.value })}
-                      placeholder="ລາຍລະອຽດອຸປະກອນ, ເວລາເປີດ-ປິດ, ໂອກາດການຄົ້ນຄວ້າ..."
+                      placeholder="Enter Lao modal content"
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>

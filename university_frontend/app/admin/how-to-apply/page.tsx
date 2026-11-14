@@ -672,14 +672,14 @@ export default function AdminHowToApplyPage() {
                     onClick={() => setHeroLangTab('la')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer ${heroLangTab === 'la' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
                   >
-                    {tr('Lao (ພາສາລາວ)')}
+                    {tr('Lao')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setHeroLangTab('zh')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer ${heroLangTab === 'zh' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
                   >
-                    {tr('Chinese (中文)')}
+                    {tr('Chinese')}
                   </button>
                 </div>
               </div>
@@ -1355,7 +1355,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="请输入中文入学批次"
+                    placeholder="Enter Chinese intake name"
                     value={timelineForm.intakeNameZh}
                     onChange={(e) =>
                       setTimelineForm({ ...timelineForm, intakeNameZh: e.target.value })
@@ -1368,11 +1368,11 @@ export default function AdminHowToApplyPage() {
                     <label className="text-xs font-bold text-slate-700">
                       {tr('Additional Notes / Class Start Date & Placement Exam (ZH)')}
                     </label>
-                    <span className="text-[11px] text-slate-400">每行一项</span>
+                    <span className="text-[11px] text-slate-400">One item per line</span>
                   </div>
                   <textarea
                     rows={3}
-                    placeholder="请输入中文开课日期及考试说明，每行一项"
+                    placeholder="Enter Chinese additional notes"
                     value={timelineForm.additionalNotesZh}
                     onChange={(e) =>
                       setTimelineForm({ ...timelineForm, additionalNotesZh: e.target.value })
@@ -1380,7 +1380,7 @@ export default function AdminHowToApplyPage() {
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed font-mono text-xs"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
-                    每行说明将作为提示显示在网站时间表中。
+                    Each line will appear as a note on the public timeline.
                   </p>
                 </div>
               </>
@@ -1435,7 +1435,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. ພາກຮຽນລະດູໃບໄມ້ຫຼົ່ນ 2026"
+                    placeholder="Enter Lao intake name"
                     value={timelineForm.intakeNameLa}
                     onChange={(e) =>
                       setTimelineForm({ ...timelineForm, intakeNameLa: e.target.value })
@@ -1448,22 +1448,18 @@ export default function AdminHowToApplyPage() {
                     <label className="text-xs font-bold text-slate-700">
                       {tr('Additional Notes / Class Start Date & Placement Exam (LA)')}
                     </label>
-                    <span className="text-[11px] text-slate-400">ແຖວລະ 1 ລາຍການ</span>
+                    <span className="text-[11px] text-slate-400">1</span>
                   </div>
                   <textarea
                     rows={3}
-                    placeholder={tr(
-                      `ວັນທີ 1 ຕຸລາ ຈະເປັນມື້ເລີ່ມຕົ້ນຮຽນ.\nສອບເສັງວັດລະດັບວັນທີ 7 ກັນຍາ`,
-                    )}
+                    placeholder="Enter Lao additional notes"
                     value={timelineForm.additionalNotesLa}
                     onChange={(e) =>
                       setTimelineForm({ ...timelineForm, additionalNotesLa: e.target.value })
                     }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed font-mono text-xs"
                   />
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    ແຕ່ລະແຖວຈະສະແດງເປັນລາຍການໝາຍເຫດພ້ອມຈຸດສີຟ້າໃນໜ້າເວັບສາທາລະນະ.
-                  </p>
+                  <p className="text-[11px] text-slate-500 mt-1">.</p>
                 </div>
               </>
             )}
@@ -2048,7 +2044,7 @@ export default function AdminHowToApplyPage() {
                   materialLangTab === 'la' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-500'
                 }`}
               >
-                {tr('Lao Details (ພາສາລາວ)')}
+                {tr('Lao Details')}
               </button>
               <button
                 type="button"
@@ -2057,7 +2053,7 @@ export default function AdminHowToApplyPage() {
                   materialLangTab === 'zh' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-500'
                 }`}
               >
-                {tr('Chinese Details (中文)')}
+                {tr('Chinese Details')}
               </button>
             </div>
 
@@ -2069,7 +2065,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="请输入中文标题"
+                    placeholder="Enter Chinese title"
                     value={materialForm.titleZh}
                     onChange={(e) => setMaterialForm({ ...materialForm, titleZh: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
@@ -2082,7 +2078,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="请输入中文说明"
+                    placeholder="Enter Chinese description"
                     value={materialForm.descriptionZh}
                     onChange={(e) =>
                       setMaterialForm({ ...materialForm, descriptionZh: e.target.value })
@@ -2131,7 +2127,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. ລາຍການກວດສອບການສະໝັກ"
+                    placeholder="Enter Lao title"
                     value={materialForm.titleLa}
                     onChange={(e) => setMaterialForm({ ...materialForm, titleLa: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
@@ -2144,7 +2140,7 @@ export default function AdminHowToApplyPage() {
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="ຄຳອະທິບາຍຫຍໍ້ກ່ຽວກັບເອກະສານນີ້..."
+                    placeholder="Enter Lao description"
                     value={materialForm.descriptionLa}
                     onChange={(e) =>
                       setMaterialForm({ ...materialForm, descriptionLa: e.target.value })

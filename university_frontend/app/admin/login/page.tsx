@@ -1,6 +1,5 @@
 'use client';
 
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useUiTranslation } from '@/context/useUiTranslation';
 
 import React, { useState } from 'react';
@@ -34,9 +33,6 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-[#00001C] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="absolute top-4 right-4 z-20">
-        <LanguageSwitcher />
-      </div>
       {/* Background glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0400CC]/30 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#00B6FF]/20 rounded-full blur-3xl" />

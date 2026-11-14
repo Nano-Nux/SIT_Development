@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language, dictionaries, Translations } from '@/lib/i18n';
 
@@ -20,7 +21,11 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Language>('EN');
+  const pathname = usePathname();
+  const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/');
+  // Keep the public preference intact while all admin components use English.
+  const [publicLang, setLangState] = useState<Language>('EN');
+  const lang: Language = isAdmin ? 'EN' : publicLang;
 
   useEffect(() => {
     document.documentElement.lang = lang === 'ZH' ? 'zh-CN' : lang === 'LA' ? 'lo' : 'en';
@@ -38,6 +43,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setLang = (newLang: Language) => {
+    if (isAdmin) return;
     setLangState(newLang);
     try {
       localStorage.setItem('sit_lang', newLang);

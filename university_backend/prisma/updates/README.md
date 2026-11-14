@@ -7,7 +7,7 @@ npx prisma db execute --file prisma/updates/20261114_chinese_translations.sql --
 npx prisma generate
 ```
 
-The existing `npx prisma db push` workflow also applies the additive schema changes. Restart the backend afterward. Admin content editors include a separate Chinese tab; contact editors include Chinese campus names, addresses, notes, phone/email labels and office hours. Blank Chinese fields fall back to English. The public navbar and admin header offer EN / LA / 中文 and remember the selection.
+The existing `npx prisma db push` workflow also applies the additive schema changes. Restart the backend afterward. Admin content editors include a separate Chinese tab; contact editors include Chinese campus names, addresses, notes, phone/email labels and office hours. Blank Chinese fields fall back to English. The public navbar offers EN / LA / 中文 and remembers the selection. The admin interface is always English, while the content editors retain English, Lao, and Chinese tabs. Visiting admin does not change the saved public-site language.
 
 # Image galleries and homepage video
 

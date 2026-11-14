@@ -8,7 +8,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard,
@@ -163,7 +162,6 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <LanguageSwitcher />
             <Link
               href="/"
               target="_blank"

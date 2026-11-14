@@ -293,7 +293,7 @@ export default function AdminFacultyPage() {
                   : 'border-transparent text-slate-400 hover:text-slate-600'
               }`}
             >
-              {tr('Lao (ພາສາລາວ)')}
+              {tr('Lao')}
             </button>
             <button
               type="button"
@@ -304,7 +304,7 @@ export default function AdminFacultyPage() {
                   : 'border-transparent text-slate-400 hover:text-slate-600'
               }`}
             >
-              {tr('Chinese (中文)')}
+              {tr('Chinese')}
             </button>
           </div>
 
@@ -399,13 +399,13 @@ export default function AdminFacultyPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊື່ ແລະ ນາມສະກຸນ (Lao Full Name)')}
+                  {tr('Lao Full Name')}
                 </label>
                 <input
                   type="text"
                   value={formData.nameLa}
                   onChange={(e) => setFormData({ ...formData, nameLa: e.target.value })}
-                  placeholder="ຕົວຢ່າງ: ດຣ. ຊາຣາ ເຈນກິນສ໌"
+                  placeholder="Enter Lao name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -413,25 +413,25 @@ export default function AdminFacultyPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ຕຳແໜ່ງ / ວຸດທິ (Lao Position)')}
+                    {tr('Lao Position')}
                   </label>
                   <input
                     type="text"
                     value={formData.positionLa}
                     onChange={(e) => setFormData({ ...formData, positionLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ສາດສະດາຈານ & ຄະນະບໍດີ"
+                    placeholder="Enter Lao position"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ຊື່ພາກວິຊາ (Lao Department Name)')}
+                    {tr('Lao Department Name')}
                   </label>
                   <input
                     type="text"
                     value={formData.departmentNameLa}
                     onChange={(e) => setFormData({ ...formData, departmentNameLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ພາກວິຊາເຕັກໂນໂລຊີຂໍ້ມູນຂ່າວສານ"
+                    placeholder="Enter Lao department name"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -439,13 +439,13 @@ export default function AdminFacultyPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  {tr('ຊີວະປະຫວັດຫຍໍ້ (Lao Biography)')}
+                  {tr('Lao Biography')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.biographyLa}
                   onChange={(e) => setFormData({ ...formData, biographyLa: e.target.value })}
-                  placeholder="ຂຽນຊີວະປະຫວັດ ແລະ ປະສົບການເປັນພາສາລາວ..."
+                  placeholder="Enter Lao biography"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -461,7 +461,7 @@ export default function AdminFacultyPage() {
                   type="text"
                   value={formData.nameZh}
                   onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                  placeholder="请输入中文名称"
+                  placeholder="Enter Chinese name"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -475,7 +475,7 @@ export default function AdminFacultyPage() {
                     type="text"
                     value={formData.positionZh}
                     onChange={(e) => setFormData({ ...formData, positionZh: e.target.value })}
-                    placeholder="请输入中文职位"
+                    placeholder="Enter Chinese position"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -487,7 +487,7 @@ export default function AdminFacultyPage() {
                     type="text"
                     value={formData.departmentNameZh}
                     onChange={(e) => setFormData({ ...formData, departmentNameZh: e.target.value })}
-                    placeholder="请输入中文内容"
+                    placeholder="Enter Chinese department name"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -501,7 +501,7 @@ export default function AdminFacultyPage() {
                   rows={3}
                   value={formData.biographyZh}
                   onChange={(e) => setFormData({ ...formData, biographyZh: e.target.value })}
-                  placeholder="请输入中文个人简介"
+                  placeholder="Enter Chinese biography"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>

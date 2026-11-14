@@ -793,7 +793,7 @@ export default function AdminDepartmentsPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                {tr('🇱🇦 ພາສາລາວ (Lao)')}
+                {tr('Lao')}
                 {formData.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
               </button>
               <button
@@ -805,7 +805,7 @@ export default function AdminDepartmentsPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                {tr('中文 (Chinese)')}
+                {tr('Chinese')}
                 {formData.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
               </button>
             </div>
@@ -823,7 +823,7 @@ export default function AdminDepartmentsPage() {
                     type="text"
                     value={formData.nameZh}
                     onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                    placeholder="请输入中文名称"
+                    placeholder="Enter Chinese name"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -845,13 +845,13 @@ export default function AdminDepartmentsPage() {
               ) : (
                 <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ຊື່ພາກວິຊາ / ສາຂາວິຊາ (Lao Title)')}
+                    {tr('Lao Title')}
                   </label>
                   <input
                     type="text"
                     value={formData.nameLa}
                     onChange={(e) => setFormData({ ...formData, nameLa: e.target.value })}
-                    placeholder="ຕົວຢ່າງ: ພາກວິຊາເຕັກໂນໂລຊີຂໍ້ມູນຂ່າວສານ"
+                    placeholder="Enter Lao name"
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -929,7 +929,7 @@ export default function AdminDepartmentsPage() {
                     rows={5}
                     value={formData.descriptionZh}
                     onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
-                    placeholder="请输入中文说明"
+                    placeholder="Enter Chinese description"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm leading-relaxed"
                   />
                 </div>
@@ -953,13 +953,13 @@ export default function AdminDepartmentsPage() {
               ) : (
                 <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Overview Description)')}
+                    {tr('Lao Overview Description')}
                   </label>
                   <textarea
                     rows={5}
                     value={formData.descriptionLa}
                     onChange={(e) => setFormData({ ...formData, descriptionLa: e.target.value })}
-                    placeholder="ອະທິບາຍພາລະກິດ ແລະ ຫຼັກສູດຂອງພາກວິຊາເປັນພາສາລາວ..."
+                    placeholder="Enter Lao description"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm leading-relaxed"
                   />
                 </div>
@@ -1005,7 +1005,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese hero box1 value"
                         value={formData.heroBox1ValueZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox1ValueZh: e.target.value })
@@ -1014,7 +1014,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="请输入中文统计标签"
+                        placeholder="Enter Chinese hero box1 label"
                         value={formData.heroBox1LabelZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox1LabelZh: e.target.value })
@@ -1047,7 +1047,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="ຄ່າ (ຕົວຢ່າງ: 15+)"
+                        placeholder="Enter Lao hero box1 value"
                         value={formData.heroBox1ValueLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox1ValueLa: e.target.value })
@@ -1056,7 +1056,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="ຫົວຂໍ້ (ຕົວຢ່າງ: ພາສາການຂຽນໂປຣແກຣມ)"
+                        placeholder="Enter Lao hero box1 label"
                         value={formData.heroBox1LabelLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox1LabelLa: e.target.value })
@@ -1076,7 +1076,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese hero box2 value"
                         value={formData.heroBox2ValueZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox2ValueZh: e.target.value })
@@ -1085,7 +1085,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="请输入中文统计标签"
+                        placeholder="Enter Chinese hero box2 label"
                         value={formData.heroBox2LabelZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox2LabelZh: e.target.value })
@@ -1118,7 +1118,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="ຄ່າ (ຕົວຢ່າງ: 8)"
+                        placeholder="Enter Lao hero box2 value"
                         value={formData.heroBox2ValueLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox2ValueLa: e.target.value })
@@ -1127,7 +1127,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="ຫົວຂໍ້ (ຕົວຢ່າງ: ຫ້ອງທົດລອງສະເພາະດ້ານ)"
+                        placeholder="Enter Lao hero box2 label"
                         value={formData.heroBox2LabelLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox2LabelLa: e.target.value })
@@ -1147,7 +1147,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese hero box3 value"
                         value={formData.heroBox3ValueZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox3ValueZh: e.target.value })
@@ -1156,7 +1156,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="请输入中文统计标签"
+                        placeholder="Enter Chinese hero box3 label"
                         value={formData.heroBox3LabelZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox3LabelZh: e.target.value })
@@ -1189,7 +1189,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="ຄ່າ (ຕົວຢ່າງ: 95%)"
+                        placeholder="Enter Lao hero box3 value"
                         value={formData.heroBox3ValueLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox3ValueLa: e.target.value })
@@ -1198,7 +1198,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="ຫົວຂໍ້ (ຕົວຢ່າງ: ອັດຕາການໄດ້ຮັບວຽກເຮັດ)"
+                        placeholder="Enter Lao hero box3 label"
                         value={formData.heroBox3LabelLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox3LabelLa: e.target.value })
@@ -1218,7 +1218,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese hero box4 value"
                         value={formData.heroBox4ValueZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox4ValueZh: e.target.value })
@@ -1227,7 +1227,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="请输入中文统计标签"
+                        placeholder="Enter Chinese hero box4 label"
                         value={formData.heroBox4LabelZh}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox4LabelZh: e.target.value })
@@ -1260,7 +1260,7 @@ export default function AdminDepartmentsPage() {
                     <>
                       <input
                         type="text"
-                        placeholder="ຄ່າ (ຕົວຢ່າງ: 40+)"
+                        placeholder="Enter Lao hero box4 value"
                         value={formData.heroBox4ValueLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox4ValueLa: e.target.value })
@@ -1269,7 +1269,7 @@ export default function AdminDepartmentsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="ຫົວຂໍ້ (ຕົວຢ່າງ: ຄູ່ຮ່ວມງານພາກອຸດສາຫະກຳ)"
+                        placeholder="Enter Lao hero box4 label"
                         value={formData.heroBox4LabelLa}
                         onChange={(e) =>
                           setFormData({ ...formData, heroBox4LabelLa: e.target.value })
@@ -1303,7 +1303,7 @@ export default function AdminDepartmentsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, coreFocusAreasTextZh: e.target.value })
                     }
-                    placeholder="请输入中文重点领域，每行一项"
+                    placeholder="Enter Chinese core focus areas text"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-mono leading-relaxed"
                   />
                 </div>
@@ -1327,7 +1327,7 @@ export default function AdminDepartmentsPage() {
               ) : (
                 <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    ຂົງເຂດຈຸດສຸມຫຼັກ (Lao Core Focus Areas - 1 ຫົວຂໍ້ຕໍ່ແຖວ)
+                    Lao Core Focus Areas (one per line)
                   </label>
                   <textarea
                     rows={8}
@@ -1335,9 +1335,7 @@ export default function AdminDepartmentsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, coreFocusAreasTextLa: e.target.value })
                     }
-                    placeholder={tr(
-                      'ການພັດທະນາຊອບແວ\nແອັບເວັບ ແລະ ມືຖື\nຄວາມປອດໄພທາງໄຊເບີ\nລະບົບຄລາວ\nປັນຍາປະດິດ & ML\nວິທະຍາສາດຂໍ້ມູນ',
-                    )}
+                    placeholder="Enter Lao core focus areas text"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-mono leading-relaxed"
                   />
                 </div>
@@ -1353,7 +1351,11 @@ export default function AdminDepartmentsPage() {
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                   {tr('Field 5: Career Outcome Description ')}
                   {tr(
-                    activeLang === 'zh' ? '(中文)' : activeLang === 'la' ? tr('(Lao)') : tr('(EN)'),
+                    activeLang === 'zh'
+                      ? '(Chinese)'
+                      : activeLang === 'la'
+                        ? tr('(Lao)')
+                        : tr('(EN)'),
                   )}
                 </label>
                 {activeLang === 'zh' ? (
@@ -1363,7 +1365,7 @@ export default function AdminDepartmentsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, careerOutcomeDescZh: e.target.value })
                     }
-                    placeholder="请输入中文就业成果说明"
+                    placeholder="Enter Chinese career outcome desc"
                     className="w-full px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 ) : activeLang === 'en' ? (
@@ -1385,7 +1387,7 @@ export default function AdminDepartmentsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, careerOutcomeDescLa: e.target.value })
                     }
-                    placeholder="ນັກສຶກສາທີ່ຈົບການສຶກສາຈາກພວກເຮົາແມ່ນເປັນທີ່ຕ້ອງການສູງຈາກບໍລິສັດເຕັກໂນໂລຊີຊັ້ນນຳ..."
+                    placeholder="Enter Lao career outcome desc"
                     className="w-full px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 )}
@@ -1423,7 +1425,7 @@ export default function AdminDepartmentsPage() {
                     {activeLang === 'zh' ? (
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese career placement rate"
                         value={formData.careerPlacementRateZh}
                         onChange={(e) =>
                           setFormData({ ...formData, careerPlacementRateZh: e.target.value })
@@ -1443,7 +1445,7 @@ export default function AdminDepartmentsPage() {
                     ) : (
                       <input
                         type="text"
-                        placeholder="ຕົວຢ່າງ: 95%"
+                        placeholder="Enter Lao career placement rate"
                         value={formData.careerPlacementRateLa}
                         onChange={(e) =>
                           setFormData({ ...formData, careerPlacementRateLa: e.target.value })
@@ -1462,7 +1464,7 @@ export default function AdminDepartmentsPage() {
                     {activeLang === 'zh' ? (
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese career avg salary"
                         value={formData.careerAvgSalaryZh}
                         onChange={(e) =>
                           setFormData({ ...formData, careerAvgSalaryZh: e.target.value })
@@ -1482,7 +1484,7 @@ export default function AdminDepartmentsPage() {
                     ) : (
                       <input
                         type="text"
-                        placeholder="ຕົວຢ່າງ: $92K"
+                        placeholder="Enter Lao career avg salary"
                         value={formData.careerAvgSalaryLa}
                         onChange={(e) =>
                           setFormData({ ...formData, careerAvgSalaryLa: e.target.value })
@@ -1501,7 +1503,7 @@ export default function AdminDepartmentsPage() {
                     {activeLang === 'zh' ? (
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese career partner companies"
                         value={formData.careerPartnerCompaniesZh}
                         onChange={(e) =>
                           setFormData({ ...formData, careerPartnerCompaniesZh: e.target.value })
@@ -1521,7 +1523,7 @@ export default function AdminDepartmentsPage() {
                     ) : (
                       <input
                         type="text"
-                        placeholder="ຕົວຢ່າງ: 200+"
+                        placeholder="Enter Lao career partner companies"
                         value={formData.careerPartnerCompaniesLa}
                         onChange={(e) =>
                           setFormData({ ...formData, careerPartnerCompaniesLa: e.target.value })
@@ -1540,7 +1542,7 @@ export default function AdminDepartmentsPage() {
                     {activeLang === 'zh' ? (
                       <input
                         type="text"
-                        placeholder="请输入中文统计数值"
+                        placeholder="Enter Chinese career time to employment"
                         value={formData.careerTimeToEmploymentZh}
                         onChange={(e) =>
                           setFormData({ ...formData, careerTimeToEmploymentZh: e.target.value })
@@ -1560,7 +1562,7 @@ export default function AdminDepartmentsPage() {
                     ) : (
                       <input
                         type="text"
-                        placeholder="ຕົວຢ່າງ: 3 ເດືອນ"
+                        placeholder="Enter Lao career time to employment"
                         value={formData.careerTimeToEmploymentLa}
                         onChange={(e) =>
                           setFormData({ ...formData, careerTimeToEmploymentLa: e.target.value })
