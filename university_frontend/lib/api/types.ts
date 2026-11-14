@@ -22,13 +22,17 @@ export interface HeroData {
   page: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   subtitle?: string;
   subtitleLa?: string;
+  subtitleZh?: string;
   badge?: string;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   buttonText?: string;
   buttonTextLa?: string;
+  buttonTextZh?: string;
   buttonUrl?: string;
   imageUrl?: string;
   image2Url?: string;
@@ -51,8 +55,10 @@ export interface CoreValue {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   description: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   icon?: string;
   order: number;
   isActive: boolean;
@@ -70,38 +76,48 @@ export interface Department {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   title?: string;
   titleLa?: string;
+  titleZh?: string;
   slug: string;
   externalUrl?: string | null;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   heroImage?: string;
   imageUrl?: string;
   order: number;
   isActive?: boolean;
-  
+
   // Field 3: box-description (optional, hero stats)
   boxDescriptions?: string | BoxStatItem[];
   boxDescriptionsLa?: string | BoxStatItem[];
+  boxDescriptionsZh?: string | BoxStatItem[];
 
   // Field 4: Core Focus Areas
   coreFocusAreas?: string | string[];
   coreFocusAreasLa?: string | string[];
+  coreFocusAreasZh?: string | string[];
 
   // Field 5: Career Outcome Description
   careerOutcomeDesc?: string;
   careerOutcomeDescLa?: string;
+  careerOutcomeDescZh?: string;
 
   // Field 6: Career Outcomes Boxes (optional)
   careerPlacementRate?: string;
   careerPlacementRateLa?: string;
+  careerPlacementRateZh?: string;
   careerAvgSalary?: string;
   careerAvgSalaryLa?: string;
+  careerAvgSalaryZh?: string;
   careerPartnerCompanies?: string;
   careerPartnerCompaniesLa?: string;
+  careerPartnerCompaniesZh?: string;
   careerTimeToEmployment?: string;
   careerTimeToEmploymentLa?: string;
+  careerTimeToEmploymentZh?: string;
 
   programs?: Program[];
   faculty?: Faculty[];
@@ -114,17 +130,22 @@ export interface Program {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   slug: string;
   degree: string;
   degreeLa?: string;
+  degreeZh?: string;
   departmentId: string;
   department?: Department;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   duration?: string;
   durationLa?: string;
+  durationZh?: string;
   coreFocusAreas?: string;
   coreFocusAreasLa?: string;
+  coreFocusAreasZh?: string | null;
   credits?: number;
   learningOutcomes?: string[];
   careerOpportunities?: string[];
@@ -140,15 +161,18 @@ export interface Major {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   slug: string;
   title?: string;
   titleLa?: string;
+  titleZh?: string;
   degree?: string;
   degreeLevel?: string;
   duration?: string;
   credits?: number;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   image?: string;
   heroImage?: string;
   isActive: boolean;
@@ -168,16 +192,20 @@ export interface Faculty {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   title: string;
   position?: string;
   positionLa?: string;
+  positionZh?: string;
   departmentName?: string;
   departmentNameLa?: string;
+  departmentNameZh?: string;
   departmentId?: string;
   department?: Department;
   bio?: string;
   biography?: string;
   biographyLa?: string;
+  biographyZh?: string;
   image?: string;
   imageUrl?: string;
   email?: string;
@@ -197,14 +225,18 @@ export interface ProgramDirector {
   program?: Program;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   title: string;
   position?: string;
   positionLa?: string;
+  positionZh?: string;
   departmentName?: string;
   departmentNameLa?: string;
+  departmentNameZh?: string;
   bio?: string;
   biography?: string;
   biographyLa?: string;
+  biographyZh?: string;
   image?: string;
   imageUrl?: string;
   email?: string;
@@ -219,19 +251,25 @@ export interface Spotlight {
   type?: string;
   title?: string;
   titleLa?: string;
+  titleZh?: string;
   subtitle?: string;
   subtitleLa?: string;
+  subtitleZh?: string;
   personName?: string;
   authorName?: string;
   authorNameLa?: string;
+  authorNameZh?: string;
   role?: string;
   authorRole?: string;
   authorRoleLa?: string;
+  authorRoleZh?: string;
   story?: string;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   quote?: string;
   quoteLa?: string;
+  quoteZh?: string;
   image?: string;
   imageUrl?: string;
   graduationYear?: number;
@@ -248,6 +286,7 @@ export interface Partner {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   type: string;
   logo?: string;
   logoUrl?: string;
@@ -256,6 +295,7 @@ export interface Partner {
   description?: string;
   country?: string;
   countryLa?: string;
+  countryZh?: string;
   isFeatured: boolean;
   order: number;
   createdAt?: string;
@@ -267,17 +307,21 @@ export interface CampusFacility {
   id: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   category?: string;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   images?: string[];
   imageUrl?: string;
   imageUrls?: string[];
   virtualTourUrl?: string;
   modalTitle?: string;
   modalTitleLa?: string;
+  modalTitleZh?: string;
   modalContent?: string;
   modalContentLa?: string;
+  modalContentZh?: string;
   hours?: string;
   location?: string;
   features?: string[];
@@ -291,13 +335,17 @@ export interface NewsArticle {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   slug: string;
   content: string;
   contentLa?: string;
+  contentZh?: string;
   summary?: string;
   summaryLa?: string;
+  summaryZh?: string;
   category: string;
   categoryLa?: string;
+  categoryZh?: string;
   image?: string;
   imageUrl?: string;
   imageUrls?: string[];
@@ -306,6 +354,7 @@ export interface NewsArticle {
   isFeatured?: boolean;
   author?: string;
   authorLa?: string;
+  authorZh?: string;
   authorName?: string;
   publishedAt?: string;
   createdAt?: string;
@@ -317,18 +366,23 @@ export interface EventItem {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   slug: string;
   description?: string;
   summary?: string;
   summaryLa?: string;
+  summaryZh?: string;
   content?: string;
   contentLa?: string;
+  contentZh?: string;
   eventDate: string;
   endDate?: string;
   time?: string;
   timeLa?: string;
+  timeZh?: string;
   location: string;
   locationLa?: string;
+  locationZh?: string;
   isVirtual?: boolean;
   virtualLink?: string;
   registrationUrl?: string;
@@ -346,10 +400,13 @@ export interface StudentLifeActivity {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   category: string;
   categoryLa?: string;
+  categoryZh?: string;
   description: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   image?: string;
   imageUrl?: string;
   gallery?: string;
@@ -367,6 +424,7 @@ export interface AdmissionTimeline {
   term?: string;
   intakeName?: string;
   intakeNameLa?: string;
+  intakeNameZh?: string;
   intakeYear?: string;
   title?: string;
   description?: string;
@@ -379,8 +437,10 @@ export interface AdmissionTimeline {
   classesBeginDate?: string;
   additionalNotes?: string;
   additionalNotesLa?: string;
+  additionalNotesZh?: string;
   status?: string;
   statusLa?: string;
+  statusZh?: string;
   order: number;
   isActive?: boolean;
   createdAt?: string;
@@ -392,8 +452,10 @@ export interface ApplicationReminder {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   description: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   icon?: string;
   order: number;
   isActive?: boolean;
@@ -408,13 +470,17 @@ export interface AdmissionRequirement {
   degreeLevel: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   subtitle?: string;
   subtitleLa?: string;
+  subtitleZh?: string;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   items?: string[];
   requirementsList?: string;
   requirementsListLa?: string;
+  requirementsListZh?: string | null;
   icon?: string;
   order: number;
   isActive?: boolean;
@@ -427,8 +493,10 @@ export interface AdmissionFaq {
   id: string;
   question: string;
   questionLa?: string;
+  questionZh?: string;
   answer: string;
   answerLa?: string;
+  answerZh?: string;
   category?: string;
   order: number;
   isActive?: boolean;
@@ -441,8 +509,10 @@ export interface ApplicationMaterial {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   fileUrl: string;
   fileType?: string;
   fileSize?: string;
@@ -544,11 +614,14 @@ export interface ContactLocation {
   id: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   address: string;
   addressLa?: string;
+  addressZh?: string;
   isPrimary?: boolean;
   notes?: string;
   notesLa?: string;
+  notesZh?: string;
 }
 
 export interface ContactPhone {
@@ -556,6 +629,7 @@ export interface ContactPhone {
   number: string;
   label: string;
   labelLa?: string;
+  labelZh?: string;
   isPrimary?: boolean;
 }
 
@@ -564,6 +638,7 @@ export interface ContactEmail {
   email: string;
   label: string;
   labelLa?: string;
+  labelZh?: string;
   isPrimary?: boolean;
 }
 
@@ -571,21 +646,26 @@ export interface ContactOfficeHour {
   id: string;
   days: string;
   daysLa?: string;
+  daysZh?: string;
   hours: string;
   hoursLa?: string;
+  hoursZh?: string;
   notes?: string;
   notesLa?: string;
+  notesZh?: string;
 }
 
 export interface ContactInfo {
   id?: string;
   address: string;
   addressLa?: string;
+  addressZh?: string;
   phone: string;
   email: string;
   admissionsEmail?: string;
   officeHours?: string;
   officeHoursLa?: string;
+  officeHoursZh?: string;
   locations?: string | ContactLocation[];
   phones?: string | ContactPhone[];
   emails?: string | ContactEmail[];
@@ -638,12 +718,16 @@ export interface FounderInfo {
   id?: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   designation: string;
   designationLa?: string;
+  designationZh?: string;
   quote?: string;
   quoteLa?: string;
+  quoteZh?: string;
   biography: string;
   biographyLa?: string;
+  biographyZh?: string;
   imageUrl?: string;
   [key: string]: any;
 }
@@ -652,12 +736,16 @@ export interface MemberItem {
   id?: string;
   name: string;
   nameLa?: string;
+  nameZh?: string;
   position: string;
   positionLa?: string;
+  positionZh?: string;
   category?: string;
   categoryLa?: string;
+  categoryZh?: string;
   biography?: string;
   biographyLa?: string;
+  biographyZh?: string;
   imageUrl?: string;
   order?: number;
   [key: string]: any;
@@ -668,8 +756,10 @@ export interface HistoryMilestone {
   year: string;
   title: string;
   titleLa?: string;
+  titleZh?: string;
   description: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   icon?: any;
   order?: number;
   [key: string]: any;
@@ -679,10 +769,12 @@ export interface VisionMissionInfo {
   id?: string;
   vision: string;
   visionLa?: string;
+  visionZh?: string;
   mission: string;
   missionLa?: string;
+  missionZh?: string;
   corePillars?: string;
   corePillarsLa?: string;
+  corePillarsZh?: string;
   [key: string]: any;
 }
-

@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, use } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -21,11 +23,8 @@ import {
 } from 'lucide-react';
 import { academicsApi, ProgramItem } from '@/lib/api';
 
-export default function ProgramDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default function ProgramDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const resolvedParams = use(params);
@@ -34,7 +33,8 @@ export default function ProgramDetailPage({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    academicsApi.getProgram(slug)
+    academicsApi
+      .getProgram(slug)
       .then(setProgram)
       .catch((err) => {
         console.error('Error fetching program:', err);
@@ -59,16 +59,44 @@ export default function ProgramDetailPage({
     return notFound();
   }
 
-  const programName = (isLa && program.nameLa) ? program.nameLa : program.name;
-  const programDegree = (isLa && program.degreeLa) ? program.degreeLa : program.degree;
-  const programDuration = (isLa && program.durationLa) ? program.durationLa : program.duration;
-  const programDesc = (isLa && program.descriptionLa) ? program.descriptionLa : program.description;
-  const deptName = program.department ? ((isLa && program.department.nameLa) ? program.department.nameLa : program.department.name) : null;
+  const programName =
+    lang === 'ZH'
+      ? program?.nameZh || program.name
+      : isLa && program.nameLa
+        ? program.nameLa
+        : program.name;
+  const programDegree =
+    lang === 'ZH'
+      ? program?.degreeZh || program.degree
+      : isLa && program.degreeLa
+        ? program.degreeLa
+        : program.degree;
+  const programDuration =
+    lang === 'ZH'
+      ? program?.durationZh || program.duration
+      : isLa && program.durationLa
+        ? program.durationLa
+        : program.duration;
+  const programDesc =
+    lang === 'ZH'
+      ? program?.descriptionZh || program.description
+      : isLa && program.descriptionLa
+        ? program.descriptionLa
+        : program.description;
+  const deptName = program.department
+    ? lang === 'ZH'
+      ? program.department?.nameZh || program.department.name
+      : isLa && program.department.nameLa
+        ? program.department.nameLa
+        : program.department.name
+    : null;
 
   let focusAreas: string[] = [];
-  if (isLa && program.coreFocusAreasLa) {
+  if (lang === 'ZH' ? program?.coreFocusAreasZh : isLa && program.coreFocusAreasLa) {
     try {
-      focusAreas = JSON.parse(program.coreFocusAreasLa);
+      focusAreas = JSON.parse(
+        (lang === 'ZH' ? program?.coreFocusAreasZh : program?.coreFocusAreasLa) || '[]',
+      );
     } catch {
       focusAreas = [];
     }
@@ -93,32 +121,33 @@ export default function ProgramDetailPage({
             <div className="max-w-3xl space-y-6">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="px-3.5 py-1 rounded-full bg-[#0400CC] text-white text-xs font-bold uppercase tracking-wider">
-                  {programDegree}
+                  {tr(programDegree)}
                 </span>
                 {deptName && (
                   <span className="px-3.5 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-medium border border-white/20">
-                    {deptName}
+                    {tr(deptName)}
                   </span>
                 )}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                {programName}
+                {tr(programName)}
               </h1>
 
               <div className="flex items-center gap-6 text-sm text-slate-300 font-medium">
                 <span className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[#00B6FF]" />
-                  {t.departmentDetail.durationLabel} {programDuration}
+                  {t.departmentDetail.durationLabel} {tr(programDuration)}
                 </span>
                 <span className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-[#00B6FF]" />
-                  {t.departmentDetail.instructionLabel} English
+                  {t.departmentDetail.instructionLabel}
+                  {tr(' English')}
                 </span>
               </div>
 
               <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
-                {programDesc}
+                {tr(programDesc)}
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -166,8 +195,10 @@ export default function ProgramDetailPage({
                         >
                           <CheckCircle2 className="w-5 h-5 text-[#0400CC] shrink-0 mt-0.5" />
                           <div>
-                            <h4 className="text-sm font-bold text-[#00001C]">{area}</h4>
-                            <p className="text-xs text-slate-500 mt-1">{t.departmentDetail.coreModuleTrack}</p>
+                            <h4 className="text-sm font-bold text-[#00001C]">{tr(area)}</h4>
+                            <p className="text-xs text-slate-500 mt-1">
+                              {t.departmentDetail.coreModuleTrack}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -182,12 +213,30 @@ export default function ProgramDetailPage({
                       {t.departmentDetail.leadershipTitle}
                     </h3>
                     {program.directors.map((dir: any, idx: number) => {
-                      const dirName = (isLa && dir.nameLa) ? dir.nameLa : dir.name;
-                      const dirPos = (isLa && dir.positionLa) ? dir.positionLa : dir.position;
-                      const dirBio = (isLa && dir.biographyLa) ? dir.biographyLa : dir.biography;
+                      const dirName =
+                        lang === 'ZH'
+                          ? dir?.nameZh || dir.name
+                          : isLa && dir.nameLa
+                            ? dir.nameLa
+                            : dir.name;
+                      const dirPos =
+                        lang === 'ZH'
+                          ? dir?.positionZh || dir.position
+                          : isLa && dir.positionLa
+                            ? dir.positionLa
+                            : dir.position;
+                      const dirBio =
+                        lang === 'ZH'
+                          ? dir?.biographyZh || dir.biography
+                          : isLa && dir.biographyLa
+                            ? dir.biographyLa
+                            : dir.biography;
 
                       return (
-                        <div key={dir.id || idx} className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                        <div
+                          key={dir.id || idx}
+                          className="flex flex-col sm:flex-row items-start sm:items-center gap-6"
+                        >
                           <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-200 shrink-0 border-2 border-white shadow-md">
                             <img
                               src={dir.imageUrl || '/images/home_desktopview/img_5.jpg'}
@@ -222,24 +271,40 @@ export default function ProgramDetailPage({
 
                   <div className="space-y-4 text-xs sm:text-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500 font-medium">{t.departmentDetail.awardedDegree}</span>
-                      <span className="font-bold text-[#00001C]">{programDegree}</span>
+                      <span className="text-slate-500 font-medium">
+                        {t.departmentDetail.awardedDegree}
+                      </span>
+                      <span className="font-bold text-[#00001C]">{tr(programDegree)}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500 font-medium">{t.departmentDetail.programDuration}</span>
-                      <span className="font-bold text-[#00001C]">{programDuration}</span>
+                      <span className="text-slate-500 font-medium">
+                        {t.departmentDetail.programDuration}
+                      </span>
+                      <span className="font-bold text-[#00001C]">{tr(programDuration)}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500 font-medium">{t.departmentDetail.instruction}</span>
-                      <span className="font-bold text-[#00001C]">{t.departmentDetail.englishMedium}</span>
+                      <span className="text-slate-500 font-medium">
+                        {t.departmentDetail.instruction}
+                      </span>
+                      <span className="font-bold text-[#00001C]">
+                        {t.departmentDetail.englishMedium}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500 font-medium">{t.departmentDetail.studyMode}</span>
-                      <span className="font-bold text-[#00001C]">{t.departmentDetail.fullTimeOnCampus}</span>
+                      <span className="text-slate-500 font-medium">
+                        {t.departmentDetail.studyMode}
+                      </span>
+                      <span className="font-bold text-[#00001C]">
+                        {t.departmentDetail.fullTimeOnCampus}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500 font-medium">{t.departmentDetail.nextIntake}</span>
-                      <span className="font-bold text-[#0400CC]">{t.departmentDetail.fall2026}</span>
+                      <span className="text-slate-500 font-medium">
+                        {t.departmentDetail.nextIntake}
+                      </span>
+                      <span className="font-bold text-[#0400CC]">
+                        {t.departmentDetail.fall2026}
+                      </span>
                     </div>
                   </div>
 

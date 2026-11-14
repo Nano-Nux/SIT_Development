@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import {
@@ -34,42 +38,56 @@ import {
 } from '@/lib/api/types';
 
 export default function AdminHowToApplyPage() {
-  const [activeTab, setActiveTab] = useState<'HERO' | 'TIMELINE' | 'REMINDERS' | 'REQUIREMENTS' | 'FAQS' | 'MATERIALS'>('HERO');
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
+  const [activeTab, setActiveTab] = useState<
+    'HERO' | 'TIMELINE' | 'REMINDERS' | 'REQUIREMENTS' | 'FAQS' | 'MATERIALS'
+  >('HERO');
   const [loading, setLoading] = useState(true);
 
   // 1. Hero State
   const [heroForm, setHeroForm] = useState<Partial<Hero>>({
     title: 'HOW TO APPLY',
     titleLa: 'ວິທີການສະໝັກຮຽນ',
+    titleZh: '',
     subtitle: 'Step-by-Step Application Guide',
     subtitleLa: 'ຄູ່ມືການສະໝັກຮຽນເທື່ອລະຂັ້ນຕອນ',
-    description: 'Your journey to becoming part of the SIT community starts here. Follow our straightforward application process and take the first step toward an exceptional education.',
-    descriptionLa: 'ການເດີນທາງຂອງທ່ານເພື່ອກາຍເປັນສ່ວນໜຶ່ງຂອງ SIT ເລີ່ມຕົ້ນທີ່ secret. ປະຕິບັດຕາມຂັ້ນຕອນການສະໝັກທີ່ຊັດເຈນ ແລະ ກ້າວໄປສູ່ການສຶກສາທີ່ໂດດເດັ່ນ.',
+    subtitleZh: '',
+    description:
+      'Your journey to becoming part of the SIT community starts here. Follow our straightforward application process and take the first step toward an exceptional education.',
+    descriptionLa:
+      'ການເດີນທາງຂອງທ່ານເພື່ອກາຍເປັນສ່ວນໜຶ່ງຂອງ SIT ເລີ່ມຕົ້ນທີ່ secret. ປະຕິບັດຕາມຂັ້ນຕອນການສະໝັກທີ່ຊັດເຈນ ແລະ ກ້າວໄປສູ່ການສຶກສາທີ່ໂດດເດັ່ນ.',
+    descriptionZh: '',
     buttonText: 'APPLY NOW',
     buttonTextLa: 'ສະໝັກດຽວນີ້',
+    buttonTextZh: '',
     buttonUrl: '/apply',
     imageUrl: '',
   });
   const [savingHero, setSavingHero] = useState(false);
-  const [heroLangTab, setHeroLangTab] = useState<'en' | 'la'>('en');
+  const [heroLangTab, setHeroLangTab] = useState<'en' | 'la' | 'zh'>('en');
 
   // 2. Timelines State
   const [timelines, setTimelines] = useState<AdmissionTimeline[]>([]);
   const [timelineModal, setTimelineModal] = useState(false);
   const [editingTimelineId, setEditingTimelineId] = useState<string | null>(null);
-  const [timelineLangTab, setTimelineLangTab] = useState<'en' | 'la'>('en');
+  const [timelineLangTab, setTimelineLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [timelineForm, setTimelineForm] = useState({
     intakeName: '',
     intakeNameLa: '',
+    intakeNameZh: '',
     intakeYear: '2026',
     openingDate: new Date().toISOString().split('T')[0],
     closingDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0],
     deadlineDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0],
     classesBeginDate: new Date(Date.now() + 120 * 86400000).toISOString().split('T')[0],
-    additionalNotes: '1st of October will be starting date of class.\nPlacement Exam 7th of September',
+    additionalNotes:
+      '1st of October will be starting date of class.\nPlacement Exam 7th of September',
     additionalNotesLa: 'ວັນທີ 1 ຕຸລາ ຈະເປັນວັນເລີ່ມຮຽນ.\nການສອບເສັງວັດລະດັບ ວັນທີ 7 ກັນຍາ',
+    additionalNotesZh: '',
     status: 'Open',
     statusLa: 'ເປີດຮັບສະໝັກ',
+    statusZh: '',
     order: 0,
   });
 
@@ -77,12 +95,14 @@ export default function AdminHowToApplyPage() {
   const [reminders, setReminders] = useState<ApplicationReminder[]>([]);
   const [reminderModal, setReminderModal] = useState(false);
   const [editingReminderId, setEditingReminderId] = useState<string | null>(null);
-  const [reminderLangTab, setReminderLangTab] = useState<'en' | 'la'>('en');
+  const [reminderLangTab, setReminderLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [reminderForm, setReminderForm] = useState({
     title: '',
     titleLa: '',
+    titleZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     icon: 'bell',
     order: 0,
     isActive: true,
@@ -92,18 +112,24 @@ export default function AdminHowToApplyPage() {
   const [requirements, setRequirements] = useState<AdmissionRequirement[]>([]);
   const [reqModal, setReqModal] = useState(false);
   const [editingReqId, setEditingReqId] = useState<string | null>(null);
-  const [reqLangTab, setReqLangTab] = useState<'en' | 'la'>('en');
+  const [reqLangTab, setReqLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [reqForm, setReqForm] = useState({
     category: 'ACADEMIC',
     degreeLevel: 'Undergraduate',
     title: 'Academic Requirements',
     titleLa: 'ເງື່ອນໄຂທາງວິຊາການ',
+    titleZh: '',
     subtitle: 'Undergraduate Programs',
     subtitleLa: 'ຫຼັກສູດປະລິນຍາຕີ',
+    subtitleZh: '',
     description: '',
     descriptionLa: '',
-    requirementsList: 'High school diploma or equivalent with minimum GPA of 3.0\nOfficial transcripts from all secondary schools attended\nStrong performance in mathematics and science courses\nGraduation certificate or proof of completion',
-    requirementsListLa: 'ປະກາສະນິຍະບັດຈົບມັດທະຍົມຕອນປາຍ ຫຼື ທຽບເທົ່າ\nໃບຄະແນນທາງການ\nຜົນການຮຽນທີ່ດີໃນວິຊາຄະນິດສາດ ແລະ ວິທະຍາສາດ\nໃບຢັ້ງຢືນການຈົບການສຶກສາ',
+    descriptionZh: '',
+    requirementsList:
+      'High school diploma or equivalent with minimum GPA of 3.0\nOfficial transcripts from all secondary schools attended\nStrong performance in mathematics and science courses\nGraduation certificate or proof of completion',
+    requirementsListLa:
+      'ປະກາສະນິຍະບັດຈົບມັດທະຍົມຕອນປາຍ ຫຼື ທຽບເທົ່າ\nໃບຄະແນນທາງການ\nຜົນການຮຽນທີ່ດີໃນວິຊາຄະນິດສາດ ແລະ ວິທະຍາສາດ\nໃບຢັ້ງຢືນການຈົບການສຶກສາ',
+    requirementsListZh: '',
     icon: 'graduation-cap',
     order: 0,
     isActive: true,
@@ -113,12 +139,14 @@ export default function AdminHowToApplyPage() {
   const [faqs, setFaqs] = useState<AdmissionFaq[]>([]);
   const [faqModal, setFaqModal] = useState(false);
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
-  const [faqLangTab, setFaqLangTab] = useState<'en' | 'la'>('en');
+  const [faqLangTab, setFaqLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [faqForm, setFaqForm] = useState({
     question: '',
     questionLa: '',
+    questionZh: '',
     answer: '',
     answerLa: '',
+    answerZh: '',
     category: 'General',
     order: 0,
     isActive: true,
@@ -128,12 +156,14 @@ export default function AdminHowToApplyPage() {
   const [materials, setMaterials] = useState<ApplicationMaterial[]>([]);
   const [materialModal, setMaterialModal] = useState(false);
   const [editingMaterialId, setEditingMaterialId] = useState<string | null>(null);
-  const [materialLangTab, setMaterialLangTab] = useState<'en' | 'la'>('en');
+  const [materialLangTab, setMaterialLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [materialForm, setMaterialForm] = useState({
     title: '',
     titleLa: '',
+    titleZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     fileUrl: '',
     fileType: 'PDF',
     fileSize: '',
@@ -178,9 +208,9 @@ export default function AdminHowToApplyPage() {
     setSavingHero(true);
     try {
       await api.updateHero('HOW_TO_APPLY', heroForm);
-      alert('How to Apply Hero section updated successfully!');
+      alert(tr('How to Apply Hero section updated successfully!'));
     } catch (err) {
-      alert('Failed to save Hero section');
+      alert(tr('Failed to save Hero section'));
     } finally {
       setSavingHero(false);
     }
@@ -192,15 +222,19 @@ export default function AdminHowToApplyPage() {
     setTimelineForm({
       intakeName: '',
       intakeNameLa: '',
+      intakeNameZh: '',
       intakeYear: '2026',
       openingDate: new Date().toISOString().split('T')[0],
       closingDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0],
       deadlineDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0],
       classesBeginDate: new Date(Date.now() + 120 * 86400000).toISOString().split('T')[0],
-      additionalNotes: '1st of October will be starting date of class.\nPlacement Exam 7th of September',
+      additionalNotes:
+        '1st of October will be starting date of class.\nPlacement Exam 7th of September',
       additionalNotesLa: 'ວັນທີ 1 ຕຸລາ ຈະເປັນວັນເລີ່ມຮຽນ.\nການສອບເສັງວັດລະດັບ ວັນທີ 7 ກັນຍາ',
+      additionalNotesZh: '',
       status: 'Open',
       statusLa: 'ເປີດຮັບສະໝັກ',
+      statusZh: '',
       order: timelines.length + 1,
     });
     setTimelineModal(true);
@@ -211,15 +245,22 @@ export default function AdminHowToApplyPage() {
     setTimelineForm({
       intakeName: item.intakeName || '',
       intakeNameLa: item.intakeNameLa || '',
+      intakeNameZh: item.intakeNameZh || '',
       intakeYear: item.intakeYear || '2026',
       openingDate: item.openingDate ? new Date(item.openingDate).toISOString().split('T')[0] : '',
       closingDate: item.closingDate ? new Date(item.closingDate).toISOString().split('T')[0] : '',
-      deadlineDate: item.deadlineDate ? new Date(item.deadlineDate).toISOString().split('T')[0] : '',
-      classesBeginDate: item.classesBeginDate ? new Date(item.classesBeginDate).toISOString().split('T')[0] : '',
+      deadlineDate: item.deadlineDate
+        ? new Date(item.deadlineDate).toISOString().split('T')[0]
+        : '',
+      classesBeginDate: item.classesBeginDate
+        ? new Date(item.classesBeginDate).toISOString().split('T')[0]
+        : '',
       additionalNotes: item.additionalNotes || '',
       additionalNotesLa: item.additionalNotesLa || '',
+      additionalNotesZh: item.additionalNotesZh || '',
       status: item.status || 'Open',
       statusLa: item.statusLa || 'ເປີດຮັບສະໝັກ',
+      statusZh: '',
       order: item.order || 0,
     });
     setTimelineModal(true);
@@ -236,17 +277,17 @@ export default function AdminHowToApplyPage() {
       setTimelineModal(false);
       loadAllData();
     } catch (err) {
-      alert('Failed to save timeline');
+      alert(tr('Failed to save timeline'));
     }
   };
 
   const handleDeleteTimeline = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this intake timeline?')) return;
+    if (!confirm(tr('Are you sure you want to delete this intake timeline?'))) return;
     try {
       await api.deleteTimeline(id);
       loadAllData();
     } catch (err) {
-      alert('Failed to delete timeline');
+      alert(tr('Failed to delete timeline'));
     }
   };
 
@@ -256,8 +297,10 @@ export default function AdminHowToApplyPage() {
     setReminderForm({
       title: '',
       titleLa: '',
+      titleZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       icon: 'bell',
       order: reminders.length + 1,
       isActive: true,
@@ -270,8 +313,10 @@ export default function AdminHowToApplyPage() {
     setReminderForm({
       title: item.title || '',
       titleLa: item.titleLa || '',
+      titleZh: item.titleZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       icon: item.icon || 'bell',
       order: item.order || 0,
       isActive: item.isActive ?? true,
@@ -290,17 +335,17 @@ export default function AdminHowToApplyPage() {
       setReminderModal(false);
       loadAllData();
     } catch (err) {
-      alert('Failed to save reminder');
+      alert(tr('Failed to save reminder'));
     }
   };
 
   const handleDeleteReminder = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this reminder?')) return;
+    if (!confirm(tr('Are you sure you want to delete this reminder?'))) return;
     try {
       await api.deleteReminder(id);
       loadAllData();
     } catch (err) {
-      alert('Failed to delete reminder');
+      alert(tr('Failed to delete reminder'));
     }
   };
 
@@ -319,12 +364,16 @@ export default function AdminHowToApplyPage() {
       degreeLevel: 'Undergraduate',
       title: 'Academic Requirements',
       titleLa: 'ເງື່ອນໄຂທາງວິຊາການ',
+      titleZh: '',
       subtitle: 'Undergraduate Programs',
       subtitleLa: 'ຫຼັກສູດປະລິນຍາຕີ',
+      subtitleZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       requirementsList: '',
       requirementsListLa: '',
+      requirementsListZh: '',
       icon: 'graduation-cap',
       order: requirements.length + 1,
       isActive: true,
@@ -336,6 +385,7 @@ export default function AdminHowToApplyPage() {
     setEditingReqId(item.id);
     let listStr = '';
     let listLaStr = '';
+    let listZhStr = '';
     try {
       const arr = JSON.parse(item.requirementsList || '[]');
       listStr = Array.isArray(arr) ? arr.join('\n') : item.requirementsList || '';
@@ -344,6 +394,7 @@ export default function AdminHowToApplyPage() {
     }
     try {
       const arrLa = JSON.parse(item.requirementsListLa || '[]');
+      const arrZh = JSON.parse(item.requirementsListZh || '[]');
       listLaStr = Array.isArray(arrLa) ? arrLa.join('\n') : item.requirementsListLa || '';
     } catch {
       listLaStr = item.requirementsListLa || '';
@@ -354,12 +405,16 @@ export default function AdminHowToApplyPage() {
       degreeLevel: item.degreeLevel || 'Undergraduate',
       title: item.title || '',
       titleLa: item.titleLa || '',
+      titleZh: item.titleZh || '',
       subtitle: item.subtitle || '',
       subtitleLa: item.subtitleLa || '',
+      subtitleZh: item.subtitleZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       requirementsList: listStr,
       requirementsListLa: listLaStr,
+      requirementsListZh: listZhStr,
       icon: item.icon || 'graduation-cap',
       order: item.order || 0,
       isActive: item.isActive ?? true,
@@ -372,11 +427,13 @@ export default function AdminHowToApplyPage() {
     try {
       const listArr = parseLines(reqForm.requirementsList);
       const listLaArr = parseLines(reqForm.requirementsListLa);
+      const listZhArr = parseLines(reqForm.requirementsListZh);
 
       const payload = {
         ...reqForm,
         requirementsList: JSON.stringify(listArr),
         requirementsListLa: listLaArr.length > 0 ? JSON.stringify(listLaArr) : undefined,
+        requirementsListZh: listZhArr.length > 0 ? JSON.stringify(listZhArr) : null,
       };
 
       if (editingReqId) {
@@ -387,17 +444,17 @@ export default function AdminHowToApplyPage() {
       setReqModal(false);
       loadAllData();
     } catch (err) {
-      alert('Failed to save requirement');
+      alert(tr('Failed to save requirement'));
     }
   };
 
   const handleDeleteReq = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this requirement block?')) return;
+    if (!confirm(tr('Are you sure you want to delete this requirement block?'))) return;
     try {
       await api.deleteRequirement(id);
       loadAllData();
     } catch (err) {
-      alert('Failed to delete requirement');
+      alert(tr('Failed to delete requirement'));
     }
   };
 
@@ -407,8 +464,10 @@ export default function AdminHowToApplyPage() {
     setFaqForm({
       question: '',
       questionLa: '',
+      questionZh: '',
       answer: '',
       answerLa: '',
+      answerZh: '',
       category: 'General',
       order: faqs.length + 1,
       isActive: true,
@@ -421,8 +480,10 @@ export default function AdminHowToApplyPage() {
     setFaqForm({
       question: item.question || '',
       questionLa: item.questionLa || '',
+      questionZh: item.questionZh || '',
       answer: item.answer || '',
       answerLa: item.answerLa || '',
+      answerZh: item.answerZh || '',
       category: item.category || 'General',
       order: item.order || 0,
       isActive: item.isActive ?? true,
@@ -441,17 +502,17 @@ export default function AdminHowToApplyPage() {
       setFaqModal(false);
       loadAllData();
     } catch (err) {
-      alert('Failed to save FAQ');
+      alert(tr('Failed to save FAQ'));
     }
   };
 
   const handleDeleteFaq = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this FAQ?')) return;
+    if (!confirm(tr('Are you sure you want to delete this FAQ?'))) return;
     try {
       await api.deleteFaq(id);
       loadAllData();
     } catch (err) {
-      alert('Failed to delete FAQ');
+      alert(tr('Failed to delete FAQ'));
     }
   };
 
@@ -461,8 +522,10 @@ export default function AdminHowToApplyPage() {
     setMaterialForm({
       title: '',
       titleLa: '',
+      titleZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       fileUrl: '',
       fileType: 'PDF',
       fileSize: '',
@@ -479,8 +542,10 @@ export default function AdminHowToApplyPage() {
     setMaterialForm({
       title: item.title || '',
       titleLa: item.titleLa || '',
+      titleZh: item.titleZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       fileUrl: item.fileUrl || '',
       fileType: item.fileType || 'PDF',
       fileSize: item.fileSize || '',
@@ -495,7 +560,7 @@ export default function AdminHowToApplyPage() {
   const handleSaveMaterial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!materialForm.fileUrl) {
-      alert('Please upload or provide a file URL stored in SeaweedFS.');
+      alert(tr('Please upload or provide a file URL stored in SeaweedFS.'));
       return;
     }
     try {
@@ -507,17 +572,17 @@ export default function AdminHowToApplyPage() {
       setMaterialModal(false);
       loadAllData();
     } catch (err) {
-      alert('Failed to save downloadable material');
+      alert(tr('Failed to save downloadable material'));
     }
   };
 
   const handleDeleteMaterial = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this downloadable material?')) return;
+    if (!confirm(tr('Are you sure you want to delete this downloadable material?'))) return;
     try {
       await api.deleteMaterial(id);
       loadAllData();
     } catch (err) {
-      alert('Failed to delete downloadable material');
+      alert(tr('Failed to delete downloadable material'));
     }
   };
 
@@ -528,10 +593,12 @@ export default function AdminHowToApplyPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
             <FileCheck2 className="w-8 h-8 text-[#0400CC]" />
-            How To Apply Management
+            {tr('How To Apply Management')}
           </h1>
           <p className="text-slate-500 text-sm">
-            Dynamically configure Hero banner, Timeline, Reminders, Requirements, Qualifications, International details, and FAQs.
+            {tr(
+              'Dynamically configure Hero banner, Timeline, Reminders, Requirements, Qualifications, International details, and FAQs.',
+            )}
           </p>
         </div>
 
@@ -541,7 +608,7 @@ export default function AdminHowToApplyPage() {
           rel="noreferrer"
           className="px-4 py-2 bg-blue-50 text-[#0400CC] font-bold text-xs sm:text-sm rounded-xl border border-blue-200 hover:bg-blue-100 transition-all flex items-center gap-1.5"
         >
-          View Public Page →
+          {tr('View Public Page →')}
         </a>
       </div>
 
@@ -585,8 +652,12 @@ export default function AdminHowToApplyPage() {
             <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">How to Apply Hero Banner</h2>
-                  <p className="text-xs text-slate-500">Configure title, subtitle, description, and call to action.</p>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {tr('How to Apply Hero Banner')}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {tr('Configure title, subtitle, description, and call to action.')}
+                  </p>
                 </div>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
                   <button
@@ -594,23 +665,70 @@ export default function AdminHowToApplyPage() {
                     onClick={() => setHeroLangTab('en')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer ${heroLangTab === 'en' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
                   >
-                    English
+                    {tr('English')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setHeroLangTab('la')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer ${heroLangTab === 'la' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
                   >
-                    Lao (ພາສາລາວ)
+                    {tr('Lao (ພາສາລາວ)')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHeroLangTab('zh')}
+                    className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer ${heroLangTab === 'zh' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
+                  >
+                    {tr('Chinese (中文)')}
                   </button>
                 </div>
               </div>
 
               <form onSubmit={handleSaveHero} className="space-y-5">
-                {heroLangTab === 'en' ? (
+                {heroLangTab === 'zh' ? (
                   <>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Title (EN)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Title (ZH)')}
+                      </label>
+                      <input
+                        type="text"
+                        value={heroForm.titleZh || ''}
+                        onChange={(e) => setHeroForm({ ...heroForm, titleZh: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#0400CC] outline-none text-sm font-bold"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Subtitle / Badge (ZH)')}
+                      </label>
+                      <input
+                        type="text"
+                        value={heroForm.subtitleZh || ''}
+                        onChange={(e) => setHeroForm({ ...heroForm, subtitleZh: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#0400CC] outline-none text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Description (ZH)')}
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={heroForm.descriptionZh || ''}
+                        onChange={(e) =>
+                          setHeroForm({ ...heroForm, descriptionZh: e.target.value })
+                        }
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#0400CC] outline-none text-sm"
+                      />
+                    </div>
+                  </>
+                ) : heroLangTab === 'en' ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Title (EN)')}
+                      </label>
                       <input
                         type="text"
                         value={heroForm.title || ''}
@@ -619,7 +737,9 @@ export default function AdminHowToApplyPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Subtitle / Badge (EN)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Subtitle / Badge (EN)')}
+                      </label>
                       <input
                         type="text"
                         value={heroForm.subtitle || ''}
@@ -628,7 +748,9 @@ export default function AdminHowToApplyPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Description (EN)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Description (EN)')}
+                      </label>
                       <textarea
                         rows={3}
                         value={heroForm.description || ''}
@@ -640,7 +762,9 @@ export default function AdminHowToApplyPage() {
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Title (LA)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Title (LA)')}
+                      </label>
                       <input
                         type="text"
                         value={heroForm.titleLa || ''}
@@ -649,7 +773,9 @@ export default function AdminHowToApplyPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Subtitle / Badge (LA)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Subtitle / Badge (LA)')}
+                      </label>
                       <input
                         type="text"
                         value={heroForm.subtitleLa || ''}
@@ -658,11 +784,15 @@ export default function AdminHowToApplyPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 block">Hero Description (LA)</label>
+                      <label className="text-xs font-bold text-slate-700 block">
+                        {tr('Hero Description (LA)')}
+                      </label>
                       <textarea
                         rows={3}
                         value={heroForm.descriptionLa || ''}
-                        onChange={(e) => setHeroForm({ ...heroForm, descriptionLa: e.target.value })}
+                        onChange={(e) =>
+                          setHeroForm({ ...heroForm, descriptionLa: e.target.value })
+                        }
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#0400CC] outline-none text-sm"
                       />
                     </div>
@@ -670,7 +800,9 @@ export default function AdminHowToApplyPage() {
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 block">Hero Background Image URL (Optional)</label>
+                  <label className="text-xs font-bold text-slate-700 block">
+                    {tr('Hero Background Image URL (Optional)')}
+                  </label>
                   <input
                     type="text"
                     value={heroForm.imageUrl || ''}
@@ -686,8 +818,12 @@ export default function AdminHowToApplyPage() {
                     disabled={savingHero}
                     className="px-6 py-3 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
                   >
-                    {savingHero ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    Save Hero Settings
+                    {savingHero ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    {tr('Save Hero Settings')}
                   </button>
                 </div>
               </form>
@@ -699,55 +835,91 @@ export default function AdminHowToApplyPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">Application Timelines & Intakes</h2>
-                  <p className="text-xs text-slate-500">Manage open intakes, deadlines, classes begin date, and exam notes.</p>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {tr('Application Timelines & Intakes')}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {tr('Manage open intakes, deadlines, classes begin date, and exam notes.')}
+                  </p>
                 </div>
                 <button
                   onClick={openNewTimeline}
                   className="px-4 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center gap-2 shadow-md cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Add Intake
+                  <Plus className="w-4 h-4" />
+                  {tr(' Add Intake')}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {timelines.map((item) => (
-                  <div key={item.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4 relative border-l-4 border-l-[#0400CC]">
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4 relative border-l-4 border-l-[#0400CC]"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full bg-blue-50 text-[#0400CC] flex items-center justify-center">
                           <Calendar className="w-4 h-4" />
                         </div>
                         <div>
-                          <h3 className="text-base font-bold text-slate-900">{item.intakeName}</h3>
-                          {item.intakeNameLa && <p className="text-[11px] text-slate-400">{item.intakeNameLa}</p>}
+                          <h3 className="text-base font-bold text-slate-900">
+                            {tr(localize(item, 'intakeName'))}
+                          </h3>
+                          {item.intakeNameLa && (
+                            <p className="text-[11px] text-slate-400">{tr(item.intakeNameLa)}</p>
+                          )}
                         </div>
                       </div>
                       <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
-                        {item.status || 'Open'}
+                        {tr(item.status || tr('Open'))}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100">
                       <div>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Application Deadline</span>
-                        <span className="font-bold text-slate-800">{item.deadlineDate ? new Date(item.deadlineDate).toLocaleDateString() : 'N/A'}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                          {tr('Application Deadline')}
+                        </span>
+                        <span className="font-bold text-slate-800">
+                          {tr(
+                            item.deadlineDate
+                              ? new Date(item.deadlineDate).toLocaleDateString()
+                              : tr('N/A'),
+                          )}
+                        </span>
                       </div>
                       <div>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Classes Begin</span>
-                        <span className="font-bold text-slate-800">{item.classesBeginDate ? new Date(item.classesBeginDate).toLocaleDateString() : 'N/A'}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                          {tr('Classes Begin')}
+                        </span>
+                        <span className="font-bold text-slate-800">
+                          {tr(
+                            item.classesBeginDate
+                              ? new Date(item.classesBeginDate).toLocaleDateString()
+                              : tr('N/A'),
+                          )}
+                        </span>
                       </div>
                     </div>
 
                     {item.additionalNotes && (
                       <div className="space-y-1.5 pt-1 border-t border-slate-100">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Class Start & Exam Notes:</span>
-                        {item.additionalNotes.split('\n').filter(Boolean).map((line, lIdx) => (
-                          <div key={lIdx} className="flex items-center gap-2 text-xs font-bold text-[#0400CC]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0400CC] shrink-0" />
-                            <span>{line.replace(/^[•\-\*]\s*/, '')}</span>
-                          </div>
-                        ))}
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                          {tr('Class Start & Exam Notes:')}
+                        </span>
+                        {item.additionalNotes
+                          .split('\n')
+                          .filter(Boolean)
+                          .map((line, lIdx) => (
+                            <div
+                              key={lIdx}
+                              className="flex items-center gap-2 text-xs font-bold text-[#0400CC]"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#0400CC] shrink-0" />
+                              <span>{tr(line.replace(/^[•\-\*]\s*/, ''))}</span>
+                            </div>
+                          ))}
                       </div>
                     )}
 
@@ -756,12 +928,13 @@ export default function AdminHowToApplyPage() {
                         onClick={() => openEditTimeline(item)}
                         className="p-2 text-slate-600 hover:text-[#0400CC] hover:bg-slate-50 rounded-lg cursor-pointer flex items-center gap-1 text-xs font-bold"
                       >
-                        <Edit2 className="w-3.5 h-3.5" /> Edit
+                        <Edit2 className="w-3.5 h-3.5" />
+                        {tr(' Edit')}
                       </button>
                       <button
                         onClick={() => handleDeleteTimeline(item.id)}
                         className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg cursor-pointer"
-                        title="Delete"
+                        title={tr('Delete')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -777,27 +950,39 @@ export default function AdminHowToApplyPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">Application Reminders</h2>
-                  <p className="text-xs text-slate-500">Manage important tips, scholarships bonuses, document notices, and visa timelines.</p>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {tr('Application Reminders')}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {tr(
+                      'Manage important tips, scholarships bonuses, document notices, and visa timelines.',
+                    )}
+                  </p>
                 </div>
                 <button
                   onClick={openNewReminder}
                   className="px-4 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center gap-2 shadow-md cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Add Reminder
+                  <Plus className="w-4 h-4" />
+                  {tr(' Add Reminder')}
                 </button>
               </div>
 
               <div className="space-y-3">
                 {reminders.map((rem) => (
-                  <div key={rem.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+                  <div
+                    key={rem.id}
+                    className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between gap-4"
+                  >
                     <div className="flex items-start gap-3">
                       <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#0400CC] flex items-center justify-center shrink-0 mt-0.5">
                         <Bell className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-base font-bold text-slate-900">{rem.title}</h4>
-                        <p className="text-xs text-slate-600">{rem.description}</p>
+                        <h4 className="text-base font-bold text-slate-900">
+                          {tr(localize(rem, 'title'))}
+                        </h4>
+                        <p className="text-xs text-slate-600">{tr(localize(rem, 'description'))}</p>
                       </div>
                     </div>
 
@@ -826,30 +1011,49 @@ export default function AdminHowToApplyPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">Admission Requirements & Qualifications</h2>
-                  <p className="text-xs text-slate-500">Manage Academic Requirements, Additional Qualifications, and International criteria.</p>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {tr('Admission Requirements & Qualifications')}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {tr(
+                      'Manage Academic Requirements, Additional Qualifications, and International criteria.',
+                    )}
+                  </p>
                 </div>
                 <button
                   onClick={openNewReq}
                   className="px-4 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center gap-2 shadow-md cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Add Requirement Block
+                  <Plus className="w-4 h-4" />
+                  {tr(' Add Requirement Block')}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {requirements.map((req) => (
-                  <div key={req.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+                  <div
+                    key={req.id}
+                    className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
+                  >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="px-2.5 py-0.5 bg-blue-50 text-[#0400CC] text-xs font-bold rounded-full">
-                          {req.category || 'ACADEMIC'}
+                          {tr(req.category || tr('ACADEMIC'))}
                         </span>
-                        <span className="text-xs text-slate-400">Order: {req.order}</span>
+                        <span className="text-xs text-slate-400">
+                          {tr('Order: ')}
+                          {req.order}
+                        </span>
                       </div>
-                      <h3 className="text-lg font-bold text-slate-900">{req.title}</h3>
-                      <h4 className="text-xs font-bold text-[#0400CC]">{req.subtitle}</h4>
-                      <p className="text-xs text-slate-500 line-clamp-3">{req.description}</p>
+                      <h3 className="text-lg font-bold text-slate-900">
+                        {tr(localize(req, 'title'))}
+                      </h3>
+                      <h4 className="text-xs font-bold text-[#0400CC]">
+                        {tr(localize(req, 'subtitle'))}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-3">
+                        {tr(localize(req, 'description'))}
+                      </p>
                     </div>
 
                     <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -877,28 +1081,40 @@ export default function AdminHowToApplyPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">Admission FAQs</h2>
-                  <p className="text-xs text-slate-500">Manage all questions and answers displayed in the How to Apply FAQ accordion.</p>
+                  <h2 className="text-xl font-bold text-slate-900">{tr('Admission FAQs')}</h2>
+                  <p className="text-xs text-slate-500">
+                    {tr(
+                      'Manage all questions and answers displayed in the How to Apply FAQ accordion.',
+                    )}
+                  </p>
                 </div>
                 <button
                   onClick={openNewFaq}
                   className="px-4 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center gap-2 shadow-md cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Add FAQ
+                  <Plus className="w-4 h-4" />
+                  {tr(' Add FAQ')}
                 </button>
               </div>
 
               <div className="space-y-3">
                 {faqs.map((faq) => (
-                  <div key={faq.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-start justify-between gap-4">
+                  <div
+                    key={faq.id}
+                    className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-start justify-between gap-4"
+                  >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded">
-                          {faq.category || 'General'}
+                          {tr(faq.category || tr('General'))}
                         </span>
-                        <h4 className="text-base font-bold text-slate-900">{faq.question}</h4>
+                        <h4 className="text-base font-bold text-slate-900">
+                          {tr(localize(faq, 'question'))}
+                        </h4>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed">{faq.answer}</p>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {tr(localize(faq, 'answer'))}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -928,10 +1144,12 @@ export default function AdminHowToApplyPage() {
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                     <Download className="w-5 h-5 text-[#0400CC]" />
-                    Downloadable Application Materials
+                    {tr('Downloadable Application Materials')}
                   </h2>
                   <p className="text-xs text-slate-500 mt-1">
-                    Manage brochures, admission checklists, forms, and guides. Files are uploaded directly to SeaweedFS and downloadable by students.
+                    {tr(
+                      'Manage brochures, admission checklists, forms, and guides. Files are uploaded directly to SeaweedFS and downloadable by students.',
+                    )}
                   </p>
                 </div>
                 <button
@@ -939,7 +1157,8 @@ export default function AdminHowToApplyPage() {
                   onClick={openNewMaterial}
                   className="px-4 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center gap-2 shadow-md cursor-pointer shrink-0"
                 >
-                  <Plus className="w-4 h-4" /> Add Downloadable Material
+                  <Plus className="w-4 h-4" />
+                  {tr(' Add Downloadable Material')}
                 </button>
               </div>
 
@@ -949,15 +1168,22 @@ export default function AdminHowToApplyPage() {
                     <Download className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-800">No Downloadable Materials Found</h3>
-                    <p className="text-xs text-slate-500 mt-1">Click "Add Downloadable Material" to upload your first guide to SeaweedFS.</p>
+                    <h3 className="text-base font-bold text-slate-800">
+                      {tr('No Downloadable Materials Found')}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {tr(
+                        'Click "Add Downloadable Material" to upload your first guide to SeaweedFS.',
+                      )}
+                    </p>
                   </div>
                   <button
                     type="button"
                     onClick={openNewMaterial}
                     className="px-4 py-2 bg-[#0400CC] text-white font-bold text-xs rounded-xl inline-flex items-center gap-2 cursor-pointer shadow"
                   >
-                    <Plus className="w-4 h-4" /> Add Material
+                    <Plus className="w-4 h-4" />
+                    {tr(' Add Material')}
                   </button>
                 </div>
               ) : (
@@ -978,20 +1204,27 @@ export default function AdminHowToApplyPage() {
                         >
                           <div className="flex items-center gap-4 min-w-0">
                             <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white shrink-0">
-                              {isBook ? <BookOpen className="w-6 h-6" /> : <Download className="w-6 h-6" />}
+                              {isBook ? (
+                                <BookOpen className="w-6 h-6" />
+                              ) : (
+                                <Download className="w-6 h-6" />
+                              )}
                             </div>
                             <div className="min-w-0">
                               <h3 className="text-base sm:text-lg font-bold text-white truncate">
-                                {mat.title}
+                                {tr(localize(mat, 'title'))}
                               </h3>
                               {mat.titleLa && (
-                                <p className="text-xs text-white/80 truncate">{mat.titleLa}</p>
+                                <p className="text-xs text-white/80 truncate">{tr(mat.titleLa)}</p>
                               )}
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white/20 text-white">
-                                  {mat.fileType || 'PDF'}, {mat.fileSize || 'Auto'}
+                                  {tr(mat.fileType || tr('PDF'))}, {tr(mat.fileSize || tr('Auto'))}
                                 </span>
-                                <span className="text-[11px] text-white/70">Order: {mat.order}</span>
+                                <span className="text-[11px] text-white/70">
+                                  {tr('Order: ')}
+                                  {mat.order}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -999,10 +1232,12 @@ export default function AdminHowToApplyPage() {
                           <div className="flex items-center gap-1.5 shrink-0">
                             <span
                               className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                mat.isActive !== false ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/30' : 'bg-red-500/20 text-red-200'
+                                mat.isActive !== false
+                                  ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/30'
+                                  : 'bg-red-500/20 text-red-200'
                               }`}
                             >
-                              {mat.isActive !== false ? 'Active' : 'Inactive'}
+                              {tr(mat.isActive !== false ? tr('Active') : tr('Inactive'))}
                             </span>
                           </div>
                         </div>
@@ -1012,12 +1247,12 @@ export default function AdminHowToApplyPage() {
                           <div className="space-y-2">
                             {mat.description && (
                               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                                {mat.description}
+                                {tr(localize(mat, 'description'))}
                               </p>
                             )}
                             {mat.descriptionLa && (
                               <p className="text-xs text-slate-400 leading-relaxed italic">
-                                {mat.descriptionLa}
+                                {tr(mat.descriptionLa)}
                               </p>
                             )}
                           </div>
@@ -1026,10 +1261,10 @@ export default function AdminHowToApplyPage() {
                           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
                             <div className="min-w-0">
                               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                                SeaweedFS File Storage:
+                                {tr('SeaweedFS File Storage:')}
                               </span>
                               <span className="font-mono text-slate-700 truncate block text-[11px]">
-                                {mat.fileUrl || 'No file attached'}
+                                {tr(mat.fileUrl || tr('No file attached'))}
                               </span>
                             </div>
                             {mat.fileUrl && (
@@ -1039,10 +1274,10 @@ export default function AdminHowToApplyPage() {
                                 rel="noopener noreferrer"
                                 download
                                 className="p-2 bg-white text-[#0400CC] hover:bg-blue-50 border border-slate-200 rounded-lg shrink-0 inline-flex items-center gap-1 font-bold text-xs"
-                                title="Download File"
+                                title={tr('Download File')}
                               >
                                 <Download className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">Test</span>
+                                <span className="hidden sm:inline">{tr('Test')}</span>
                               </a>
                             )}
                           </div>
@@ -1055,7 +1290,8 @@ export default function AdminHowToApplyPage() {
                                 onClick={() => openEditMaterial(mat)}
                                 className="px-3 py-1.5 bg-slate-100 hover:bg-[#0400CC] hover:text-white text-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
                               >
-                                <Edit2 className="w-3.5 h-3.5" /> Edit Material
+                                <Edit2 className="w-3.5 h-3.5" />
+                                {tr(' Edit Material')}
                               </button>
                             </div>
 
@@ -1063,7 +1299,7 @@ export default function AdminHowToApplyPage() {
                               type="button"
                               onClick={() => handleDeleteMaterial(mat.id)}
                               className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                              title="Delete Material"
+                              title={tr('Delete Material')}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1084,7 +1320,7 @@ export default function AdminHowToApplyPage() {
         <Modal
           isOpen={timelineModal}
           onClose={() => setTimelineModal(false)}
-          title={editingTimelineId ? 'Edit Intake Timeline' : 'Add New Intake Timeline'}
+          title={tr(editingTimelineId ? 'Edit Intake Timeline' : 'Add New Intake Timeline')}
         >
           <form onSubmit={handleSaveTimeline} className="space-y-4">
             <div className="flex bg-slate-100 p-1 rounded-xl mb-3">
@@ -1093,48 +1329,101 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setTimelineLangTab('en')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${timelineLangTab === 'en' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                English
+                {tr('English')}
               </button>
               <button
                 type="button"
                 onClick={() => setTimelineLangTab('la')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${timelineLangTab === 'la' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                Lao
+                {tr('Lao')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimelineLangTab('zh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${timelineLangTab === 'zh' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              >
+                {tr('Chinese')}
               </button>
             </div>
 
-            {timelineLangTab === 'en' ? (
+            {timelineLangTab === 'zh' ? (
               <>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Intake Name (EN) <span className="text-red-500">*</span>
+                    {tr('Intake Name (ZH)')}
                   </label>
                   <input
                     type="text"
-                    required
-                    placeholder="e.g. Fall Semester 2026"
-                    value={timelineForm.intakeName}
-                    onChange={(e) => setTimelineForm({ ...timelineForm, intakeName: e.target.value })}
+                    placeholder="请输入中文入学批次"
+                    value={timelineForm.intakeNameZh}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, intakeNameZh: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
                   />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-xs font-bold text-slate-700">
-                      Additional Notes / Class Start Date & Placement Exam (EN)
+                      {tr('Additional Notes / Class Start Date & Placement Exam (ZH)')}
                     </label>
-                    <span className="text-[11px] text-slate-400">One item per line</span>
+                    <span className="text-[11px] text-slate-400">每行一项</span>
                   </div>
                   <textarea
                     rows={3}
-                    placeholder={`1st of October will be starting date of class.\nPlacement Exam 7th of September`}
-                    value={timelineForm.additionalNotes}
-                    onChange={(e) => setTimelineForm({ ...timelineForm, additionalNotes: e.target.value })}
+                    placeholder="请输入中文开课日期及考试说明，每行一项"
+                    value={timelineForm.additionalNotesZh}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, additionalNotesZh: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed font-mono text-xs"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Each line entered will be formatted as a highlighted bullet note (e.g. placement test, start date) on the public timeline box.
+                    每行说明将作为提示显示在网站时间表中。
+                  </p>
+                </div>
+              </>
+            ) : timelineLangTab === 'en' ? (
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Intake Name (EN) ')}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={tr('e.g. Fall Semester 2026')}
+                    value={timelineForm.intakeName}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, intakeName: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-slate-700">
+                      {tr('Additional Notes / Class Start Date & Placement Exam (EN)')}
+                    </label>
+                    <span className="text-[11px] text-slate-400">{tr('One item per line')}</span>
+                  </div>
+                  <textarea
+                    rows={3}
+                    placeholder={tr(
+                      `1st of October will be starting date of class.\nPlacement Exam 7th of September`,
+                    )}
+                    value={timelineForm.additionalNotes}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, additionalNotes: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed font-mono text-xs"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    {tr(
+                      'Each line entered will be formatted as a highlighted bullet note (e.g. placement test, start date) on the public timeline box.',
+                    )}
                   </p>
                 </div>
               </>
@@ -1142,28 +1431,34 @@ export default function AdminHowToApplyPage() {
               <>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Intake Name (LA)
+                    {tr('Intake Name (LA)')}
                   </label>
                   <input
                     type="text"
                     placeholder="e.g. ພາກຮຽນລະດູໃບໄມ້ຫຼົ່ນ 2026"
                     value={timelineForm.intakeNameLa}
-                    onChange={(e) => setTimelineForm({ ...timelineForm, intakeNameLa: e.target.value })}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, intakeNameLa: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
                   />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-xs font-bold text-slate-700">
-                      Additional Notes / Class Start Date & Placement Exam (LA)
+                      {tr('Additional Notes / Class Start Date & Placement Exam (LA)')}
                     </label>
                     <span className="text-[11px] text-slate-400">ແຖວລະ 1 ລາຍການ</span>
                   </div>
                   <textarea
                     rows={3}
-                    placeholder={`ວັນທີ 1 ຕຸລາ ຈະເປັນມື້ເລີ່ມຕົ້ນຮຽນ.\nສອບເສັງວັດລະດັບວັນທີ 7 ກັນຍາ`}
+                    placeholder={tr(
+                      `ວັນທີ 1 ຕຸລາ ຈະເປັນມື້ເລີ່ມຕົ້ນຮຽນ.\nສອບເສັງວັດລະດັບວັນທີ 7 ກັນຍາ`,
+                    )}
                     value={timelineForm.additionalNotesLa}
-                    onChange={(e) => setTimelineForm({ ...timelineForm, additionalNotesLa: e.target.value })}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, additionalNotesLa: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed font-mono text-xs"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
@@ -1175,20 +1470,28 @@ export default function AdminHowToApplyPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Application Deadline</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Application Deadline')}
+                </label>
                 <input
                   type="date"
                   value={timelineForm.deadlineDate}
-                  onChange={(e) => setTimelineForm({ ...timelineForm, deadlineDate: e.target.value })}
+                  onChange={(e) =>
+                    setTimelineForm({ ...timelineForm, deadlineDate: e.target.value })
+                  }
                   className="w-full px-3 py-2 border rounded-xl text-sm"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Classes Begin Date</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Classes Begin Date')}
+                </label>
                 <input
                   type="date"
                   value={timelineForm.classesBeginDate}
-                  onChange={(e) => setTimelineForm({ ...timelineForm, classesBeginDate: e.target.value })}
+                  onChange={(e) =>
+                    setTimelineForm({ ...timelineForm, classesBeginDate: e.target.value })
+                  }
                   className="w-full px-3 py-2 border rounded-xl text-sm"
                 />
               </div>
@@ -1196,7 +1499,9 @@ export default function AdminHowToApplyPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Status Badge</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Status Badge')}
+                </label>
                 <input
                   type="text"
                   value={timelineForm.status}
@@ -1205,11 +1510,13 @@ export default function AdminHowToApplyPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Order</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{tr('Order')}</label>
                 <input
                   type="number"
                   value={timelineForm.order}
-                  onChange={(e) => setTimelineForm({ ...timelineForm, order: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setTimelineForm({ ...timelineForm, order: parseInt(e.target.value) || 0 })
+                  }
                   className="w-full px-3 py-2 border rounded-xl text-sm"
                 />
               </div>
@@ -1221,13 +1528,13 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setTimelineModal(false)}
                 className="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer"
               >
-                Cancel
+                {tr('Cancel')}
               </button>
               <button
                 type="submit"
                 className="px-5 py-2 bg-[#0400CC] text-white rounded-xl text-sm font-bold shadow-md cursor-pointer"
               >
-                Save Timeline
+                {tr('Save Timeline')}
               </button>
             </div>
           </form>
@@ -1239,7 +1546,7 @@ export default function AdminHowToApplyPage() {
         <Modal
           isOpen={reminderModal}
           onClose={() => setReminderModal(false)}
-          title={editingReminderId ? 'Edit Reminder' : 'Add New Reminder'}
+          title={tr(editingReminderId ? 'Edit Reminder' : 'Add New Reminder')}
         >
           <form onSubmit={handleSaveReminder} className="space-y-4">
             <div className="flex bg-slate-100 p-1 rounded-xl mb-3">
@@ -1248,21 +1555,57 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setReminderLangTab('en')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reminderLangTab === 'en' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                English
+                {tr('English')}
               </button>
               <button
                 type="button"
                 onClick={() => setReminderLangTab('la')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reminderLangTab === 'la' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                Lao
+                {tr('Lao')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setReminderLangTab('zh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reminderLangTab === 'zh' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              >
+                {tr('Chinese')}
               </button>
             </div>
 
-            {reminderLangTab === 'en' ? (
+            {reminderLangTab === 'zh' ? (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Title (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (ZH)')}
+                  </label>
+                  <input
+                    type="text"
+                    value={reminderForm.titleZh}
+                    onChange={(e) => setReminderForm({ ...reminderForm, titleZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Description (ZH)')}
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={reminderForm.descriptionZh}
+                    onChange={(e) =>
+                      setReminderForm({ ...reminderForm, descriptionZh: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border rounded-xl text-sm"
+                  />
+                </div>
+              </>
+            ) : reminderLangTab === 'en' ? (
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (EN)')}
+                  </label>
                   <input
                     type="text"
                     required
@@ -1272,12 +1615,16 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Description (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Description (EN)')}
+                  </label>
                   <textarea
                     rows={3}
                     required
                     value={reminderForm.description}
-                    onChange={(e) => setReminderForm({ ...reminderForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setReminderForm({ ...reminderForm, description: e.target.value })
+                    }
                     className="w-full px-3 py-2 border rounded-xl text-sm"
                   />
                 </div>
@@ -1285,7 +1632,9 @@ export default function AdminHowToApplyPage() {
             ) : (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Title (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (LA)')}
+                  </label>
                   <input
                     type="text"
                     value={reminderForm.titleLa}
@@ -1294,11 +1643,15 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Description (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Description (LA)')}
+                  </label>
                   <textarea
                     rows={3}
                     value={reminderForm.descriptionLa}
-                    onChange={(e) => setReminderForm({ ...reminderForm, descriptionLa: e.target.value })}
+                    onChange={(e) =>
+                      setReminderForm({ ...reminderForm, descriptionLa: e.target.value })
+                    }
                     className="w-full px-3 py-2 border rounded-xl text-sm"
                   />
                 </div>
@@ -1311,13 +1664,13 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setReminderModal(false)}
                 className="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer"
               >
-                Cancel
+                {tr('Cancel')}
               </button>
               <button
                 type="submit"
                 className="px-5 py-2 bg-[#0400CC] text-white rounded-xl text-sm font-bold shadow-md cursor-pointer"
               >
-                Save Reminder
+                {tr('Save Reminder')}
               </button>
             </div>
           </form>
@@ -1329,24 +1682,28 @@ export default function AdminHowToApplyPage() {
         <Modal
           isOpen={reqModal}
           onClose={() => setReqModal(false)}
-          title={editingReqId ? 'Edit Requirements Block' : 'Add Requirements Block'}
+          title={tr(editingReqId ? 'Edit Requirements Block' : 'Add Requirements Block')}
         >
           <form onSubmit={handleSaveReq} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Category</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Category')}
+                </label>
                 <select
                   value={reqForm.category}
                   onChange={(e) => setReqForm({ ...reqForm, category: e.target.value })}
                   className="w-full px-3 py-2 border rounded-xl text-sm bg-white"
                 >
-                  <option value="ACADEMIC">ACADEMIC</option>
-                  <option value="QUALIFICATIONS">QUALIFICATIONS</option>
-                  <option value="INTERNATIONAL">INTERNATIONAL</option>
+                  <option value="ACADEMIC">{tr('ACADEMIC')}</option>
+                  <option value="QUALIFICATIONS">{tr('QUALIFICATIONS')}</option>
+                  <option value="INTERNATIONAL">{tr('INTERNATIONAL')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Degree Level</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Degree Level')}
+                </label>
                 <input
                   type="text"
                   value={reqForm.degreeLevel}
@@ -1362,21 +1719,66 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setReqLangTab('en')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reqLangTab === 'en' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                English
+                {tr('English')}
               </button>
               <button
                 type="button"
                 onClick={() => setReqLangTab('la')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reqLangTab === 'la' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                Lao
+                {tr('Lao')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setReqLangTab('zh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${reqLangTab === 'zh' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              >
+                {tr('Chinese')}
               </button>
             </div>
 
-            {reqLangTab === 'en' ? (
+            {reqLangTab === 'zh' ? (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Title (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (ZH)')}
+                  </label>
+                  <input
+                    type="text"
+                    value={reqForm.titleZh}
+                    onChange={(e) => setReqForm({ ...reqForm, titleZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Subtitle / Track (ZH)')}
+                  </label>
+                  <input
+                    type="text"
+                    value={reqForm.subtitleZh}
+                    onChange={(e) => setReqForm({ ...reqForm, subtitleZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Bullet Items (ZH - 1 per line)')}
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={reqForm.requirementsListZh}
+                    onChange={(e) => setReqForm({ ...reqForm, requirementsListZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm"
+                  />
+                </div>
+              </>
+            ) : reqLangTab === 'en' ? (
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (EN)')}
+                  </label>
                   <input
                     type="text"
                     required
@@ -1386,7 +1788,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Subtitle / Track (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Subtitle / Track (EN)')}
+                  </label>
                   <input
                     type="text"
                     value={reqForm.subtitle}
@@ -1395,7 +1799,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Bullet Items (1 per line)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Bullet Items (1 per line)')}
+                  </label>
                   <textarea
                     rows={4}
                     value={reqForm.requirementsList}
@@ -1407,7 +1813,9 @@ export default function AdminHowToApplyPage() {
             ) : (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Title (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Title (LA)')}
+                  </label>
                   <input
                     type="text"
                     value={reqForm.titleLa}
@@ -1416,7 +1824,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Subtitle / Track (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Subtitle / Track (LA)')}
+                  </label>
                   <input
                     type="text"
                     value={reqForm.subtitleLa}
@@ -1425,7 +1835,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Bullet Items (LA - 1 per line)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Bullet Items (LA - 1 per line)')}
+                  </label>
                   <textarea
                     rows={4}
                     value={reqForm.requirementsListLa}
@@ -1442,13 +1854,13 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setReqModal(false)}
                 className="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer"
               >
-                Cancel
+                {tr('Cancel')}
               </button>
               <button
                 type="submit"
                 className="px-5 py-2 bg-[#0400CC] text-white rounded-xl text-sm font-bold shadow-md cursor-pointer"
               >
-                Save Block
+                {tr('Save Block')}
               </button>
             </div>
           </form>
@@ -1460,7 +1872,7 @@ export default function AdminHowToApplyPage() {
         <Modal
           isOpen={faqModal}
           onClose={() => setFaqModal(false)}
-          title={editingFaqId ? 'Edit FAQ' : 'Add FAQ'}
+          title={tr(editingFaqId ? 'Edit FAQ' : tr('Add FAQ'))}
         >
           <form onSubmit={handleSaveFaq} className="space-y-4">
             <div className="flex bg-slate-100 p-1 rounded-xl mb-3">
@@ -1469,21 +1881,55 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setFaqLangTab('en')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${faqLangTab === 'en' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                English
+                {tr('English')}
               </button>
               <button
                 type="button"
                 onClick={() => setFaqLangTab('la')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${faqLangTab === 'la' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
               >
-                Lao
+                {tr('Lao')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setFaqLangTab('zh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg ${faqLangTab === 'zh' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              >
+                {tr('Chinese')}
               </button>
             </div>
 
-            {faqLangTab === 'en' ? (
+            {faqLangTab === 'zh' ? (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Question (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Question (ZH)')}
+                  </label>
+                  <input
+                    type="text"
+                    value={faqForm.questionZh}
+                    onChange={(e) => setFaqForm({ ...faqForm, questionZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Answer (ZH)')}
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={faqForm.answerZh}
+                    onChange={(e) => setFaqForm({ ...faqForm, answerZh: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-xl text-sm leading-relaxed"
+                  />
+                </div>
+              </>
+            ) : faqLangTab === 'en' ? (
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Question (EN)')}
+                  </label>
                   <input
                     type="text"
                     required
@@ -1493,7 +1939,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Answer (EN)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Answer (EN)')}
+                  </label>
                   <textarea
                     rows={4}
                     required
@@ -1506,7 +1954,9 @@ export default function AdminHowToApplyPage() {
             ) : (
               <>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Question (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Question (LA)')}
+                  </label>
                   <input
                     type="text"
                     value={faqForm.questionLa}
@@ -1515,7 +1965,9 @@ export default function AdminHowToApplyPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Answer (LA)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Answer (LA)')}
+                  </label>
                   <textarea
                     rows={4}
                     value={faqForm.answerLa}
@@ -1528,7 +1980,9 @@ export default function AdminHowToApplyPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Category</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Category')}
+                </label>
                 <input
                   type="text"
                   value={faqForm.category}
@@ -1537,7 +1991,7 @@ export default function AdminHowToApplyPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Order</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{tr('Order')}</label>
                 <input
                   type="number"
                   value={faqForm.order}
@@ -1553,13 +2007,13 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setFaqModal(false)}
                 className="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer"
               >
-                Cancel
+                {tr('Cancel')}
               </button>
               <button
                 type="submit"
                 className="px-5 py-2 bg-[#0400CC] text-white rounded-xl text-sm font-bold shadow-md cursor-pointer"
               >
-                Save FAQ
+                {tr('Save FAQ')}
               </button>
             </div>
           </form>
@@ -1571,7 +2025,9 @@ export default function AdminHowToApplyPage() {
         <Modal
           isOpen={materialModal}
           onClose={() => setMaterialModal(false)}
-          title={editingMaterialId ? 'Edit Downloadable Material' : 'Add Downloadable Material'}
+          title={tr(
+            editingMaterialId ? 'Edit Downloadable Material' : tr('Add Downloadable Material'),
+          )}
         >
           <form onSubmit={handleSaveMaterial} className="space-y-4">
             {/* Language Switcher */}
@@ -1583,7 +2039,7 @@ export default function AdminHowToApplyPage() {
                   materialLangTab === 'en' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-500'
                 }`}
               >
-                English Details
+                {tr('English Details')}
               </button>
               <button
                 type="button"
@@ -1592,20 +2048,60 @@ export default function AdminHowToApplyPage() {
                   materialLangTab === 'la' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-500'
                 }`}
               >
-                Lao Details (ພາສາລາວ)
+                {tr('Lao Details (ພາສາລາວ)')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMaterialLangTab('zh')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  materialLangTab === 'zh' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-500'
+                }`}
+              >
+                {tr('Chinese Details (中文)')}
               </button>
             </div>
 
-            {materialLangTab === 'en' ? (
+            {materialLangTab === 'zh' ? (
               <>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Document Title (EN) <span className="text-red-500">*</span>
+                    {tr('Document Title (ZH)')}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="请输入中文标题"
+                    value={materialForm.titleZh}
+                    onChange={(e) => setMaterialForm({ ...materialForm, titleZh: e.target.value })}
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Short Description (ZH)')}
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="请输入中文说明"
+                    value={materialForm.descriptionZh}
+                    onChange={(e) =>
+                      setMaterialForm({ ...materialForm, descriptionZh: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed resize-none"
+                  />
+                </div>
+              </>
+            ) : materialLangTab === 'en' ? (
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    {tr('Document Title (EN) ')}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Application Checklist"
+                    placeholder={tr('e.g. Application Checklist')}
                     value={materialForm.title}
                     onChange={(e) => setMaterialForm({ ...materialForm, title: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
@@ -1614,13 +2110,15 @@ export default function AdminHowToApplyPage() {
 
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Short Description (EN)
+                    {tr('Short Description (EN)')}
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="Brief overview of what this guide or checklist contains..."
+                    placeholder={tr('Brief overview of what this guide or checklist contains...')}
                     value={materialForm.description}
-                    onChange={(e) => setMaterialForm({ ...materialForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setMaterialForm({ ...materialForm, description: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed resize-none"
                   />
                 </div>
@@ -1629,7 +2127,7 @@ export default function AdminHowToApplyPage() {
               <>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Document Title (LA)
+                    {tr('Document Title (LA)')}
                   </label>
                   <input
                     type="text"
@@ -1642,13 +2140,15 @@ export default function AdminHowToApplyPage() {
 
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Short Description (LA)
+                    {tr('Short Description (LA)')}
                   </label>
                   <textarea
                     rows={3}
                     placeholder="ຄຳອະທິບາຍຫຍໍ້ກ່ຽວກັບເອກະສານນີ້..."
                     value={materialForm.descriptionLa}
-                    onChange={(e) => setMaterialForm({ ...materialForm, descriptionLa: e.target.value })}
+                    onChange={(e) =>
+                      setMaterialForm({ ...materialForm, descriptionLa: e.target.value })
+                    }
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] leading-relaxed resize-none"
                   />
                 </div>
@@ -1658,7 +2158,7 @@ export default function AdminHowToApplyPage() {
             {/* SeaweedFS File Upload Zone */}
             <div className="pt-2">
               <FileUpload
-                label="Document File (SeaweedFS Upload)"
+                label={tr('Document File (SeaweedFS Upload)')}
                 required
                 value={materialForm.fileUrl}
                 onChange={(url, meta) => {
@@ -1669,27 +2169,33 @@ export default function AdminHowToApplyPage() {
                     fileSize: meta?.fileSize || prev.fileSize,
                   }));
                 }}
-                helpText="Upload PDF, DOCX, or ZIP to SeaweedFS. File size & format are auto-extracted."
+                helpText={tr(
+                  'Upload PDF, DOCX, or ZIP to SeaweedFS. File size & format are auto-extracted.',
+                )}
               />
             </div>
 
             {/* File Format & Size */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">File Format / Type</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('File Format / Type')}
+                </label>
                 <input
                   type="text"
-                  placeholder="PDF"
+                  placeholder={tr('PDF')}
                   value={materialForm.fileType}
                   onChange={(e) => setMaterialForm({ ...materialForm, fileType: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm font-mono uppercase"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">File Size Display</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('File Size Display')}
+                </label>
                 <input
                   type="text"
-                  placeholder="e.g. 2.3 MB"
+                  placeholder={tr('e.g. 2.3 MB')}
                   value={materialForm.fileSize}
                   onChange={(e) => setMaterialForm({ ...materialForm, fileSize: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm font-mono"
@@ -1700,33 +2206,41 @@ export default function AdminHowToApplyPage() {
             {/* Card Header Color & Icon */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Header Accent Color</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Header Accent Color')}
+                </label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
                     value={materialForm.badgeColor}
-                    onChange={(e) => setMaterialForm({ ...materialForm, badgeColor: e.target.value })}
+                    onChange={(e) =>
+                      setMaterialForm({ ...materialForm, badgeColor: e.target.value })
+                    }
                     className="w-10 h-10 rounded-xl border border-slate-200 p-1 cursor-pointer"
                   />
                   <input
                     type="text"
                     value={materialForm.badgeColor}
-                    onChange={(e) => setMaterialForm({ ...materialForm, badgeColor: e.target.value })}
+                    onChange={(e) =>
+                      setMaterialForm({ ...materialForm, badgeColor: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Card Icon</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Card Icon')}
+                </label>
                 <select
                   value={materialForm.icon}
                   onChange={(e) => setMaterialForm({ ...materialForm, icon: e.target.value })}
                   className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-white"
                 >
-                  <option value="Download">Download Arrow</option>
-                  <option value="BookOpen">Book Open</option>
-                  <option value="FileText">File Document</option>
+                  <option value="Download">{tr('Download Arrow')}</option>
+                  <option value="BookOpen">{tr('Book Open')}</option>
+                  <option value="FileText">{tr('File Document')}</option>
                 </select>
               </div>
             </div>
@@ -1734,11 +2248,15 @@ export default function AdminHowToApplyPage() {
             {/* Order & Active Status */}
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Display Order</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  {tr('Display Order')}
+                </label>
                 <input
                   type="number"
                   value={materialForm.order}
-                  onChange={(e) => setMaterialForm({ ...materialForm, order: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setMaterialForm({ ...materialForm, order: parseInt(e.target.value) || 0 })
+                  }
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm"
                 />
               </div>
@@ -1751,8 +2269,11 @@ export default function AdminHowToApplyPage() {
                   onChange={(e) => setMaterialForm({ ...materialForm, isActive: e.target.checked })}
                   className="w-4 h-4 text-[#0400CC] rounded cursor-pointer"
                 />
-                <label htmlFor="matIsActive" className="text-xs font-bold text-slate-700 cursor-pointer">
-                  Visible to Public
+                <label
+                  htmlFor="matIsActive"
+                  className="text-xs font-bold text-slate-700 cursor-pointer"
+                >
+                  {tr('Visible to Public')}
                 </label>
               </div>
             </div>
@@ -1763,13 +2284,13 @@ export default function AdminHowToApplyPage() {
                 onClick={() => setMaterialModal(false)}
                 className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-semibold cursor-pointer text-slate-600 hover:bg-slate-50"
               >
-                Cancel
+                {tr('Cancel')}
               </button>
               <button
                 type="submit"
                 className="px-5 py-2 bg-[#0400CC] hover:bg-[#0000CC] text-white rounded-xl text-sm font-bold shadow-md cursor-pointer transition-all"
               >
-                {editingMaterialId ? 'Update Material' : 'Save Material'}
+                {tr(editingMaterialId ? tr('Update Material') : tr('Save Material'))}
               </button>
             </div>
           </form>

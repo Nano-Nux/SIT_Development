@@ -17,15 +17,20 @@ export class AdmissionsService {
       data: {
         intakeName: data.intakeName,
         intakeNameLa: data.intakeNameLa,
+        intakeNameZh: data.intakeNameZh,
         intakeYear: data.intakeYear || '2026',
         openingDate: new Date(data.openingDate || Date.now()),
         closingDate: new Date(data.closingDate || Date.now() + 30 * 86400000),
         deadlineDate: data.deadlineDate ? new Date(data.deadlineDate) : null,
-        classesBeginDate: data.classesBeginDate ? new Date(data.classesBeginDate) : null,
+        classesBeginDate: data.classesBeginDate
+          ? new Date(data.classesBeginDate)
+          : null,
         additionalNotes: data.additionalNotes || null,
         additionalNotesLa: data.additionalNotesLa || null,
+        additionalNotesZh: data.additionalNotesZh || null,
         status: data.status || 'Open',
         statusLa: data.statusLa,
+        statusZh: data.statusZh,
         order: data.order !== undefined ? Number(data.order) : 0,
       },
     });
@@ -37,15 +42,35 @@ export class AdmissionsService {
       data: {
         intakeName: data.intakeName,
         intakeNameLa: data.intakeNameLa,
+        intakeNameZh: data.intakeNameZh,
         intakeYear: data.intakeYear,
         openingDate: data.openingDate ? new Date(data.openingDate) : undefined,
         closingDate: data.closingDate ? new Date(data.closingDate) : undefined,
-        deadlineDate: data.deadlineDate !== undefined ? (data.deadlineDate ? new Date(data.deadlineDate) : null) : undefined,
-        classesBeginDate: data.classesBeginDate !== undefined ? (data.classesBeginDate ? new Date(data.classesBeginDate) : null) : undefined,
-        additionalNotes: data.additionalNotes !== undefined ? data.additionalNotes : undefined,
-        additionalNotesLa: data.additionalNotesLa !== undefined ? data.additionalNotesLa : undefined,
+        deadlineDate:
+          data.deadlineDate !== undefined
+            ? data.deadlineDate
+              ? new Date(data.deadlineDate)
+              : null
+            : undefined,
+        classesBeginDate:
+          data.classesBeginDate !== undefined
+            ? data.classesBeginDate
+              ? new Date(data.classesBeginDate)
+              : null
+            : undefined,
+        additionalNotes:
+          data.additionalNotes !== undefined ? data.additionalNotes : undefined,
+        additionalNotesLa:
+          data.additionalNotesLa !== undefined
+            ? data.additionalNotesLa
+            : undefined,
+        additionalNotesZh:
+          data.additionalNotesZh !== undefined
+            ? data.additionalNotesZh
+            : undefined,
         status: data.status,
         statusLa: data.statusLa,
+        statusZh: data.statusZh,
         order: data.order !== undefined ? Number(data.order) : undefined,
       },
     });
@@ -70,8 +95,10 @@ export class AdmissionsService {
       data: {
         title: data.title,
         titleLa: data.titleLa || null,
+        titleZh: data.titleZh || null,
         description: data.description,
         descriptionLa: data.descriptionLa || null,
+        descriptionZh: data.descriptionZh || null,
         icon: data.icon || 'bell',
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
@@ -85,11 +112,16 @@ export class AdmissionsService {
       data: {
         title: data.title,
         titleLa: data.titleLa !== undefined ? data.titleLa : undefined,
+        titleZh: data.titleZh !== undefined ? data.titleZh : undefined,
         description: data.description,
-        descriptionLa: data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        descriptionLa:
+          data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        descriptionZh:
+          data.descriptionZh !== undefined ? data.descriptionZh : undefined,
         icon: data.icon !== undefined ? data.icon : undefined,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -111,12 +143,24 @@ export class AdmissionsService {
   }
 
   async createRequirement(data: any) {
-    const requirementsList = typeof data.requirementsList === 'string'
-      ? data.requirementsList
-      : JSON.stringify(data.requirementsList || []);
-    const requirementsListLa = data.requirementsListLa !== undefined
-      ? (typeof data.requirementsListLa === 'string' ? data.requirementsListLa : JSON.stringify(data.requirementsListLa))
-      : null;
+    const requirementsList =
+      typeof data.requirementsList === 'string'
+        ? data.requirementsList
+        : JSON.stringify(data.requirementsList || []);
+    const requirementsListLa =
+      data.requirementsListLa !== undefined
+        ? typeof data.requirementsListLa === 'string'
+          ? data.requirementsListLa
+          : JSON.stringify(data.requirementsListLa)
+        : null;
+    const requirementsListZh =
+      data.requirementsListZh !== undefined
+        ? data.requirementsListZh === null
+          ? null
+          : typeof data.requirementsListZh === 'string'
+            ? data.requirementsListZh
+            : JSON.stringify(data.requirementsListZh)
+        : null;
 
     return this.prisma.admissionRequirement.create({
       data: {
@@ -124,12 +168,16 @@ export class AdmissionsService {
         degreeLevel: data.degreeLevel || 'Undergraduate',
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         subtitle: data.subtitle || null,
         subtitleLa: data.subtitleLa || null,
+        subtitleZh: data.subtitleZh || null,
         description: data.description || null,
         descriptionLa: data.descriptionLa || null,
+        descriptionZh: data.descriptionZh || null,
         requirementsList,
         requirementsListLa,
+        requirementsListZh,
         icon: data.icon || null,
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
@@ -138,12 +186,26 @@ export class AdmissionsService {
   }
 
   async updateRequirement(id: string, data: any) {
-    const requirementsList = data.requirementsList !== undefined
-      ? (typeof data.requirementsList === 'string' ? data.requirementsList : JSON.stringify(data.requirementsList))
-      : undefined;
-    const requirementsListLa = data.requirementsListLa !== undefined
-      ? (typeof data.requirementsListLa === 'string' ? data.requirementsListLa : JSON.stringify(data.requirementsListLa))
-      : undefined;
+    const requirementsList =
+      data.requirementsList !== undefined
+        ? typeof data.requirementsList === 'string'
+          ? data.requirementsList
+          : JSON.stringify(data.requirementsList)
+        : undefined;
+    const requirementsListLa =
+      data.requirementsListLa !== undefined
+        ? typeof data.requirementsListLa === 'string'
+          ? data.requirementsListLa
+          : JSON.stringify(data.requirementsListLa)
+        : undefined;
+    const requirementsListZh =
+      data.requirementsListZh !== undefined
+        ? data.requirementsListZh === null
+          ? null
+          : typeof data.requirementsListZh === 'string'
+            ? data.requirementsListZh
+            : JSON.stringify(data.requirementsListZh)
+        : undefined;
 
     return this.prisma.admissionRequirement.update({
       where: { id },
@@ -152,15 +214,23 @@ export class AdmissionsService {
         degreeLevel: data.degreeLevel,
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         subtitle: data.subtitle !== undefined ? data.subtitle : undefined,
         subtitleLa: data.subtitleLa !== undefined ? data.subtitleLa : undefined,
-        description: data.description !== undefined ? data.description : undefined,
-        descriptionLa: data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        subtitleZh: data.subtitleZh !== undefined ? data.subtitleZh : undefined,
+        description:
+          data.description !== undefined ? data.description : undefined,
+        descriptionLa:
+          data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        descriptionZh:
+          data.descriptionZh !== undefined ? data.descriptionZh : undefined,
         requirementsList,
         requirementsListLa,
+        requirementsListZh,
         icon: data.icon !== undefined ? data.icon : undefined,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -186,8 +256,10 @@ export class AdmissionsService {
       data: {
         question: data.question,
         questionLa: data.questionLa || null,
+        questionZh: data.questionZh || null,
         answer: data.answer,
         answerLa: data.answerLa || null,
+        answerZh: data.answerZh || null,
         category: data.category || 'General',
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
@@ -201,11 +273,14 @@ export class AdmissionsService {
       data: {
         question: data.question,
         questionLa: data.questionLa !== undefined ? data.questionLa : undefined,
+        questionZh: data.questionZh !== undefined ? data.questionZh : undefined,
         answer: data.answer,
         answerLa: data.answerLa !== undefined ? data.answerLa : undefined,
+        answerZh: data.answerZh !== undefined ? data.answerZh : undefined,
         category: data.category !== undefined ? data.category : undefined,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -229,8 +304,10 @@ export class AdmissionsService {
       data: {
         title: data.title,
         titleLa: data.titleLa || null,
+        titleZh: data.titleZh || null,
         description: data.description || null,
         descriptionLa: data.descriptionLa || null,
+        descriptionZh: data.descriptionZh || null,
         fileUrl: data.fileUrl,
         fileType: data.fileType || 'PDF',
         fileSize: data.fileSize || null,
@@ -248,15 +325,21 @@ export class AdmissionsService {
       data: {
         title: data.title,
         titleLa: data.titleLa !== undefined ? data.titleLa : undefined,
-        description: data.description !== undefined ? data.description : undefined,
-        descriptionLa: data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        titleZh: data.titleZh !== undefined ? data.titleZh : undefined,
+        description:
+          data.description !== undefined ? data.description : undefined,
+        descriptionLa:
+          data.descriptionLa !== undefined ? data.descriptionLa : undefined,
+        descriptionZh:
+          data.descriptionZh !== undefined ? data.descriptionZh : undefined,
         fileUrl: data.fileUrl,
         fileType: data.fileType !== undefined ? data.fileType : undefined,
         fileSize: data.fileSize !== undefined ? data.fileSize : undefined,
         icon: data.icon !== undefined ? data.icon : undefined,
         badgeColor: data.badgeColor !== undefined ? data.badgeColor : undefined,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -266,4 +349,3 @@ export class AdmissionsService {
     return { success: true, message: 'Material deleted' };
   }
 }
-

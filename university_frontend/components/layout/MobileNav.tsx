@@ -1,10 +1,13 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { X, ChevronDown, ArrowRight } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface NavLink {
@@ -20,6 +23,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
+  const tr = useUiTranslation();
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
   const { t } = useLanguage();
@@ -46,7 +50,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
             <Link href="/" onClick={onClose} className="relative h-10 w-44">
               <Image
                 src="/assets/sit-logo.png"
-                alt="SIT University"
+                alt={tr('SIT University')}
                 fill
                 className="object-contain object-left brightness-110"
               />
@@ -54,7 +58,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
             <button
               onClick={onClose}
               className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 cursor-pointer"
-              aria-label="Close menu"
+              aria-label={tr('Close menu')}
             >
               <X className="w-6 h-6" />
             </button>
@@ -65,18 +69,18 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
             <Link
               href="/"
               onClick={onClose}
-              className={`block px-4 py-2.5 rounded-xl text-sm font-bold tracking-wider transition-colors ${pathname === '/'
+              className={`block px-4 py-2.5 rounded-xl text-sm font-bold tracking-wider transition-colors ${
+                pathname === '/'
                   ? 'bg-[#0400CC] text-white shadow-lg'
                   : 'text-white/80 hover:bg-white/10'
-                }`}
+              }`}
             >
               {t.nav.home}
             </Link>
 
             {links.map((link) => {
               const isActive =
-                pathname === link.href ||
-                (link.href !== '/' && pathname.startsWith(link.href));
+                pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
 
               if (link.dropdown && link.dropdown.length > 0) {
                 const isDropdownOpen = !!openDropdowns[link.name];
@@ -94,7 +98,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
                         onClick={onClose}
                         className="flex-1 px-4 py-2.5 text-sm font-bold tracking-wider"
                       >
-                        {link.name}
+                        {tr(link.name)}
                       </Link>
                       <button
                         type="button"
@@ -104,7 +108,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
                             ? 'text-white/80 hover:text-white hover:bg-white/20'
                             : 'text-white/50 hover:text-white hover:bg-white/10'
                         }`}
-                        aria-label={`Toggle ${link.name} submenu`}
+                        aria-label={tr(`Toggle ${link.name} submenu`)}
                       >
                         <ChevronDown
                           className={`w-4 h-4 transition-transform duration-200 ${
@@ -128,7 +132,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
                                   : 'text-white/70 hover:text-white hover:bg-[#0400CC]/40'
                               }`}
                             >
-                              {sub.name}
+                              {tr(sub.name)}
                             </Link>
                           );
                         })}
@@ -143,12 +147,13 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
                   key={link.name}
                   href={link.href}
                   onClick={onClose}
-                  className={`block px-4 py-2.5 rounded-xl text-sm font-bold tracking-wider transition-colors ${isActive
+                  className={`block px-4 py-2.5 rounded-xl text-sm font-bold tracking-wider transition-colors ${
+                    isActive
                       ? 'bg-[#0400CC] text-white shadow-lg'
                       : 'text-white/80 hover:bg-white/10'
-                    }`}
+                  }`}
                 >
-                  {link.name}
+                  {tr(link.name)}
                 </Link>
               );
             })}
@@ -157,6 +162,7 @@ export function MobileNav({ isOpen, onClose, links }: MobileNavProps) {
 
         {/* Footer Actions */}
         <div className="p-5 border-t border-white/10 bg-[#000014]/60 backdrop-blur-md space-y-3">
+          <LanguageSwitcher />
           <Link
             href="/apply"
             onClick={onClose}

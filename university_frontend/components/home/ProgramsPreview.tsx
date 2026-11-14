@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Clock, Award, BookOpen } from 'lucide-react';
@@ -12,17 +14,21 @@ interface ProgramsPreviewProps {
 }
 
 export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
+  const tr = useUiTranslation();
   const [programs, setPrograms] = useState<ProgramItem[]>(data);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (data.length === 0) {
-      api.getPrograms().then((res) => {
-        if (res && res.length > 0) {
-          setPrograms(res);
-        }
-      }).catch(console.error);
+      api
+        .getPrograms()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setPrograms(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -40,15 +46,37 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((prog, idx) => {
-            const progName = (isLa && prog.nameLa) ? prog.nameLa : prog.name;
-            const progDegree = (isLa && prog.degreeLa) ? prog.degreeLa : prog.degree;
-            const progDuration = (isLa && prog.durationLa) ? prog.durationLa : prog.duration;
-            const progDesc = (isLa && prog.descriptionLa) ? prog.descriptionLa : prog.description;
+            const progName =
+              lang === 'ZH'
+                ? prog?.nameZh || prog.name
+                : isLa && prog.nameLa
+                  ? prog.nameLa
+                  : prog.name;
+            const progDegree =
+              lang === 'ZH'
+                ? prog?.degreeZh || prog.degree
+                : isLa && prog.degreeLa
+                  ? prog.degreeLa
+                  : prog.degree;
+            const progDuration =
+              lang === 'ZH'
+                ? prog?.durationZh || prog.duration
+                : isLa && prog.durationLa
+                  ? prog.durationLa
+                  : prog.duration;
+            const progDesc =
+              lang === 'ZH'
+                ? prog?.descriptionZh || prog.description
+                : isLa && prog.descriptionLa
+                  ? prog.descriptionLa
+                  : prog.description;
 
             let focusAreas: string[] = [];
-            if (isLa && prog.coreFocusAreasLa) {
+            if (lang === 'ZH' ? prog?.coreFocusAreasZh : isLa && prog.coreFocusAreasLa) {
               try {
-                focusAreas = JSON.parse(prog.coreFocusAreasLa);
+                focusAreas = JSON.parse(
+                  (lang === 'ZH' ? prog?.coreFocusAreasZh : prog?.coreFocusAreasLa) || '[]',
+                );
               } catch {
                 focusAreas = [];
               }
@@ -69,11 +97,11 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
                   <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                     <img
                       src={prog.heroImage || `/images/academics_desktopview/img_${idx + 1}.jpg`}
-                      alt={progName}
+                      alt={tr(progName)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 bg-[#0400CC] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md">
-                      {progDegree}
+                      {tr(progDegree)}
                     </div>
                   </div>
 
@@ -81,7 +109,7 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
                     <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5 text-[#0400CC]" />
-                        {progDuration}
+                        {tr(progDuration)}
                       </span>
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3.5 h-3.5 text-[#00B6FF]" />
@@ -90,11 +118,11 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
                     </div>
 
                     <h3 className="text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                      {progName}
+                      {tr(progName)}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                      {progDesc}
+                      {tr(progDesc)}
                     </p>
 
                     {focusAreas.length > 0 && (
@@ -108,7 +136,7 @@ export function ProgramsPreview({ data = [] }: ProgramsPreviewProps) {
                               key={fidx}
                               className="text-[11px] font-medium bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md"
                             >
-                              {fa}
+                              {tr(fa)}
                             </span>
                           ))}
                         </div>

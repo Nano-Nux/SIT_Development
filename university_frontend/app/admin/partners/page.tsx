@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import {
@@ -19,23 +23,27 @@ import { Modal } from '@/components/ui/Modal';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminPartnersPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [activeFilter, setActiveFilter] = useState<'ALL' | 'UNIVERSITY' | 'INDUSTRY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
     nameLa: '',
+    nameZh: '',
     type: 'UNIVERSITY',
     logoUrl: '',
     websiteUrl: '',
     country: '',
     countryLa: '',
+    countryZh: '',
   });
 
   useEffect(() => {
@@ -60,11 +68,13 @@ export default function AdminPartnersPage() {
     setFormData({
       name: '',
       nameLa: '',
+      nameZh: '',
       type: 'UNIVERSITY',
       logoUrl: '',
       websiteUrl: '',
       country: '',
       countryLa: '',
+      countryZh: '',
     });
     setModalOpen(true);
   };
@@ -75,22 +85,24 @@ export default function AdminPartnersPage() {
     setFormData({
       name: item.name || '',
       nameLa: item.nameLa || '',
+      nameZh: item.nameZh || '',
       type: item.type || 'UNIVERSITY',
       logoUrl: item.logoUrl || '',
       websiteUrl: item.websiteUrl || '',
       country: item.country || '',
       countryLa: item.countryLa || '',
+      countryZh: item.countryZh || '',
     });
     setModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this partner?')) return;
+    if (!confirm(tr('Are you sure you want to delete this partner?'))) return;
     try {
       await api.deletePartner(id);
       loadItems();
     } catch (e) {
-      alert('Failed to delete partner');
+      alert(tr('Failed to delete partner'));
     }
   };
 
@@ -107,21 +119,22 @@ export default function AdminPartnersPage() {
       loadItems();
     } catch (e) {
       console.error(e);
-      alert('Failed to save partner');
+      alert(tr('Failed to save partner'));
     } finally {
       setSaving(false);
     }
   };
 
   const filteredItems = items.filter((item) => {
-    const matchesFilter =
-      activeFilter === 'ALL' || item.type === activeFilter;
+    const matchesFilter = activeFilter === 'ALL' || item.type === activeFilter;
     const matchesSearch =
       !searchQuery ||
       item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.nameLa?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.nameZh?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.country?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.countryLa?.toLowerCase().includes(searchQuery.toLowerCase());
+      item.countryLa?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.countryZh?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -138,11 +151,13 @@ export default function AdminPartnersPage() {
               <Globe2 className="w-6 h-6" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] tracking-tight">
-              Partners & Alliances Manager
+              {tr('Partners & Alliances Manager')}
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mt-1">
-            Manage global university alliances and corporate industry partners. Upload logos, configure bilingual institution titles, and link official websites.
+            {tr(
+              'Manage global university alliances and corporate industry partners. Upload logos, configure bilingual institution titles, and link official websites.',
+            )}
           </p>
         </div>
         <button
@@ -150,7 +165,7 @@ export default function AdminPartnersPage() {
           className="inline-flex items-center justify-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
-          Add Partner
+          {tr('Add Partner')}
         </button>
       </div>
 
@@ -166,7 +181,8 @@ export default function AdminPartnersPage() {
                 : 'text-slate-600 hover:text-[#00001C]'
             }`}
           >
-            All Partners ({items.length})
+            {tr('All Partners (')}
+            {items.length})
           </button>
           <button
             onClick={() => setActiveFilter('UNIVERSITY')}
@@ -176,7 +192,8 @@ export default function AdminPartnersPage() {
                 : 'text-slate-600 hover:text-[#00001C]'
             }`}
           >
-            University Partners ({universityCount})
+            {tr('University Partners (')}
+            {universityCount})
           </button>
           <button
             onClick={() => setActiveFilter('INDUSTRY')}
@@ -186,7 +203,8 @@ export default function AdminPartnersPage() {
                 : 'text-slate-600 hover:text-[#00001C]'
             }`}
           >
-            Industry Enterprises ({industryCount})
+            {tr('Industry Enterprises (')}
+            {industryCount})
           </button>
         </div>
 
@@ -196,7 +214,7 @@ export default function AdminPartnersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search partner or country..."
+            placeholder={tr('Search partner or country...')}
             className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
           />
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -208,7 +226,7 @@ export default function AdminPartnersPage() {
         {loading ? (
           <div className="col-span-full py-16 text-center text-slate-400 flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-[#0400CC]" />
-            <p className="text-sm font-medium">Loading partners...</p>
+            <p className="text-sm font-medium">{tr('Loading partners...')}</p>
           </div>
         ) : filteredItems.length > 0 ? (
           filteredItems.map((item, idx) => (
@@ -226,12 +244,12 @@ export default function AdminPartnersPage() {
                         : 'bg-purple-50 text-purple-700 border border-purple-100'
                     }`}
                   >
-                    {item.type === 'UNIVERSITY' ? 'University' : 'Industry'}
+                    {tr(item.type === 'UNIVERSITY' ? tr('University') : tr('Industry'))}
                   </span>
                   {item.country && (
                     <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1 truncate max-w-[120px]">
                       <MapPin className="w-3 h-3 shrink-0 text-slate-400" />
-                      {item.country}
+                      {tr(localize(item, 'country'))}
                     </span>
                   )}
                 </div>
@@ -246,7 +264,8 @@ export default function AdminPartnersPage() {
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
-                        const fallback = target.parentElement?.querySelector('.admin-logo-fallback');
+                        const fallback =
+                          target.parentElement?.querySelector('.admin-logo-fallback');
                         if (fallback) fallback.classList.remove('hidden');
                       }}
                     />
@@ -261,13 +280,15 @@ export default function AdminPartnersPage() {
                     ) : (
                       <Building2 className="w-8 h-8 text-purple-400/60" />
                     )}
-                    <span className="text-[10px] font-semibold text-slate-400">No Logo</span>
+                    <span className="text-[10px] font-semibold text-slate-400">
+                      {tr('No Logo')}
+                    </span>
                   </div>
                 </div>
 
                 {/* Institution Name */}
                 <h3 className="text-sm font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug line-clamp-2 mb-1">
-                  {item.name}
+                  {tr(localize(item, 'name'))}
                 </h3>
                 {item.nameLa && (
                   <p className="text-xs font-semibold text-[#0400CC] line-clamp-1 mb-1">
@@ -290,24 +311,25 @@ export default function AdminPartnersPage() {
                     rel="noreferrer"
                     className="text-xs text-[#0400CC] hover:underline flex items-center gap-1 font-semibold"
                   >
-                    <span>Website</span>
+                    <span>{tr('Website')}</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 ) : (
-                  <span className="text-[11px] text-slate-300 italic">No URL</span>
+                  <span className="text-[11px] text-slate-300 italic">{tr('No URL')}</span>
                 )}
 
                 <div className="flex items-center gap-1">
                   <button
+                    aria-label={tr('Edit')}
                     onClick={() => handleOpenEdit(item)}
-                    title="Edit Partner"
+                    title={tr('Edit Partner')}
                     className="p-2 rounded-lg text-slate-500 hover:text-[#0400CC] hover:bg-blue-50 transition-colors cursor-pointer"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    title="Delete Partner"
+                    title={tr('Delete Partner')}
                     className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -319,9 +341,13 @@ export default function AdminPartnersPage() {
         ) : (
           <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200/80">
             <Globe2 className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm font-bold text-slate-600">No partners found</p>
+            <p className="text-sm font-bold text-slate-600">{tr('No partners found')}</p>
             <p className="text-xs text-slate-400 mt-0.5">
-              {searchQuery ? 'Try clearing your search query' : 'Click "Add Partner" to create your first partner'}
+              {tr(
+                searchQuery
+                  ? tr('Try clearing your search query')
+                  : tr('Click "Add Partner" to create your first partner'),
+              )}
             </p>
           </div>
         )}
@@ -331,7 +357,7 @@ export default function AdminPartnersPage() {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? 'Edit Partner & Alliance' : 'Add Partner & Alliance'}
+        title={tr(editingItem ? 'Edit Partner & Alliance' : 'Add Partner & Alliance')}
       >
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Language Switcher Tabs */}
@@ -345,7 +371,7 @@ export default function AdminPartnersPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇬🇧 English Content
+              {tr('🇬🇧 English Content')}
             </button>
             <button
               type="button"
@@ -356,52 +382,98 @@ export default function AdminPartnersPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇱🇦 ພາສາລາວ (Lao Content)
+              {tr('🇱🇦 ພາສາລາວ (Lao Content)')}
               {formData.nameLa && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveLangTab('zh')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeLangTab === 'zh'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-[#00001C]'
+              }`}
+            >
+              {tr('Chinese Content')}
+              {formData.nameZh && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
             </button>
           </div>
 
           {/* Partner Type Selector */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Partner Category / Type <span className="text-red-500">*</span>
+              {tr('Partner Category / Type ')}
+              <span className="text-red-500">*</span>
             </label>
             <select
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm bg-white font-medium"
             >
-              <option value="UNIVERSITY">🎓 University Partner (Academic Alliance / Dual Degree / Exchange)</option>
-              <option value="INDUSTRY">🏢 Industry Enterprise (Corporate Recruiter / Placement Partner)</option>
+              <option value="UNIVERSITY">
+                {tr('🎓 University Partner (Academic Alliance / Dual Degree / Exchange)')}
+              </option>
+              <option value="INDUSTRY">
+                {tr('🏢 Industry Enterprise (Corporate Recruiter / Placement Partner)')}
+              </option>
             </select>
           </div>
 
           {/* Bilingual fields */}
-          {activeLangTab === 'en' ? (
-            <div className="space-y-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          {activeLangTab === 'zh' ? (
+            <div className="space-y-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Partner / Institution Name (English) <span className="text-red-500">*</span>
+                  {tr('Chinese Partner Name')}
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Shih Chien University or Google"
+                  value={formData.nameZh}
+                  onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
+                  placeholder="请输入中文名称"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Country / Region (English)
+                  {tr('Chinese Country / Region')}
+                </label>
+                <input
+                  type="text"
+                  value={formData.countryZh}
+                  onChange={(e) => setFormData({ ...formData, countryZh: e.target.value })}
+                  placeholder="请输入中文国家或地区"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+            </div>
+          ) : activeLangTab === 'en' ? (
+            <div className="space-y-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Partner / Institution Name (English) ')}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder={tr('e.g. Shih Chien University or Google')}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Country / Region (English)')}
                 </label>
                 <input
                   type="text"
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                  placeholder="e.g. Taiwan, Thailand, Singapore, Global"
+                  placeholder={tr('e.g. Taiwan, Thailand, Singapore, Global')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -410,7 +482,7 @@ export default function AdminPartnersPage() {
             <div className="space-y-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຊື່ສະຖາບັນ / ຊື່ອົງກອນ (Lao Partner Name)
+                  {tr('ຊື່ສະຖາບັນ / ຊື່ອົງກອນ (Lao Partner Name)')}
                 </label>
                 <input
                   type="text"
@@ -423,7 +495,7 @@ export default function AdminPartnersPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ປະເທດ / ພາກພື້ນ (Lao Country / Region)
+                  {tr('ປະເທດ / ພາກພື້ນ (Lao Country / Region)')}
                 </label>
                 <input
                   type="text"
@@ -439,7 +511,7 @@ export default function AdminPartnersPage() {
           {/* Official Website */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Official Website URL
+              {tr('Official Website URL')}
             </label>
             <input
               type="url"
@@ -453,11 +525,13 @@ export default function AdminPartnersPage() {
           {/* Logo Upload Field */}
           <div className="pt-1">
             <ImageUpload
-              label="Partner Logo (Upload or URL)"
+              label={tr('Partner Logo (Upload or URL)')}
               value={formData.logoUrl}
               onChange={(url) => setFormData({ ...formData, logoUrl: url })}
               placeholder="https://... or upload PNG/SVG/WebP"
-              helpText="Upload institution or corporate partner logo. Supports PNG, SVG, JPG, WebP with lossless resolution."
+              helpText={tr(
+                'Upload institution or corporate partner logo. Supports PNG, SVG, JPG, WebP with lossless resolution.',
+              )}
               aspectRatio="square"
             />
           </div>
@@ -469,7 +543,7 @@ export default function AdminPartnersPage() {
               onClick={() => setModalOpen(false)}
               className="px-5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer transition-colors"
             >
-              Cancel
+              {tr('Cancel')}
             </button>
             <button
               type="submit"
@@ -477,7 +551,7 @@ export default function AdminPartnersPage() {
               className="px-6 py-2.5 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transition-all flex items-center gap-2 disabled:opacity-50"
             >
               {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              {editingItem ? 'Update Partner' : 'Save Partner'}
+              {tr(editingItem ? tr('Update Partner') : tr('Save Partner'))}
             </button>
           </div>
         </form>

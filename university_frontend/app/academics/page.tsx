@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,6 +14,7 @@ import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function AcademicsPage() {
+  const tr = useUiTranslation();
   const [departments, setDepartments] = useState<DepartmentItem[]>([]);
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
   const [directors, setDirectors] = useState<ProgramDirectorItem[]>([]);
@@ -43,9 +46,18 @@ export default function AcademicsPage() {
 
   const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.academics.heroSubtitle);
 
-  const rawTitle = isLa
-    ? (heroData?.titleLa || heroData?.title || t.academics.heroTitle || 'ຫຼັກສູດວິຊາການ ທີ່ SIT')
-    : (heroData?.title || t.academics.heroTitle || 'Academic Programs at SIT');
+  const rawTitle =
+    lang === 'ZH'
+      ? heroData?.titleZh ||
+        heroData?.title ||
+        t.academics.heroTitle ||
+        'ຫຼັກສູດວິຊາການ ທີ່ SIT' ||
+        heroData?.title ||
+        t.academics.heroTitle ||
+        'Academic Programs at SIT'
+      : isLa
+        ? heroData?.titleLa || heroData?.title || t.academics.heroTitle || 'ຫຼັກສູດວິຊາການ ທີ່ SIT'
+        : heroData?.title || t.academics.heroTitle || 'Academic Programs at SIT';
 
   let mainTitle = isLa ? 'ຫຼັກສູດວິຊາການ' : 'Academic Programs';
   let subTitleAccent = isLa ? 'ທີ່ SIT' : 'at SIT';
@@ -87,7 +99,7 @@ export default function AcademicsPage() {
             {bgImage && (
               <Image
                 src={bgImage}
-                alt="Academic Programs at SIT"
+                alt={tr('Academic Programs at SIT')}
                 fill
                 className="object-cover object-center"
                 priority
@@ -101,7 +113,7 @@ export default function AcademicsPage() {
             <div className="absolute -top-28 -right-28 md:-top-40 md:-right-20 w-[520px] h-[520px] md:w-[800px] md:h-[800px] opacity-10 pointer-events-none select-none z-0 rotate-90">
               <Image
                 src="/images/academics_desktopview/img_2.png"
-                alt="SIT Emblem Watermark"
+                alt={tr('SIT Emblem Watermark')}
                 fill
                 className="object-contain"
               />
@@ -114,7 +126,7 @@ export default function AcademicsPage() {
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
                 <span className="text-xs sm:text-sm font-bold tracking-widest text-[#EFFFFF]">
-                  {heroSubtitle}
+                  {tr(heroSubtitle)}
                 </span>
               </div>
             </div>
@@ -122,17 +134,17 @@ export default function AcademicsPage() {
             {/* Heading & Same-Row Explore */}
             <div className="space-y-1 sm:space-y-2">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
-                {mainTitle}
+                {tr(mainTitle)}
               </h1>
 
               {/* Next line: 'at SIT' in the same row with EXPLORE in the middle */}
               <div className="relative flex items-end min-h-[48px] pt-1">
                 <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
-                  {subTitleAccent}
+                  {tr(subTitleAccent)}
                 </div>
 
                 <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center justify-center text-xs tracking-widest text-white/60 uppercase select-none pointer-events-none">
-                  <span>{isLa ? 'ສຳຫຼວດ' : 'EXPLORE'}</span>
+                  <span>{tr(isLa ? 'ສຳຫຼວດ' : tr('EXPLORE'))}</span>
                   <div className="w-[1.5px] h-7 md:h-9 bg-gradient-to-b from-white/50 to-transparent mt-1" />
                 </div>
               </div>
@@ -158,10 +170,25 @@ export default function AcademicsPage() {
                   >
                     <div className="space-y-1.5 pr-4">
                       <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors uppercase leading-snug">
-                        {isLa ? (dept.nameLa || dept.name) : (dept.name || dept.nameLa)}
+                        {tr(
+                          lang === 'ZH'
+                            ? dept?.nameZh || dept.name || dept.name || dept.nameLa
+                            : isLa
+                              ? dept.nameLa || dept.name
+                              : dept.name || dept.nameLa,
+                        )}
                       </h3>
                       <p className="text-xs sm:text-sm text-[#62748E] font-medium line-clamp-2">
-                        {isLa ? (dept.descriptionLa || dept.description) : (dept.description || dept.descriptionLa)}
+                        {tr(
+                          lang === 'ZH'
+                            ? dept?.descriptionZh ||
+                                dept.description ||
+                                dept.description ||
+                                dept.descriptionLa
+                            : isLa
+                              ? dept.descriptionLa || dept.description
+                              : dept.description || dept.descriptionLa,
+                        )}
                       </p>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-[#0400CC] flex items-center justify-center text-[#00001C] group-hover:text-white transition-all shrink-0">
@@ -195,7 +222,7 @@ export default function AcademicsPage() {
                     <div className="absolute inset-0 z-0">
                       <Image
                         src={dir.imageUrl || `/images/home_desktopview/img_${(idx % 2) + 1}.jpg`}
-                        alt={dir.name}
+                        alt={tr(dir.name)}
                         fill
                         className="object-cover object-center opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700"
                       />
@@ -203,14 +230,35 @@ export default function AcademicsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#00001C] via-[#00001C]/80 to-transparent z-10" />
                     <div className="relative z-20">
                       <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug group-hover:text-[#00B6FF] transition-colors">
-                        {isLa ? (dir.nameLa || dir.name) : (dir.name || dir.nameLa)}
+                        {tr(
+                          lang === 'ZH'
+                            ? dir?.nameZh || dir.name || dir.name || dir.nameLa
+                            : isLa
+                              ? dir.nameLa || dir.name
+                              : dir.name || dir.nameLa,
+                        )}
                       </h3>
                       <p className="text-xs font-semibold text-cyan-300 uppercase tracking-wider mt-1">
-                        {isLa ? (dir.positionLa || dir.position) : (dir.position || dir.positionLa)}
+                        {tr(
+                          lang === 'ZH'
+                            ? dir?.positionZh || dir.position || dir.position || dir.positionLa
+                            : isLa
+                              ? dir.positionLa || dir.position
+                              : dir.position || dir.positionLa,
+                        )}
                       </p>
                       {(dir.biographyLa || dir.biography) && (
                         <p className="text-xs text-slate-300 line-clamp-2 mt-2 font-normal">
-                          {isLa ? (dir.biographyLa || dir.biography) : (dir.biography || dir.biographyLa)}
+                          {tr(
+                            lang === 'ZH'
+                              ? dir?.biographyZh ||
+                                  dir.biography ||
+                                  dir.biography ||
+                                  dir.biographyLa
+                              : isLa
+                                ? dir.biographyLa || dir.biography
+                                : dir.biography || dir.biographyLa,
+                          )}
                         </p>
                       )}
                     </div>
@@ -222,97 +270,143 @@ export default function AcademicsPage() {
         )}
 
         {/* Faculty & Students Spotlight Section */}
-        {featuredSpotlight && (() => {
-          const spotSubtitle = isLa
-            ? (featuredSpotlight.subtitleLa || featuredSpotlight.subtitle)
-            : (featuredSpotlight.subtitle || featuredSpotlight.subtitleLa);
-          const spotTitle = isLa
-            ? (featuredSpotlight.titleLa || featuredSpotlight.title)
-            : (featuredSpotlight.title || featuredSpotlight.titleLa);
-          const spotDesc = isLa
-            ? (featuredSpotlight.descriptionLa || featuredSpotlight.quoteLa || featuredSpotlight.description || featuredSpotlight.quote)
-            : (featuredSpotlight.description || featuredSpotlight.quote || featuredSpotlight.descriptionLa || featuredSpotlight.quoteLa);
-          const spotAuthor = isLa
-            ? (featuredSpotlight.authorNameLa || featuredSpotlight.authorName)
-            : (featuredSpotlight.authorName || featuredSpotlight.authorNameLa);
-          const spotRole = isLa
-            ? (featuredSpotlight.authorRoleLa || featuredSpotlight.authorRole)
-            : (featuredSpotlight.authorRole || featuredSpotlight.authorRoleLa);
-          const spotImage = featuredSpotlight.imageUrl;
+        {featuredSpotlight &&
+          (() => {
+            const spotSubtitle =
+              lang === 'ZH'
+                ? featuredSpotlight?.subtitleZh ||
+                  featuredSpotlight.subtitle ||
+                  featuredSpotlight.subtitle ||
+                  featuredSpotlight.subtitleLa
+                : isLa
+                  ? featuredSpotlight.subtitleLa || featuredSpotlight.subtitle
+                  : featuredSpotlight.subtitle || featuredSpotlight.subtitleLa;
+            const spotTitle =
+              lang === 'ZH'
+                ? featuredSpotlight?.titleZh ||
+                  featuredSpotlight.title ||
+                  featuredSpotlight.title ||
+                  featuredSpotlight.titleLa
+                : isLa
+                  ? featuredSpotlight.titleLa || featuredSpotlight.title
+                  : featuredSpotlight.title || featuredSpotlight.titleLa;
+            const spotDesc =
+              lang === 'ZH'
+                ? featuredSpotlight?.descriptionZh ||
+                  featuredSpotlight?.quoteZh ||
+                  featuredSpotlight.description ||
+                  featuredSpotlight.quote ||
+                  featuredSpotlight.description ||
+                  featuredSpotlight.quote ||
+                  featuredSpotlight.descriptionLa ||
+                  featuredSpotlight.quoteLa
+                : isLa
+                  ? featuredSpotlight.descriptionLa ||
+                    featuredSpotlight.quoteLa ||
+                    featuredSpotlight.description ||
+                    featuredSpotlight.quote
+                  : featuredSpotlight.description ||
+                    featuredSpotlight.quote ||
+                    featuredSpotlight.descriptionLa ||
+                    featuredSpotlight.quoteLa;
+            const spotAuthor =
+              lang === 'ZH'
+                ? featuredSpotlight?.authorNameZh ||
+                  featuredSpotlight.authorName ||
+                  featuredSpotlight.authorName ||
+                  featuredSpotlight.authorNameLa
+                : isLa
+                  ? featuredSpotlight.authorNameLa || featuredSpotlight.authorName
+                  : featuredSpotlight.authorName || featuredSpotlight.authorNameLa;
+            const spotRole =
+              lang === 'ZH'
+                ? featuredSpotlight?.authorRoleZh ||
+                  featuredSpotlight.authorRole ||
+                  featuredSpotlight.authorRole ||
+                  featuredSpotlight.authorRoleLa
+                : isLa
+                  ? featuredSpotlight.authorRoleLa || featuredSpotlight.authorRole
+                  : featuredSpotlight.authorRole || featuredSpotlight.authorRoleLa;
+            const spotImage = featuredSpotlight.imageUrl;
 
-          // Only render if there is actual content
-          if (!spotSubtitle && !spotTitle && !spotDesc && !spotAuthor && !spotRole && !spotImage) {
-            return null;
-          }
+            // Only render if there is actual content
+            if (
+              !spotSubtitle &&
+              !spotTitle &&
+              !spotDesc &&
+              !spotAuthor &&
+              !spotRole &&
+              !spotImage
+            ) {
+              return null;
+            }
 
-          return (
-            <section className="w-full bg-[#00001C] py-24 md:py-32 text-white relative overflow-hidden">
-              <div className="max-w-[1280px] mx-auto px-6 relative z-10">
-                <div className="text-center mb-16 space-y-3">
-                  {spotSubtitle && (
-                    <span className="inline-block px-4 py-1 rounded-full bg-[#0400CC]/30 border border-[#00B6FF]/30 text-[#00B6FF] text-xs font-bold tracking-widest uppercase">
-                      {spotSubtitle}
-                    </span>
-                  )}
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight uppercase">
-                    {t.academics.spotlightTitle || 'FACULTY & STUDENTS SPOTLIGHT'}
-                  </h2>
-                </div>
-
-                <div className="max-w-4xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl text-[#00001C]">
-                  {/* Top Image (only if imageUrl is present) */}
-                  {spotImage && (
-                    <div className="relative w-full h-72 sm:h-96">
-                      <Image
-                        src={spotImage}
-                        alt={spotTitle || spotAuthor || 'Spotlight'}
-                        fill
-                        className="object-cover object-center"
-                      />
-                    </div>
-                  )}
-
-                  <div className="p-8 sm:p-12 space-y-4">
-                    {spotTitle && (
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#00001C] leading-snug uppercase">
-                        {spotTitle}
-                      </h3>
+            return (
+              <section className="w-full bg-[#00001C] py-24 md:py-32 text-white relative overflow-hidden">
+                <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+                  <div className="text-center mb-16 space-y-3">
+                    {spotSubtitle && (
+                      <span className="inline-block px-4 py-1 rounded-full bg-[#0400CC]/30 border border-[#00B6FF]/30 text-[#00B6FF] text-xs font-bold tracking-widest uppercase">
+                        {tr(spotSubtitle)}
+                      </span>
                     )}
-                    {spotDesc && (
-                      <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
-                        {spotDesc}
-                      </p>
-                    )}
-                    {(spotAuthor || spotRole) && (
-                      <div className="pt-2 text-sm text-[#62748E] font-medium">
-                        {spotAuthor && (
-                          <span className="font-bold text-[#00001C]">
-                            {spotAuthor}
-                          </span>
-                        )}
-                        {spotRole && (
-                          <span>
-                            {spotAuthor ? ' — ' : ''}
-                            {spotRole}
-                          </span>
-                        )}
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight uppercase">
+                      {t.academics.spotlightTitle || tr('FACULTY & STUDENTS SPOTLIGHT')}
+                    </h2>
+                  </div>
+
+                  <div className="max-w-4xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl text-[#00001C]">
+                    {/* Top Image (only if imageUrl is present) */}
+                    {spotImage && (
+                      <div className="relative w-full h-72 sm:h-96">
+                        <Image
+                          src={spotImage}
+                          alt={tr(spotTitle || spotAuthor || 'Spotlight')}
+                          fill
+                          className="object-cover object-center"
+                        />
                       </div>
                     )}
-                    <div className="pt-4">
-                      <Link
-                        href="/news"
-                        className="inline-flex items-center gap-2 text-sm font-bold text-[#0400CC] hover:underline"
-                      >
-                        {isLa ? 'ອ່ານເລື່ອງລາວເຕັມ' : 'Read Full Story'}
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
+
+                    <div className="p-8 sm:p-12 space-y-4">
+                      {spotTitle && (
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#00001C] leading-snug uppercase">
+                          {tr(spotTitle)}
+                        </h3>
+                      )}
+                      {spotDesc && (
+                        <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
+                          {tr(spotDesc)}
+                        </p>
+                      )}
+                      {(spotAuthor || spotRole) && (
+                        <div className="pt-2 text-sm text-[#62748E] font-medium">
+                          {spotAuthor && (
+                            <span className="font-bold text-[#00001C]">{tr(spotAuthor)}</span>
+                          )}
+                          {spotRole && (
+                            <span>
+                              {tr(spotAuthor ? ' — ' : '')}
+                              {tr(spotRole)}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="pt-4">
+                        <Link
+                          href="/news"
+                          className="inline-flex items-center gap-2 text-sm font-bold text-[#0400CC] hover:underline"
+                        >
+                          {tr(isLa ? 'ອ່ານເລື່ອງລາວເຕັມ' : tr('Read Full Story'))}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
-          );
-        })()}
+              </section>
+            );
+          })()}
 
         {/* CTA Banner */}
         <CTABanner />
@@ -322,4 +416,3 @@ export default function AcademicsPage() {
     </div>
   );
 }
-

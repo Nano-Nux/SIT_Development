@@ -25,12 +25,16 @@ model Hero {
   page          String   @unique // HOME, ADMISSIONS, ABOUT, ACADEMICS, LIFE_AT_SIT, COLLABORATIONS
   title         String
   titleLa       String?
+  titleZh       String?
   subtitle      String?
   subtitleLa    String?
+  subtitleZh    String?
   description   String?  @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   buttonText    String?
   buttonTextLa  String?
+  buttonTextZh  String?
   buttonUrl     String?
   imageUrl      String?
   image2Url     String?
@@ -46,8 +50,10 @@ model CoreValue {
   id            String   @id @default(uuid())
   title         String
   titleLa       String?
+  titleZh       String?
   description   String   @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   icon          String?  // icon identifier or image url
   order         Int      @default(0)
   isActive      Boolean  @default(true)
@@ -59,9 +65,11 @@ model Major {
   id            String   @id @default(uuid())
   title         String
   titleLa       String?
+  titleZh       String?
   slug          String   @unique
   description   String   @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   imageUrl      String?
   order         Int      @default(0)
   isActive      Boolean  @default(true)
@@ -73,10 +81,12 @@ model Department {
   id                    String    @id @default(uuid())
   name                  String
   nameLa                String?
+  nameZh                String?
   slug                  String    @unique
   externalUrl           String?
   description           String    @db.Text
   descriptionLa         String?   @db.Text
+  descriptionZh         String?   @db.Text
   heroImage             String?
   imageUrl              String?
   order                 Int       @default(0)
@@ -85,24 +95,31 @@ model Department {
   // Field 3: box-description (15 programming languages, 8 specialized labs, 95% job placement, 40+ industry partners) - Optional
   boxDescriptions       String?   @db.Text // JSON string array of { value, label }
   boxDescriptionsLa     String?   @db.Text // JSON string array of { value, label }
+  boxDescriptionsZh     String?   @db.Text // JSON string array of { value, label }
 
   // Field 4: Core Focus Areas (e.g. Software Development, Cybersecurity...)
   coreFocusAreas        String?   @db.Text // JSON string array of strings
   coreFocusAreasLa      String?   @db.Text // JSON string array of strings
+  coreFocusAreasZh      String?   @db.Text // JSON string array of strings
 
   // Field 5: Career Outcome description
   careerOutcomeDesc     String?   @db.Text
   careerOutcomeDescLa   String?   @db.Text
+  careerOutcomeDescZh   String?   @db.Text
 
   // Field 6: Career outcomes boxes (job placement rate, average starting salary, partner companies, avg time to employment) - Optional
   careerPlacementRate   String?   // e.g. "95%"
   careerPlacementRateLa String?
+  careerPlacementRateZh String?
   careerAvgSalary       String?   // e.g. "$92K"
   careerAvgSalaryLa     String?
+  careerAvgSalaryZh     String?
   careerPartnerCompanies String?  // e.g. "200+"
   careerPartnerCompaniesLa String?
+  careerPartnerCompaniesZh String?
   careerTimeToEmployment String?  // e.g. "3 Months"
   careerTimeToEmploymentLa String?
+  careerTimeToEmploymentZh String?
 
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -114,16 +131,21 @@ model Program {
   id               String           @id @default(uuid())
   name             String
   nameLa           String?
+  nameZh           String?
   slug             String           @unique
   degree           String           // Bachelor, Master, PhD, Certificate
   degreeLa         String?
+  degreeZh         String?
   duration         String           // e.g. "4 Years", "2 Years"
   durationLa       String?
+  durationZh       String?
   description      String           @db.Text
   descriptionLa    String?          @db.Text
+  descriptionZh    String?          @db.Text
   heroImage        String?
   coreFocusAreas   String           @db.Text // JSON string array
   coreFocusAreasLa String?          @db.Text // JSON string array
+  coreFocusAreasZh String?          @db.Text // JSON string array
   departmentId     String?
   department       Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   directors        ProgramDirector[]
@@ -137,12 +159,16 @@ model Faculty {
   id               String      @id @default(uuid())
   name             String
   nameLa           String?
+  nameZh           String?
   position         String
   positionLa       String?
+  positionZh       String?
   departmentName   String?
   departmentNameLa String?
+  departmentNameZh String?
   biography        String      @db.Text
   biographyLa      String?     @db.Text
+  biographyZh      String?     @db.Text
   imageUrl         String?
   email            String?
   departmentId     String?
@@ -157,12 +183,16 @@ model ProgramDirector {
   id               String   @id @default(uuid())
   name             String
   nameLa           String?
+  nameZh           String?
   position         String
   positionLa       String?
+  positionZh       String?
   departmentName   String?
   departmentNameLa String?
+  departmentNameZh String?
   biography        String   @db.Text
   biographyLa      String?  @db.Text
+  biographyZh      String?  @db.Text
   imageUrl         String?
   email            String?
   programId        String?
@@ -177,16 +207,22 @@ model Spotlight {
   type          String?  @default("STUDENT") // FACULTY, STUDENT, ALUMNI
   title         String?
   titleLa       String?
+  titleZh       String?
   subtitle      String?
   subtitleLa    String?
+  subtitleZh    String?
   quote         String?  @db.Text
   quoteLa       String?  @db.Text
+  quoteZh       String?  @db.Text
   description   String?  @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   authorName    String?
   authorNameLa  String?
+  authorNameZh  String?
   authorRole    String?
   authorRoleLa  String?
+  authorRoleZh  String?
   imageUrl      String?
   order         Int      @default(0)
   isActive      Boolean  @default(true)
@@ -198,11 +234,13 @@ model Partner {
   id         String   @id @default(uuid())
   name       String
   nameLa     String?
+  nameZh     String?
   type       String   @default("UNIVERSITY") // UNIVERSITY, INDUSTRY
   logoUrl    String
   websiteUrl String?
   country    String?
   countryLa  String?
+  countryZh  String?
   order      Int      @default(0)
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
@@ -213,16 +251,20 @@ model CampusFacility {
   id             String   @id @default(uuid())
   name           String
   nameLa         String?
+  nameZh         String?
   description    String   @db.Text
   descriptionLa  String?  @db.Text
+  descriptionZh  String?  @db.Text
   imageUrl       String?
   imageUrls      String[] @default([])
   actionType     String   @default("MODAL") // REDIRECT, MODAL
   destinationUrl String?
   modalTitle     String?
   modalTitleLa   String?
+  modalTitleZh   String?
   modalContent   String?  @db.Text
   modalContentLa String?  @db.Text
+  modalContentZh String?  @db.Text
   order          Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -232,19 +274,24 @@ model News {
   id          String   @id @default(uuid())
   title       String
   titleLa     String?
+  titleZh     String?
   slug        String   @unique
   summary     String   @db.Text
   summaryLa   String?  @db.Text
+  summaryZh   String?  @db.Text
   content     String   @db.Text
   contentLa   String?  @db.Text
+  contentZh   String?  @db.Text
   category    String   @default("General")
   categoryLa  String?
+  categoryZh  String?
   imageUrl    String?
   imageUrls   String[] @default([])
   publishedAt DateTime @default(now())
   isPublished Boolean  @default(true)
   author      String   @default("SIT Communications")
   authorLa    String?
+  authorZh    String?
   views       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -254,16 +301,21 @@ model Event {
   id              String   @id @default(uuid())
   title           String
   titleLa         String?
+  titleZh         String?
   slug            String   @unique
   summary         String   @db.Text
   summaryLa       String?  @db.Text
+  summaryZh       String?  @db.Text
   content         String   @db.Text
   contentLa       String?  @db.Text
+  contentZh       String?  @db.Text
   location        String
   locationLa      String?
+  locationZh      String?
   eventDate       DateTime
   time            String
   timeLa          String?
+  timeZh          String?
   imageUrl        String?
   isPublished     Boolean  @default(true)
   registrationUrl String?
@@ -275,10 +327,13 @@ model StudentLife {
   id            String   @id @default(uuid())
   title         String
   titleLa       String?
+  titleZh       String?
   description   String   @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   category      String   @default("Campus Life")
   categoryLa    String?
+  categoryZh    String?
   imageUrl      String?
   gallery       String   @default("[]") @db.Text // JSON string array
   order         Int      @default(0)
@@ -290,12 +345,16 @@ model Founder {
   id            String   @id @default(uuid())
   name          String
   nameLa        String?
+  nameZh        String?
   designation   String
   designationLa String?
+  designationZh String?
   quote         String   @db.Text
   quoteLa       String?  @db.Text
+  quoteZh       String?  @db.Text
   biography     String   @db.Text
   biographyLa   String?  @db.Text
+  biographyZh   String?  @db.Text
   imageUrl      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -305,12 +364,16 @@ model Member {
   id          String   @id @default(uuid())
   name        String
   nameLa      String?
+  nameZh      String?
   position    String
   positionLa  String?
+  positionZh  String?
   category    String   @default("Board of Trustees") // Board of Trustees, University Council, Advisory Board
   categoryLa  String?
+  categoryZh  String?
   biography   String   @db.Text
   biographyLa String?  @db.Text
+  biographyZh String?  @db.Text
   imageUrl    String?
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -322,8 +385,10 @@ model History {
   year          String
   title         String
   titleLa       String?
+  titleZh       String?
   description   String   @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -333,10 +398,13 @@ model VisionMission {
   id            String   @id @default(uuid())
   vision        String   @db.Text
   visionLa      String?  @db.Text
+  visionZh      String?  @db.Text
   mission       String   @db.Text
   missionLa     String?  @db.Text
+  missionZh     String?  @db.Text
   corePillars   String   @db.Text // JSON string array
   corePillarsLa String?  @db.Text // JSON string array
+  corePillarsZh String?  @db.Text // JSON string array
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -345,11 +413,13 @@ model ContactInfo {
   id              String   @id @default(uuid())
   address         String   @db.Text
   addressLa       String?  @db.Text
+  addressZh       String?  @db.Text
   phone           String
   email           String
   mapEmbedUrl     String   @db.Text
   officeHours     String?
   officeHoursLa   String?
+  officeHoursZh   String?
   locations       String?  @db.Text // JSON string array of ContactLocation objects
   phones          String?  @db.Text // JSON string array of ContactPhone objects
   emails          String?  @db.Text // JSON string array of ContactEmail objects
@@ -363,6 +433,7 @@ model ApplicationTimeline {
   id              String   @id @default(uuid())
   intakeName      String   // e.g. "Fall 2026", "Spring 2027", "Open Intake"
   intakeNameLa    String?
+  intakeNameZh    String?
   intakeYear      String   // e.g. "2026"
   openingDate     DateTime
   closingDate     DateTime
@@ -370,8 +441,10 @@ model ApplicationTimeline {
   classesBeginDate DateTime?
   additionalNotes String?  @db.Text
   additionalNotesLa String? @db.Text
+  additionalNotesZh String? @db.Text
   status          String   @default("Open") // Open, Upcoming, Closed
   statusLa        String?
+  statusZh        String?
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -381,8 +454,10 @@ model ApplicationReminder {
   id            String   @id @default(uuid())
   title         String
   titleLa       String?
+  titleZh       String?
   description   String   @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   icon          String?  @default("bell")
   order         Int      @default(0)
   isActive      Boolean  @default(true)
@@ -396,12 +471,16 @@ model AdmissionRequirement {
   degreeLevel        String   // Undergraduate, Graduate, International, All
   title              String
   titleLa            String?
+  titleZh            String?
   subtitle           String?
   subtitleLa         String?
+  subtitleZh         String?
   description        String?  @db.Text
   descriptionLa      String?  @db.Text
+  descriptionZh      String?  @db.Text
   requirementsList   String   @db.Text // JSON string array
   requirementsListLa String?  @db.Text // JSON string array
+  requirementsListZh String?  @db.Text // JSON string array
   icon               String?
   order              Int      @default(0)
   isActive           Boolean  @default(true)
@@ -413,8 +492,10 @@ model AdmissionFaq {
   id          String   @id @default(uuid())
   question    String   @db.Text
   questionLa  String?  @db.Text
+  questionZh  String?  @db.Text
   answer      String   @db.Text
   answerLa    String?  @db.Text
+  answerZh    String?  @db.Text
   category    String   @default("General")
   order       Int      @default(0)
   isActive    Boolean  @default(true)
@@ -426,8 +507,10 @@ model ApplicationMaterial {
   id            String   @id @default(uuid())
   title         String
   titleLa       String?
+  titleZh       String?
   description   String?  @db.Text
   descriptionLa String?  @db.Text
+  descriptionZh String?  @db.Text
   fileUrl       String   @db.Text
   fileType      String?  @default("PDF")
   fileSize      String?

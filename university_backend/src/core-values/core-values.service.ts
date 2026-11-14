@@ -23,8 +23,10 @@ export class CoreValuesService {
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         icon: data.icon,
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
@@ -39,11 +41,14 @@ export class CoreValuesService {
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         icon: data.icon,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -56,7 +61,7 @@ export class CoreValuesService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.coreValue.update({
           where: { id: item.id },
           data: { order: item.order },

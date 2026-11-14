@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Clock, MapPin, ArrowRight } from 'lucide-react';
@@ -11,10 +13,8 @@ interface NewsEventsSectionProps {
   eventsData?: EventItem[];
 }
 
-export function NewsEventsSection({
-  newsData = [],
-  eventsData = [],
-}: NewsEventsSectionProps) {
+export function NewsEventsSection({ newsData = [], eventsData = [] }: NewsEventsSectionProps) {
+  const tr = useUiTranslation();
   const [news, setNews] = useState<NewsArticle[]>(newsData);
   const [events, setEvents] = useState<EventItem[]>(eventsData);
   const { lang, t } = useLanguage();
@@ -22,19 +22,25 @@ export function NewsEventsSection({
 
   useEffect(() => {
     if (newsData.length === 0) {
-      api.getNews().then((res) => {
-        if (res && res.items) setNews(res.items);
-        else if (Array.isArray(res)) setNews(res);
-      }).catch(console.error);
+      api
+        .getNews()
+        .then((res) => {
+          if (res && res.items) setNews(res.items);
+          else if (Array.isArray(res)) setNews(res);
+        })
+        .catch(console.error);
     }
   }, [newsData]);
 
   useEffect(() => {
     if (eventsData.length === 0) {
-      api.getEvents().then((res: any) => {
-        if (Array.isArray(res)) setEvents(res);
-        else if (res && res.items) setEvents(res.items);
-      }).catch(console.error);
+      api
+        .getEvents()
+        .then((res: any) => {
+          if (Array.isArray(res)) setEvents(res);
+          else if (res && res.items) setEvents(res.items);
+        })
+        .catch(console.error);
     }
   }, [eventsData]);
 
@@ -67,9 +73,24 @@ export function NewsEventsSection({
 
             <div className="space-y-6">
               {newsList.map((item, idx) => {
-                const title = (isLa && item.titleLa) ? item.titleLa : item.title;
-                const summary = (isLa && item.summaryLa) ? item.summaryLa : item.summary;
-                const category = (isLa && item.categoryLa) ? item.categoryLa : item.category;
+                const title =
+                  lang === 'ZH'
+                    ? item?.titleZh || item.title
+                    : isLa && item.titleLa
+                      ? item.titleLa
+                      : item.title;
+                const summary =
+                  lang === 'ZH'
+                    ? item?.summaryZh || item.summary
+                    : isLa && item.summaryLa
+                      ? item.summaryLa
+                      : item.summary;
+                const category =
+                  lang === 'ZH'
+                    ? item?.categoryZh || item.category
+                    : isLa && item.categoryLa
+                      ? item.categoryLa
+                      : item.category;
 
                 return (
                   <article
@@ -79,7 +100,7 @@ export function NewsEventsSection({
                     <div className="w-full sm:w-44 sm:h-32 aspect-video sm:aspect-auto rounded-xl overflow-hidden bg-slate-100 shrink-0">
                       <img
                         src={item.imageUrl || `/images/home_desktopview/img_${idx + 1}.jpg`}
-                        alt={title}
+                        alt={tr(title)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
@@ -87,19 +108,26 @@ export function NewsEventsSection({
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
                         <span className="text-[#0400CC] font-bold bg-blue-50 px-2 py-0.5 rounded-md">
-                          {category}
+                          {tr(category)}
                         </span>
-                        <span>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
+                        <span>
+                          {tr(
+                            item.publishedAt
+                              ? new Date(item.publishedAt).toLocaleDateString(
+                                  lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                                  { month: 'short', day: 'numeric', year: 'numeric' },
+                                )
+                              : tr('Recent'),
+                          )}
+                        </span>
                       </div>
 
                       <h3 className="text-base sm:text-lg font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                        <Link href={`/news/${item.slug}`}>
-                          {title}
-                        </Link>
+                        <Link href={`/news/${item.slug}`}>{tr(title)}</Link>
                       </h3>
 
                       <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
-                        {summary}
+                        {tr(summary)}
                       </p>
                     </div>
                   </article>
@@ -131,11 +159,29 @@ export function NewsEventsSection({
             <div className="space-y-4">
               {eventsList.map((event, idx) => {
                 const dateObj = new Date(event.eventDate);
-                const month = dateObj.toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short' });
+                const month = dateObj.toLocaleDateString(
+                  lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                  { month: 'short' },
+                );
                 const day = dateObj.getDate();
-                const eventTitle = (isLa && event.titleLa) ? event.titleLa : event.title;
-                const eventTime = (isLa && event.timeLa) ? event.timeLa : event.time;
-                const eventLocation = (isLa && event.locationLa) ? event.locationLa : event.location;
+                const eventTitle =
+                  lang === 'ZH'
+                    ? event?.titleZh || event.title
+                    : isLa && event.titleLa
+                      ? event.titleLa
+                      : event.title;
+                const eventTime =
+                  lang === 'ZH'
+                    ? event?.timeZh || event.time
+                    : isLa && event.timeLa
+                      ? event.timeLa
+                      : event.time;
+                const eventLocation =
+                  lang === 'ZH'
+                    ? event?.locationZh || event.location
+                    : isLa && event.locationLa
+                      ? event.locationLa
+                      : event.location;
 
                 return (
                   <div
@@ -145,28 +191,24 @@ export function NewsEventsSection({
                     {/* Date Badge */}
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#00001C] to-[#0400CC] text-white flex flex-col items-center justify-center shrink-0 shadow-md">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-300 leading-none">
-                        {month}
+                        {tr(month)}
                       </span>
-                      <span className="text-lg font-black leading-tight mt-0.5">
-                        {day}
-                      </span>
+                      <span className="text-lg font-black leading-tight mt-0.5">{day}</span>
                     </div>
 
                     {/* Details */}
                     <div className="space-y-1.5 flex-1">
                       <h3 className="text-sm sm:text-base font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                        <Link href={`/events/${event.slug}`}>
-                          {eventTitle}
-                        </Link>
+                        <Link href={`/events/${event.slug}`}>{tr(eventTitle)}</Link>
                       </h3>
                       <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
                         <span className="flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-[#0400CC]" />
-                          {eventTime}
+                          {tr(eventTime)}
                         </span>
                         <span className="flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-[#00B6FF]" />
-                          {eventLocation}
+                          {tr(eventLocation)}
                         </span>
                       </div>
                     </div>

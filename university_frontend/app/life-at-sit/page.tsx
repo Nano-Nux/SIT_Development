@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,7 +27,14 @@ import {
   Info,
   Maximize2,
 } from 'lucide-react';
-import { api, CampusFacility, StudentLifeActivity, HeroData, NewsArticle, EventItem } from '@/lib/api';
+import {
+  api,
+  CampusFacility,
+  StudentLifeActivity,
+  HeroData,
+  NewsArticle,
+  EventItem,
+} from '@/lib/api';
 import { getLocalizedHeroText } from '@/lib/hero-content';
 import { ImageGallery } from '@/components/ui/ImageGallery';
 import { getGalleryImages } from '@/lib/image-gallery';
@@ -36,56 +45,87 @@ const fallbackFacilities: CampusFacility[] = [
     id: 'fac-1',
     name: 'Art Society & Cultural Center',
     nameLa: 'ສູນສິລະປະ ແລະ ວັດທະນະທຳ',
-    description: 'A grand auditorium and dedicated rehearsal stage for theater, traditional Lao dance, and musical performances.',
-    descriptionLa: 'ຫໍປະຊຸມໃຫຍ່ ແລະ ເວທີຝຶກຊ້ອມສຳລັບລະຄອນເວທີ, ການຟ້ອນພື້ນເມືອງລາວ ແລະ ການສະແດງດົນຕີ.',
+    nameZh: '艺术协会与文化中心',
+    description:
+      'A grand auditorium and dedicated rehearsal stage for theater, traditional Lao dance, and musical performances.',
+    descriptionLa:
+      'ຫໍປະຊຸມໃຫຍ່ ແລະ ເວທີຝຶກຊ້ອມສຳລັບລະຄອນເວທີ, ການຟ້ອນພື້ນເມືອງລາວ ແລະ ການສະແດງດົນຕີ.',
+    descriptionZh: '大型礼堂与专用排练舞台，可开展戏剧、老挝传统舞蹈及音乐表演。',
     imageUrl: '/images/life_at_sit_desktopview/img_6.jpg',
     actionType: 'MODAL',
     modalTitle: 'Art Society & Cultural Center Tour',
     modalTitleLa: 'ຢ້ຽມຊົມສູນສິລະປະ ແລະ ວັດທະນະທຳ',
-    modalContent: 'Equipped with professional stage lighting, acoustic soundproofing, dressing rooms, and seating for over 500 audience members. Hosts annual cultural galas, youth showcases, and drama productions.',
-    modalContentLa: 'ປະກອບດ້ວຍລະບົບແສງສຽງເວທີລະດັບມືອາຊີບ, ຫ້ອງແຕ່ງຕົວ ແລະ ບ່ອນນັ່ງຮອງຮັບຜູ້ຊົມຫຼາຍກວ່າ 500 ທີ່ນັ່ງ. ໃຊ້ສຳລັບຈັດງານເທດສະການວັດທະນະທຳປະຈຳປີ ແລະ ການສະແດງລະຄອນເວທີ.',
+    modalTitleZh: '艺术协会与文化中心参观',
+    modalContent:
+      'Equipped with professional stage lighting, acoustic soundproofing, dressing rooms, and seating for over 500 audience members. Hosts annual cultural galas, youth showcases, and drama productions.',
+    modalContentLa:
+      'ປະກອບດ້ວຍລະບົບແສງສຽງເວທີລະດັບມືອາຊີບ, ຫ້ອງແຕ່ງຕົວ ແລະ ບ່ອນນັ່ງຮອງຮັບຜູ້ຊົມຫຼາຍກວ່າ 500 ທີ່ນັ່ງ. ໃຊ້ສຳລັບຈັດງານເທດສະການວັດທະນະທຳປະຈຳປີ ແລະ ການສະແດງລະຄອນເວທີ.',
+    modalContentZh:
+      '配备专业舞台灯光、隔音设施、化妆间与500多个座席，举办年度文化晚会、青年展示和戏剧演出。',
     order: 1,
   },
   {
     id: 'fac-2',
     name: 'Sports Athletic Union & Arena',
     nameLa: 'ສະໜາມກິລາ ແລະ ສູນອອກກຳລັງກາຍ',
-    description: 'Championship-grade athletic grounds hosting varsity football matches, track meets, and collegiate leagues.',
+    nameZh: '学生体育联合会与运动场',
+    description:
+      'Championship-grade athletic grounds hosting varsity football matches, track meets, and collegiate leagues.',
     descriptionLa: 'ສະໜາມກິລາມາດຕະຖານສາກົນສຳລັບການແຂ່ງຂັນບານເຕະ, ແລ່ນ-ລານ ແລະ ລີກກິລາມະຫາວິທະຍາໄລ.',
+    descriptionZh: '符合赛事标准的运动场，可举办校队足球比赛、田径比赛与高校联赛。',
     imageUrl: '/images/life_at_sit_desktopview/img_3.jpg',
     actionType: 'MODAL',
     modalTitle: 'Sports Athletic Complex & Arena',
     modalTitleLa: 'ສະໜາມກິລາ ແລະ ສະໂມສອນກິລາ',
-    modalContent: 'Features synthetic turf football pitch, multi-purpose courts for basketball and volleyball, professional training equipment, and spectator seating.',
-    modalContentLa: 'ປະກອບດ້ວຍສະໜາມບານເຕະຫຍ້າທຽມ, ສະໜາມບານບ້ວງ ແລະ ບານສົ່ງ, ອຸປະກອນຝຶກຊ້ອມມາດຕະຖານ ແລະ ອັດສະຈັນຊົມກິລາ.',
+    modalTitleZh: '综合体育中心与运动场',
+    modalContent:
+      'Features synthetic turf football pitch, multi-purpose courts for basketball and volleyball, professional training equipment, and spectator seating.',
+    modalContentLa:
+      'ປະກອບດ້ວຍສະໜາມບານເຕະຫຍ້າທຽມ, ສະໜາມບານບ້ວງ ແລະ ບານສົ່ງ, ອຸປະກອນຝຶກຊ້ອມມາດຕະຖານ ແລະ ອັດສະຈັນຊົມກິລາ.',
+    modalContentZh: '配有人工草坪足球场、篮球与排球多功能场地、专业训练器材和观众席。',
     order: 2,
   },
   {
     id: 'fac-3',
     name: 'Vocal Ensemble & Music Hall',
     nameLa: 'ຫ້ອງຊ້ອມດົນຕີ ແລະ ວົງຂັບຮ້ອງ',
-    description: 'Soundproofed acoustic studios and performance halls for vocal choirs, live modern bands, and audio recording.',
+    nameZh: '合唱团与音乐厅',
+    description:
+      'Soundproofed acoustic studios and performance halls for vocal choirs, live modern bands, and audio recording.',
     descriptionLa: 'ສະຕູດິໂອສຽງ ແລະ ຫ້ອງສະແດງດົນຕີສຳລັບວົງຂັບຮ້ອງ, ວົງດົນຕີສາກົນ ແລະ ການບັນທຶກສຽງ.',
+    descriptionZh: '配有隔音声学设计的工作室与表演厅，可用于合唱、现代乐队及录音。',
     imageUrl: '/images/life_at_sit_desktopview/img_4.jpg',
     actionType: 'MODAL',
     modalTitle: 'Vocal Ensemble & Music Studios',
     modalTitleLa: 'ຫ້ອງຊ້ອມດົນຕີ ແລະ ສະຕູດິໂອບັນທຶກສຽງ',
-    modalContent: 'State-of-the-art music chambers with acoustic paneling, grand pianos, synthesizers, microphones, and digital audio workstations for music student creators.',
-    modalContentLa: 'ຫ້ອງດົນຕີທັນສະໄໝພ້ອມລະບົບກັນສຽງສະທ້ອນ, ເປຍໂນ, ຊິນທິໄຊເຊີ, ໄມໂຄຣໂຟນ ແລະ ໂປຣແກຣມບັນທຶກສຽງດິຈິທັລ.',
+    modalTitleZh: '合唱团与音乐工作室',
+    modalContent:
+      'State-of-the-art music chambers with acoustic paneling, grand pianos, synthesizers, microphones, and digital audio workstations for music student creators.',
+    modalContentLa:
+      'ຫ້ອງດົນຕີທັນສະໄໝພ້ອມລະບົບກັນສຽງສະທ້ອນ, ເປຍໂນ, ຊິນທິໄຊເຊີ, ໄມໂຄຣໂຟນ ແລະ ໂປຣແກຣມບັນທຶກສຽງດິຈິທັລ.',
+    modalContentZh:
+      '先进音乐室配有声学板、三角钢琴、合成器、麦克风和数字音频工作站，为学生音乐创作提供支持。',
     order: 3,
   },
   {
     id: 'fac-4',
     name: 'MC Committee & Media Broadcast Stage',
     nameLa: 'ເວທີພິທີກອນ ແລະ ຫ້ອງກະຈາຍສຽງ',
-    description: 'Professional public speaking podiums, television podcast studios, and master-of-ceremonies training spaces.',
+    nameZh: '主持人委员会与媒体播出舞台',
+    description:
+      'Professional public speaking podiums, television podcast studios, and master-of-ceremonies training spaces.',
     descriptionLa: 'ເວທີຝຶກອົບຮົມພິທີກອນ, ສະຕູດິໂອພອດແຄສ ແລະ ການກະຈາຍສຽງໂທລະພາບລະດັບມືອາຊີບ.',
+    descriptionZh: '专业演讲台、电视播客工作室及主持人培训空间。',
     imageUrl: '/images/life_at_sit_desktopview/img_5.jpg',
     actionType: 'MODAL',
     modalTitle: 'MC Committee & Media Studios',
     modalTitleLa: 'ສູນພັດທະນາພິທີກອນ ແລະ ສື່ກະຈາຍສຽງ',
-    modalContent: 'Dedicated facilities for student emcees, debate societies, and campus news broadcasters with 4K multi-cam capture and live-streaming equipment.',
-    modalContentLa: 'ສະຖານທີ່ສະເພາະສຳລັບພິທີກອນນັກສຶກສາ, ຊົມຮົມໂຕ້ວາທີ ແລະ ທີມຂ່າວວິທະຍາເຂດ ພ້ອມກ້ອງ 4K ແລະ ອຸປະກອນຖ່າຍທອດສົດ.',
+    modalTitleZh: '主持人委员会与媒体工作室',
+    modalContent:
+      'Dedicated facilities for student emcees, debate societies, and campus news broadcasters with 4K multi-cam capture and live-streaming equipment.',
+    modalContentLa:
+      'ສະຖານທີ່ສະເພາະສຳລັບພິທີກອນນັກສຶກສາ, ຊົມຮົມໂຕ້ວາທີ ແລະ ທີມຂ່າວວິທະຍາເຂດ ພ້ອມກ້ອງ 4K ແລະ ອຸປະກອນຖ່າຍທອດສົດ.',
+    modalContentZh: '为学生主持人、辩论社和校园新闻团队提供专用设施，配备4K多机位拍摄与直播设备。',
     order: 4,
   },
 ];
@@ -96,6 +136,7 @@ const fallbackNewsEvents = [
     id: 'ne-1',
     title: 'Celebrating 68 Years of Excellence with Shih Chien University',
     titleLa: 'ສະເຫຼີມສະຫຼອງ 68 ປີ ແຫ່ງຄວາມເປັນເລີດ ຮ່ວມກັບ ມະຫາວິທະຍາໄລ ຊິ ຈ້ຽນ (Shih Chien)',
+    titleZh: '与实践大学共庆68周年卓越成就',
     imageUrl: '/images/life_at_sit_desktopview/img_7.jpg',
     category: 'International',
     slug: 'celebrating-68-years-shih-chien-university',
@@ -105,6 +146,7 @@ const fallbackNewsEvents = [
     id: 'ne-2',
     title: 'Friendly Sports Competition Commemorating the 116th Anniversary of International',
     titleLa: 'ການແຂ່ງຂັນກິລາມິດຕະພາບ ເນື່ອງໃນໂອກາດວັນແມ່ຍິງສາກົນ ຄົບຮອບ 116 ປີ',
+    titleZh: '纪念国际妇女节116周年友谊体育赛',
     imageUrl: '/images/life_at_sit_desktopview/img_8.jpg',
     category: 'Sports',
     slug: 'friendly-sports-competition-116th-anniversary',
@@ -114,6 +156,7 @@ const fallbackNewsEvents = [
     id: 'ne-3',
     title: 'The Director received the "Educational Excellence" Award in Kuala Lumpur, Malaysia.',
     titleLa: 'ຜູ້ອຳນວຍການຮັບລາງວັນ "ຄວາມເປັນເລີດດ້ານການສຶກສາ" ທີ່ ກົວລາລຳເປີ, ມາເລເຊຍ.',
+    titleZh: '校长在马来西亚吉隆坡获得“教育卓越奖”。',
     imageUrl: '/images/life_at_sit_desktopview/img_9.jpg',
     category: 'Academics',
     slug: 'director-educational-excellence-award-malaysia',
@@ -123,6 +166,7 @@ const fallbackNewsEvents = [
     id: 'ne-4',
     title: 'Preparation Meeting for the Commencement of Semester II, Academic Year 2025-2026',
     titleLa: 'ກອງປະຊຸມກຽມຄວາມພ້ອມ ສຳລັບການເປີດພາກຮຽນທີ II ສົກຮຽນ 2025-2026',
+    titleZh: '2025–2026学年第二学期开学筹备会议',
     imageUrl: '/images/life_at_sit_desktopview/img_10.jpg',
     category: 'Campus Life',
     slug: 'preparation-meeting-semester-ii-2025-2026',
@@ -132,6 +176,7 @@ const fallbackNewsEvents = [
     id: 'ne-5',
     title: 'Social Integration Skills Training Camp',
     titleLa: 'ຄ້າຍຝຶກອົບຮົມທັກສະການປັບຕົວ ແລະ ການເຊື່ອມໂຍງສັງຄົມ',
+    titleZh: '社会融合技能训练营',
     imageUrl: '/images/life_at_sit_desktopview/img_11.jpg',
     category: 'Student Camp',
     slug: 'social-integration-skills-training-camp',
@@ -141,6 +186,7 @@ const fallbackNewsEvents = [
     id: 'ne-6',
     title: 'Soutsakan Student Market Happening',
     titleLa: 'ງານຕະຫຼາດນັດນັກສຶກສາ ສຸດສະກະນະ (Student Market)',
+    titleZh: 'Soutsakan 学生集市活动',
     imageUrl: '/images/life_at_sit_desktopview/img_12.jpg',
     category: 'Activities',
     slug: 'soutsakan-student-market-happening',
@@ -154,41 +200,57 @@ const featuredClubs = [
     id: 'club-1',
     title: 'Arts Society',
     titleLa: 'ຊົມຮົມ ສິລະປະສ້າງສັນ',
+    titleZh: '艺术协会',
     category: 'ACADEMIC',
     categoryLa: 'ວິຊາການ',
+    categoryZh: '学术',
     icon: Code,
-    description: 'Empowering students to build creative tech designs, interactive media, and full-stack software solutions.',
+    description:
+      'Empowering students to build creative tech designs, interactive media, and full-stack software solutions.',
     descriptionLa: 'ສົ່ງເສີມນັກສຶກສາໃນການອອກແບບສື່ດິຈິທັລ, ຄວາມຄິດສ້າງສັນ ແລະ ການພັດທະນາຊອບແວ.',
+    descriptionZh: '鼓励学生设计创意科技、交互媒体和全栈软件方案。',
   },
   {
     id: 'club-2',
     title: 'Music Ensemble',
     titleLa: 'ຊົມຮົມ ດົນຕີສາກົນ',
+    titleZh: '音乐乐团',
     category: 'ARTS',
     categoryLa: 'ສິລະປະ',
+    categoryZh: '艺术',
     icon: Music,
-    description: 'Live musical rehearsals, vocal choirs, acoustic concerts, and university festival performance showcases.',
+    description:
+      'Live musical rehearsals, vocal choirs, acoustic concerts, and university festival performance showcases.',
     descriptionLa: 'ການຝຶກຊ້ອມດົນຕີສົດ, ວົງຂັບຮ້ອງ, ຄອນເສີດອາຄູສຕິກ ແລະ ການສະແດງໃນງານເທດສະການ.',
+    descriptionZh: '音乐排练、合唱、原声音乐会与校园节庆演出。',
   },
   {
     id: 'club-3',
     title: 'Sports Athletic Union',
     titleLa: 'ສະຫະພັນ ກິລານັກສຶກສາ',
+    titleZh: '学生体育联合会',
     category: 'CREATIVE',
     categoryLa: 'ກິດຈະກຳສ້າງສັນ',
+    categoryZh: '创意',
     icon: Camera,
-    description: 'Organizing varsity leagues, fitness bootcamps, collegiate football matches, and sports photography.',
+    description:
+      'Organizing varsity leagues, fitness bootcamps, collegiate football matches, and sports photography.',
     descriptionLa: 'ຈັດການແຂ່ງຂັນກິລາມະຫາວິທະຍາໄລ, ການອອກກຳລັງກາຍ ແລະ ການຖ່າຍພາບກິລາ.',
+    descriptionZh: '组织校队联赛、健身训练营、高校足球比赛与体育摄影。',
   },
   {
     id: 'club-4',
     title: 'MC Committee',
     titleLa: 'ຄະນະກຳມະການ ພິທີກອນ',
+    titleZh: '主持人委员会',
     category: 'LEADERSHIP',
     categoryLa: 'ຄວາມເປັນຜູ້ນຳ',
+    categoryZh: '领导力',
     icon: Users,
-    description: 'Developing polished public speaking, emcee mastery, event coordination, and bilingual presentation skills.',
+    description:
+      'Developing polished public speaking, emcee mastery, event coordination, and bilingual presentation skills.',
     descriptionLa: 'ພັດທະນາທັກສະການເວົ້າໃນທີ່ສາທາລະນະ, ການເປັນພິທີກອນສອງພາສາ ແລະ ການຈັດກິດຈະກຳ.',
+    descriptionZh: '培养公开演讲、主持、活动协调与双语展示能力。',
   },
 ];
 
@@ -197,80 +259,104 @@ const allStudentClubs = [
   {
     title: 'Arts Society',
     titleLa: 'ຊົມຮົມ ສິລະປະສ້າງສັນ',
+    titleZh: '艺术协会',
     category: 'ACADEMIC',
     categoryLa: 'ວິຊາການ',
+    categoryZh: '学术',
     desc: 'Focusing on graphic illustration, UI/UX prototyping, and collaborative visual projects for campus brands.',
     descLa: 'ເນັ້ນໃສ່ການອອກແບບກຣາບຟິກ, ການສ້າງຕົ້ນແບບ UI/UX ແລະ ໂຄງການສິລະປະສຳລັບວິທະຍາເຂດ.',
+    descZh: '专注于图形插画、UI／UX 原型和校园品牌协作视觉项目。',
     schedule: 'Every Tuesday & Thursday, 4:30 PM',
     members: '45+ Members',
   },
   {
     title: 'Music Ensemble',
     titleLa: 'ຊົມຮົມ ດົນຕີສາກົນ',
+    titleZh: '音乐乐团',
     category: 'ARTS',
     categoryLa: 'ສິລະປະ',
+    categoryZh: '艺术',
     desc: 'Live instrumental band, modern jazz, contemporary pop, and university orchestra rehearsals.',
     descLa: 'ວົງດົນຕີສາກົນ, ແຈັສ, ປັອບຮ່ວມສະໄໝ ແລະ ວົງອໍເຄສຕຣາຂອງມະຫາວິທະຍາໄລ.',
+    descZh: '现场乐队、现代爵士、流行音乐及校交响乐团排练。',
     schedule: 'Every Wednesday & Friday, 5:00 PM',
     members: '60+ Members',
   },
   {
     title: 'Sports Athletic Union',
     titleLa: 'ສະຫະພັນ ກິລານັກສຶກສາ',
+    titleZh: '学生体育联合会',
     category: 'SPORTS',
     categoryLa: 'ກິລາ',
+    categoryZh: '体育',
     desc: 'Men’s and women’s varsity football, badminton league, basketball squad, and endurance athletics.',
     descLa: 'ທີມບານເຕະຊາຍ-ຍິງ, ລີກດອກປີກໄກ່, ທີມບານບ້ວງ ແລະ ການແລ່ນມາຣາທອນ.',
+    descZh: '男女校队足球、羽毛球联赛、篮球队和耐力运动。',
     schedule: 'Mon, Wed, Fri, 4:00 PM',
     members: '120+ Members',
   },
   {
     title: 'MC Committee',
     titleLa: 'ຄະນະກຳມະການ ພິທີກອນ',
+    titleZh: '主持人委员会',
     category: 'LEADERSHIP',
     categoryLa: 'ຄວາມເປັນຜູ້ນຳ',
+    categoryZh: '领导力',
     desc: 'Public address training, ceremony hosting, broadcast moderation, and bilingual emceeing mastery.',
     descLa: 'ຝຶກອົບຮົມການເວົ້າໃນງານພິທີການ, ການດຳເນີນລາຍການ ແລະ ພິທີກອນສອງພາສາ.',
+    descZh: '公众演讲训练、典礼主持、广播主持与双语司仪技能。',
     schedule: 'Every Saturday, 9:00 AM',
     members: '35+ Members',
   },
   {
     title: 'SIT Coding & AI League',
     titleLa: 'ຊົມຮົມ ນັກຂຽນໂປຣແກຣມ & AI',
+    titleZh: 'SIT 编程与人工智能联盟',
     category: 'ACADEMIC',
     categoryLa: 'ວິຊາການ',
+    categoryZh: '学术',
     desc: 'Algorithmic problem solving, hackathons, robotics experiments, and web application development.',
     descLa: 'ການແກ້ໄຂໂຈດຄອມພິວເຕີ, ງານແຮັກກາທອນ, ຫຸ່ນຍົນ ແລະ ການພັດທະນາເວັບແອັບ.',
+    descZh: '算法解题、黑客马拉松、机器人实验与网页应用开发。',
     schedule: 'Every Monday & Wednesday, 5:00 PM',
     members: '80+ Members',
   },
   {
     title: 'Photography & Filmmaking Guild',
     titleLa: 'ຊົມຮົມ ຖ່າຍຮູບ ແລະ ຮູບເງົາ',
+    titleZh: '摄影与电影制作协会',
     category: 'CREATIVE',
     categoryLa: 'ຄວາມຄິດສ້າງສັນ',
+    categoryZh: '创意',
     desc: 'DSLR photography, cinematic lighting, video editing, and campus documentary storytelling.',
     descLa: 'ການຖ່າຍຮູບກ້ອງ DSLR, ການຈັດແສງຮູບເງົາ, ຕັດຕໍ່ວິດີໂອ ແລະ ເລົ່າເລື່ອງສາລະຄະດີ.',
+    descZh: '单反摄影、电影灯光、视频剪辑和校园纪录片叙事。',
     schedule: 'Every Thursday, 4:00 PM',
     members: '50+ Members',
   },
   {
     title: 'Lao Traditional Dance Troupe',
     titleLa: 'ຄະນະສິລະປະ ຟ້ອນພື້ນເມືອງລາວ',
+    titleZh: '老挝传统舞蹈团',
     category: 'ARTS',
     categoryLa: 'ສິລະປະ',
+    categoryZh: '艺术',
     desc: 'Preserving and performing traditional Lao cultural dances for national festivals and international delegations.',
     descLa: 'ອະນຸລັກ ແລະ ສະແດງສິລະປະການຟ້ອນພື້ນເມືອງລາວໃນງານເທດສະການ ແລະ ຕ້ອນຮັບແຂກສາກົນ.',
+    descZh: '传承并表演老挝传统文化舞蹈，参加国家节庆及国际交流活动。',
     schedule: 'Tue & Thu, 5:00 PM',
     members: '40+ Members',
   },
   {
     title: 'Student Entrepreneurship Circle',
     titleLa: 'ຊົມຮົມ ຜູ້ປະກອບການລຸ້ນໃໝ່',
+    titleZh: '学生创业社',
     category: 'LEADERSHIP',
     categoryLa: 'ຄວາມເປັນຜູ້ນຳ',
+    categoryZh: '领导力',
     desc: 'Startup pitch development, market validation, business model workshops, and seed funding applications.',
     descLa: 'ການນຳສະເໜີແຜນທຸລະກິດສະຕາດອັບ, ເວີກຊັອບໂມເດວທຸລະກິດ ແລະ ການຂໍທຶນສະໜັບສະໜູນ.',
+    descZh: '创业路演准备、市场验证、商业模式工作坊与种子资金申请。',
     schedule: 'Every Friday, 3:30 PM',
     members: '45+ Members',
   },
@@ -282,35 +368,42 @@ const clubGalleryImages = [
     src: '/images/life_at_sit_desktopview/img_13.jpg',
     caption: 'Theater & Drama Society Grand Stage Performance',
     captionLa: 'ການສະແດງລະຄອນເວທີສຸດຍິ່ງໃຫຍ່ ຂອງຊົມຮົມການສະແດງ',
+    captionZh: '戏剧社大型舞台演出',
   },
   {
     src: '/images/life_at_sit_desktopview/img_15.jpg',
     caption: 'Acoustic Music Band Live Outdoor Jam Session',
     captionLa: 'ການຫຼິ້ນດົນຕີອາຄູສຕິກສົດ ບັນຍາກາດກາງແຈ້ງ',
+    captionZh: '原声乐队户外即兴演奏',
   },
   {
     src: '/images/life_at_sit_desktopview/img_17.jpg',
     caption: 'Student Creative Workshop & Crafting Booth',
     captionLa: 'ບູດກິດຈະກຳສ້າງສັນ ແລະ ເວີກຊັອບງານສິລະປະນັກສຶກສາ',
+    captionZh: '学生创意工作坊与手工展位',
   },
   {
     src: '/images/life_at_sit_desktopview/img_14.jpg',
     caption: 'University Music Festival Live Stage Concert',
     captionLa: 'ຄອນເສີດເວທີໃຫຍ່ ໃນງານເທດສະການດົນຕີມະຫາວິທະຍາໄລ',
+    captionZh: '校园音乐节现场演唱会',
   },
   {
     src: '/images/life_at_sit_desktopview/img_16.jpg',
     caption: 'Traditional Lao Dance Troupe Cultural Showcase',
     captionLa: 'ການສະແດງຟ້ອນພື້ນເມືອງລາວ ໂດຍຄະນະສິລະປະນັກສຶກສາ',
+    captionZh: '老挝传统舞蹈团文化展演',
   },
   {
     src: '/images/life_at_sit_desktopview/img_18.jpg',
     caption: 'Inter-Collegiate Varsity Football Championship Match',
     captionLa: 'ການແຂ່ງຂັນບານເຕະຊິງຊະນະເລີດ ລະຫວ່າງຄະນະວິຊາ',
+    captionZh: '高校校队足球锦标赛',
   },
 ];
 
 export default function LifeAtSITPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
@@ -325,7 +418,12 @@ export default function LifeAtSITPage() {
   const [selectedFacility, setSelectedFacility] = useState<CampusFacility | null>(null);
   const [allClubsOpen, setAllClubsOpen] = useState(false);
   const [selectedClubCategory, setSelectedClubCategory] = useState<string>('ALL');
-  const [lightboxImage, setLightboxImage] = useState<{ src: string; caption: string; captionLa?: string } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{
+    src: string;
+    caption: string;
+    captionLa?: string;
+    captionZh?: string;
+  } | null>(null);
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -346,22 +444,33 @@ export default function LifeAtSITPage() {
       else setFacilities(fallbackFacilities);
 
       if (lifeRes && lifeRes.length > 0) setStudentLife(lifeRes);
-      
-      const newsItems = Array.isArray(newsRes) ? newsRes : (newsRes?.items || []);
+
+      const newsItems = Array.isArray(newsRes) ? newsRes : newsRes?.items || [];
       if (newsItems.length > 0) setNewsList(newsItems);
 
-      const eventItems = Array.isArray(eventsRes) ? eventsRes : ((eventsRes as any)?.items || (eventsRes as any)?.data || []);
+      const eventItems = Array.isArray(eventsRes)
+        ? eventsRes
+        : (eventsRes as any)?.items || (eventsRes as any)?.data || [];
       if (eventItems.length > 0) setEventsList(eventItems);
-      
+
       setLoading(false);
     });
   }, []);
 
   const heroSubtitle = getLocalizedHeroText(hero, 'subtitle', lang, t.lifeAtSit.heroSubtitle);
 
-  const rawTitle = isLa
-    ? (hero?.titleLa || hero?.title || t.lifeAtSit.heroTitle || 'ຊີວິດໃນ SIT')
-    : (hero?.title || t.lifeAtSit.heroTitle || 'Life at SIT');
+  const rawTitle =
+    lang === 'ZH'
+      ? hero?.titleZh ||
+        hero?.title ||
+        t.lifeAtSit.heroTitle ||
+        'ຊີວິດໃນ SIT' ||
+        hero?.title ||
+        t.lifeAtSit.heroTitle ||
+        'Life at SIT'
+      : isLa
+        ? hero?.titleLa || hero?.title || t.lifeAtSit.heroTitle || 'ຊີວິດໃນ SIT'
+        : hero?.title || t.lifeAtSit.heroTitle || 'Life at SIT';
 
   let mainTitle = isLa ? 'ຊີວິດໃນ' : 'Life at';
   let subTitleAccent = 'SIT';
@@ -392,9 +501,10 @@ export default function LifeAtSITPage() {
   };
 
   // Filter all clubs in modal
-  const filteredClubs = selectedClubCategory === 'ALL'
-    ? allStudentClubs
-    : allStudentClubs.filter(c => c.category === selectedClubCategory);
+  const filteredClubs =
+    selectedClubCategory === 'ALL'
+      ? allStudentClubs
+      : allStudentClubs.filter((c) => c.category === selectedClubCategory);
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-[#00001C] font-sans antialiased selection:bg-[#0400CC] selection:text-white">
@@ -411,7 +521,7 @@ export default function LifeAtSITPage() {
             {bgImage && (
               <Image
                 src={bgImage}
-                alt={rawTitle}
+                alt={tr(rawTitle)}
                 fill
                 className="object-cover object-center"
                 priority
@@ -425,7 +535,7 @@ export default function LifeAtSITPage() {
             <div className="absolute -top-28 -right-28 md:-top-40 md:-right-20 w-[520px] h-[520px] md:w-[800px] md:h-[800px] opacity-10 pointer-events-none select-none z-0 rotate-90">
               <Image
                 src="/images/academics_desktopview/img_2.png"
-                alt="SIT Emblem Watermark"
+                alt={tr('SIT Emblem Watermark')}
                 fill
                 className="object-contain"
               />
@@ -438,7 +548,7 @@ export default function LifeAtSITPage() {
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
                 <span className="text-xs sm:text-sm font-bold tracking-widest text-[#EFFFFF]">
-                  {heroSubtitle}
+                  {tr(heroSubtitle)}
                 </span>
               </div>
             </div>
@@ -446,14 +556,14 @@ export default function LifeAtSITPage() {
             {/* Heading */}
             <div className="space-y-1 sm:space-y-2">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
-                {mainTitle}
+                {tr(mainTitle)}
               </h1>
 
               {/* Next line: 'at SIT' */}
               {subTitleAccent && (
                 <div className="relative flex items-end min-h-[48px] pt-1">
                   <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
-                    {subTitleAccent}
+                    {tr(subTitleAccent)}
                   </div>
                 </div>
               )}
@@ -469,7 +579,8 @@ export default function LifeAtSITPage() {
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16 space-y-4">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                {t.lifeAtSit.campusFacilitiesTitle} <span className="text-[#0400CC]">{t.lifeAtSit.campusFacilitiesHighlight}</span>
+                {t.lifeAtSit.campusFacilitiesTitle}{' '}
+                <span className="text-[#0400CC]">{t.lifeAtSit.campusFacilitiesHighlight}</span>
               </h2>
               <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
                 {t.lifeAtSit.campusFacilitiesDesc}
@@ -479,9 +590,22 @@ export default function LifeAtSITPage() {
             {/* Grid of Facilities */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               {displayFacilities.map((fac, idx) => {
-                const facName = (isLa && fac.nameLa) ? fac.nameLa : fac.name;
-                const facDesc = (isLa && fac.descriptionLa) ? fac.descriptionLa : fac.description;
-                const images = getGalleryImages(fac, `/images/life_at_sit_desktopview/img_${(idx % 4) + 3}.jpg`);
+                const facName =
+                  lang === 'ZH'
+                    ? fac?.nameZh || fac.name
+                    : isLa && fac.nameLa
+                      ? fac.nameLa
+                      : fac.name;
+                const facDesc =
+                  lang === 'ZH'
+                    ? fac?.descriptionZh || fac.description
+                    : isLa && fac.descriptionLa
+                      ? fac.descriptionLa
+                      : fac.description;
+                const images = getGalleryImages(
+                  fac,
+                  `/images/life_at_sit_desktopview/img_${(idx % 4) + 3}.jpg`,
+                );
 
                 return (
                   <div
@@ -490,7 +614,12 @@ export default function LifeAtSITPage() {
                   >
                     {/* Background Image */}
                     <div className="absolute inset-0 z-0">
-                      <ImageGallery images={images} alt={facName} aspectRatio="h-full" className="h-full" />
+                      <ImageGallery
+                        images={images}
+                        alt={tr(facName)}
+                        aspectRatio="h-full"
+                        className="h-full"
+                      />
                     </div>
 
                     {/* Dark Gradient Overlay for optimal contrast */}
@@ -500,15 +629,26 @@ export default function LifeAtSITPage() {
                     <div className="relative z-20 space-y-2.5">
                       <div className="flex items-center justify-between">
                         <h3 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
-                          <button type="button" onClick={() => handleFacilityClick(fac)} className="text-left cursor-pointer hover:underline focus-visible:outline-2 focus-visible:outline-white">{facName}</button>
+                          <button
+                            type="button"
+                            onClick={() => handleFacilityClick(fac)}
+                            className="text-left cursor-pointer hover:underline focus-visible:outline-2 focus-visible:outline-white"
+                          >
+                            {tr(facName)}
+                          </button>
                         </h3>
-                        <button type="button" onClick={() => handleFacilityClick(fac)} aria-label={isLa ? `ເບິ່ງ ${facName}` : `Explore ${facName}`} className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white shrink-0 ml-3 cursor-pointer focus-visible:outline-2 focus-visible:outline-white">
+                        <button
+                          type="button"
+                          onClick={() => handleFacilityClick(fac)}
+                          aria-label={tr(isLa ? `ເບິ່ງ ${facName}` : `Explore ${facName}`)}
+                          className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white shrink-0 ml-3 cursor-pointer focus-visible:outline-2 focus-visible:outline-white"
+                        >
                           <Maximize2 className="w-4 h-4" />
                         </button>
                       </div>
                       {facDesc && (
                         <p className="text-xs sm:text-sm text-white/80 line-clamp-2 leading-relaxed">
-                          {facDesc}
+                          {tr(facDesc)}
                         </p>
                       )}
                     </div>
@@ -527,14 +667,20 @@ export default function LifeAtSITPage() {
             {/* Section Header */}
             <div className="mb-12 sm:mb-14">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                {t.lifeAtSit.newsEventsTitle} <span className="text-[#0400CC]">{t.lifeAtSit.newsEventsHighlight}</span>
+                {t.lifeAtSit.newsEventsTitle}{' '}
+                <span className="text-[#0400CC]">{t.lifeAtSit.newsEventsHighlight}</span>
               </h2>
             </div>
 
             {/* 3-Column Grid of News & Events (6 cards) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {fallbackNewsEvents.map((item, idx) => {
-                const itemTitle = (isLa && item.titleLa) ? item.titleLa : item.title;
+                const itemTitle =
+                  lang === 'ZH'
+                    ? item?.titleZh || item.title
+                    : isLa && item.titleLa
+                      ? item.titleLa
+                      : item.title;
                 const linkHref = `/${item.type || 'news'}/${item.slug}`;
 
                 return (
@@ -547,20 +693,20 @@ export default function LifeAtSITPage() {
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
                       <Image
                         src={item.imageUrl}
-                        alt={itemTitle}
+                        alt={tr(itemTitle)}
                         fill
                         unoptimized
                         className="object-cover object-center group-hover:scale-105 transition-all duration-500"
                       />
                       <span className="absolute top-3 left-3 bg-[#0400CC] text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md shadow">
-                        {item.category}
+                        {tr(item.category)}
                       </span>
                     </div>
 
                     {/* Headline */}
                     <div className="p-6 flex-grow flex flex-col justify-between space-y-4">
                       <h3 className="text-base sm:text-lg font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                        {itemTitle}
+                        {tr(itemTitle)}
                       </h3>
 
                       <div className="flex items-center text-xs sm:text-sm font-bold text-[#0400CC] group-hover:underline">
@@ -583,7 +729,8 @@ export default function LifeAtSITPage() {
             {/* Section Header */}
             <div className="w-full mb-12 sm:mb-14 space-y-4">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                {t.lifeAtSit.studentLifeTitle} <span className="text-[#0400CC]">{t.lifeAtSit.studentLifeHighlight}</span>
+                {t.lifeAtSit.studentLifeTitle}{' '}
+                <span className="text-[#0400CC]">{t.lifeAtSit.studentLifeHighlight}</span>
               </h2>
               <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed w-full">
                 {t.lifeAtSit.studentLifeDesc}
@@ -594,8 +741,18 @@ export default function LifeAtSITPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-8">
               {featuredClubs.map((club, idx) => {
                 const IconComponent = club.icon;
-                const clubTitle = (isLa && club.titleLa) ? club.titleLa : club.title;
-                const categoryText = (isLa && club.categoryLa) ? club.categoryLa : club.category;
+                const clubTitle =
+                  lang === 'ZH'
+                    ? club?.titleZh || club.title
+                    : isLa && club.titleLa
+                      ? club.titleLa
+                      : club.title;
+                const categoryText =
+                  lang === 'ZH'
+                    ? club?.categoryZh || club.category
+                    : isLa && club.categoryLa
+                      ? club.categoryLa
+                      : club.category;
 
                 return (
                   <div
@@ -610,10 +767,10 @@ export default function LifeAtSITPage() {
                     {/* Text Details */}
                     <div className="space-y-1">
                       <h3 className="text-lg sm:text-xl font-bold text-[#00001C]">
-                        {clubTitle}
+                        {tr(clubTitle)}
                       </h3>
                       <span className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#718096]">
-                        {categoryText}
+                        {tr(categoryText)}
                       </span>
                     </div>
                   </div>
@@ -640,16 +797,28 @@ export default function LifeAtSITPage() {
                   onClick={() => setLightboxImage(img)}
                   className="group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 cursor-pointer bg-slate-900"
                 >
-                    <Image
-                      src={img.src}
-                      alt={isLa ? (img.captionLa || img.caption) : img.caption}
-                      fill
-                      unoptimized
-                      className="object-cover object-center group-hover:scale-105 transition-all duration-500"
-                    />
+                  <Image
+                    src={img.src}
+                    alt={tr(
+                      lang === 'ZH'
+                        ? img?.captionZh || img.caption || img.caption
+                        : isLa
+                          ? img.captionLa || img.caption
+                          : img.caption,
+                    )}
+                    fill
+                    unoptimized
+                    className="object-cover object-center group-hover:scale-105 transition-all duration-500"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
                     <p className="text-xs sm:text-sm font-semibold text-white">
-                      {isLa ? (img.captionLa || img.caption) : img.caption}
+                      {tr(
+                        lang === 'ZH'
+                          ? img?.captionZh || img.caption || img.caption
+                          : isLa
+                            ? img.captionLa || img.caption
+                            : img.caption,
+                      )}
                     </p>
                   </div>
                 </div>
@@ -683,8 +852,17 @@ export default function LifeAtSITPage() {
 
             <ImageGallery
               key={selectedFacility.id}
-              images={getGalleryImages(selectedFacility, '/images/life_at_sit_desktopview/img_3.jpg')}
-              alt={isLa && selectedFacility.nameLa ? selectedFacility.nameLa : selectedFacility.name}
+              images={getGalleryImages(
+                selectedFacility,
+                '/images/life_at_sit_desktopview/img_3.jpg',
+              )}
+              alt={tr(
+                lang === 'ZH'
+                  ? selectedFacility?.nameZh || selectedFacility.name
+                  : isLa && selectedFacility.nameLa
+                    ? selectedFacility.nameLa
+                    : selectedFacility.name,
+              )}
               fit="contain"
             />
 
@@ -693,14 +871,34 @@ export default function LifeAtSITPage() {
                 {t.lifeAtSit.facilityBadge}
               </span>
               <h3 className="text-2xl sm:text-3xl font-black text-[#00001C]">
-                {isLa
-                  ? (selectedFacility.modalTitleLa || selectedFacility.nameLa || selectedFacility.name)
-                  : (selectedFacility.modalTitle || selectedFacility.name)}
+                {tr(
+                  lang === 'ZH'
+                    ? selectedFacility?.modalTitleZh ||
+                        selectedFacility?.nameZh ||
+                        selectedFacility.name ||
+                        selectedFacility.modalTitle ||
+                        selectedFacility.name
+                    : isLa
+                      ? selectedFacility.modalTitleLa ||
+                        selectedFacility.nameLa ||
+                        selectedFacility.name
+                      : selectedFacility.modalTitle || selectedFacility.name,
+                )}
               </h3>
               <p className="text-sm sm:text-base text-[#4A5565] leading-relaxed whitespace-pre-line">
-                {isLa
-                  ? (selectedFacility.modalContentLa || selectedFacility.descriptionLa || selectedFacility.description)
-                  : (selectedFacility.modalContent || selectedFacility.description)}
+                {tr(
+                  lang === 'ZH'
+                    ? selectedFacility?.modalContentZh ||
+                        selectedFacility?.descriptionZh ||
+                        selectedFacility.description ||
+                        selectedFacility.modalContent ||
+                        selectedFacility.description
+                    : isLa
+                      ? selectedFacility.modalContentLa ||
+                        selectedFacility.descriptionLa ||
+                        selectedFacility.description
+                      : selectedFacility.modalContent || selectedFacility.description,
+                )}
               </p>
 
               <div className="pt-4 flex justify-end">
@@ -750,7 +948,7 @@ export default function LifeAtSITPage() {
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
-                  {cat}
+                  {tr(cat)}
                 </button>
               ))}
             </div>
@@ -765,18 +963,32 @@ export default function LifeAtSITPage() {
                   >
                     <div className="flex items-center justify-between">
                       <h4 className="font-extrabold text-base sm:text-lg text-[#00001C]">
-                        {isLa ? club.titleLa : club.title}
+                        {tr(
+                          lang === 'ZH'
+                            ? club?.titleZh || club.title
+                            : isLa
+                              ? club.titleLa
+                              : club.title,
+                        )}
                       </h4>
                       <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded bg-[#EFFFFF] text-[#0400CC]">
-                        {isLa ? (club.categoryLa || club.category) : club.category}
+                        {tr(
+                          lang === 'ZH'
+                            ? club?.categoryZh || club.category || club.category
+                            : isLa
+                              ? club.categoryLa || club.category
+                              : club.category,
+                        )}
                       </span>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      {isLa ? club.descLa : club.desc}
+                      {tr(
+                        lang === 'ZH' ? club?.descZh || club.desc : isLa ? club.descLa : club.desc,
+                      )}
                     </p>
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
-                      <span>🕒 {club.schedule}</span>
-                      <span className="text-[#0400CC]">👥 {club.members}</span>
+                      <span>🕒 {tr(club.schedule)}</span>
+                      <span className="text-[#0400CC]">👥 {tr(club.members)}</span>
                     </div>
                   </div>
                 ))}
@@ -812,14 +1024,26 @@ export default function LifeAtSITPage() {
             <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src={lightboxImage.src}
-                alt={isLa ? (lightboxImage.captionLa || lightboxImage.caption) : lightboxImage.caption}
+                alt={tr(
+                  lang === 'ZH'
+                    ? lightboxImage?.captionZh || lightboxImage.caption || lightboxImage.caption
+                    : isLa
+                      ? lightboxImage.captionLa || lightboxImage.caption
+                      : lightboxImage.caption,
+                )}
                 fill
                 unoptimized
                 className="object-contain"
               />
             </div>
             <p className="text-white text-sm sm:text-base font-semibold mt-4 text-center">
-              {isLa ? (lightboxImage.captionLa || lightboxImage.caption) : lightboxImage.caption}
+              {tr(
+                lang === 'ZH'
+                  ? lightboxImage?.captionZh || lightboxImage.caption || lightboxImage.caption
+                  : isLa
+                    ? lightboxImage.captionLa || lightboxImage.caption
+                    : lightboxImage.caption,
+              )}
             </p>
           </div>
         </div>

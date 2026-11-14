@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -9,11 +11,8 @@ import { Calendar, Clock, MapPin, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { eventsApi, EventItem } from '@/lib/api';
 
-export default function EventDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const resolvedParams = use(params);
@@ -22,7 +21,8 @@ export default function EventDetailPage({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    eventsApi.getEvent(slug)
+    eventsApi
+      .getEvent(slug)
       .then(setEvent)
       .catch((err) => {
         console.error('Error fetching event:', err);
@@ -48,18 +48,42 @@ export default function EventDetailPage({
   }
 
   const dateObj = new Date(event.eventDate);
-  const formattedDate = dateObj.toLocaleDateString(isLa ? 'lo-LA' : 'en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const formattedDate = dateObj.toLocaleDateString(
+    lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+    {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    },
+  );
 
-  const title = (isLa && event.titleLa) ? event.titleLa : event.title;
-  const summary = (isLa && event.summaryLa) ? event.summaryLa : event.summary;
-  const content = (isLa && event.contentLa) ? event.contentLa : event.content;
-  const location = (isLa && event.locationLa) ? event.locationLa : event.location;
-  const time = (isLa && event.timeLa) ? event.timeLa : event.time;
+  const title =
+    lang === 'ZH'
+      ? event?.titleZh || event.title
+      : isLa && event.titleLa
+        ? event.titleLa
+        : event.title;
+  const summary =
+    lang === 'ZH'
+      ? event?.summaryZh || event.summary
+      : isLa && event.summaryLa
+        ? event.summaryLa
+        : event.summary;
+  const content =
+    lang === 'ZH'
+      ? event?.contentZh || event.content
+      : isLa && event.contentLa
+        ? event.contentLa
+        : event.content;
+  const location =
+    lang === 'ZH'
+      ? event?.locationZh || event.location
+      : isLa && event.locationLa
+        ? event.locationLa
+        : event.location;
+  const time =
+    lang === 'ZH' ? event?.timeZh || event.time : isLa && event.timeLa ? event.timeLa : event.time;
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -80,7 +104,7 @@ export default function EventDetailPage({
             </span>
 
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight leading-tight">
-              {title}
+              {tr(title)}
             </h1>
 
             {/* Event Key Meta Card */}
@@ -89,21 +113,21 @@ export default function EventDetailPage({
                 <Calendar className="w-5 h-5 text-[#0400CC] shrink-0 mt-0.5" />
                 <div>
                   <span className="text-slate-400 font-medium block">{t.events.dateLabel}</span>
-                  <span className="font-bold text-[#00001C]">{formattedDate}</span>
+                  <span className="font-bold text-[#00001C]">{tr(formattedDate)}</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-[#0400CC] shrink-0 mt-0.5" />
                 <div>
                   <span className="text-slate-400 font-medium block">{t.events.timeLabel}</span>
-                  <span className="font-bold text-[#00001C]">{time}</span>
+                  <span className="font-bold text-[#00001C]">{tr(time)}</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#00B6FF] shrink-0 mt-0.5" />
                 <div>
                   <span className="text-slate-400 font-medium block">{t.events.locationLabel}</span>
-                  <span className="font-bold text-[#00001C]">{location}</span>
+                  <span className="font-bold text-[#00001C]">{tr(location)}</span>
                 </div>
               </div>
             </div>
@@ -111,22 +135,18 @@ export default function EventDetailPage({
 
           {event.imageUrl && (
             <div className="rounded-3xl overflow-hidden shadow-xl aspect-video bg-slate-100 mb-10 border border-slate-200">
-              <img
-                src={event.imageUrl}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
+              <img src={event.imageUrl} alt={tr(title)} className="w-full h-full object-cover" />
             </div>
           )}
 
           {summary && (
             <div className="text-base sm:text-lg font-medium text-slate-700 leading-relaxed mb-8 border-l-4 border-[#0400CC] pl-6 py-1">
-              {summary}
+              {tr(summary)}
             </div>
           )}
 
           <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed space-y-6 text-slate-700 whitespace-pre-line">
-            {content}
+            {tr(content)}
           </div>
 
           <div className="mt-12 p-8 rounded-3xl bg-gradient-to-r from-[#00001C] to-[#0400CC] text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">

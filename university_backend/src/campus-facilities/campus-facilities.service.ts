@@ -23,15 +23,19 @@ export class CampusFacilitiesService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         ...imageGalleryData(data),
         actionType: data.actionType ? data.actionType.toUpperCase() : 'MODAL',
         destinationUrl: data.destinationUrl,
         modalTitle: data.modalTitle,
         modalTitleLa: data.modalTitleLa,
+        modalTitleZh: data.modalTitleZh,
         modalContent: data.modalContent,
         modalContentLa: data.modalContentLa,
+        modalContentZh: data.modalContentZh,
         order: data.order !== undefined ? Number(data.order) : 0,
       },
     });
@@ -44,15 +48,19 @@ export class CampusFacilitiesService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         ...imageGalleryData(data),
         actionType: data.actionType ? data.actionType.toUpperCase() : undefined,
         destinationUrl: data.destinationUrl,
         modalTitle: data.modalTitle,
         modalTitleLa: data.modalTitleLa,
+        modalTitleZh: data.modalTitleZh,
         modalContent: data.modalContent,
         modalContentLa: data.modalContentLa,
+        modalContentZh: data.modalContentZh,
         order: data.order !== undefined ? Number(data.order) : undefined,
       },
     });
@@ -66,7 +74,7 @@ export class CampusFacilitiesService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.campusFacility.update({
           where: { id: item.id },
           data: { order: item.order },

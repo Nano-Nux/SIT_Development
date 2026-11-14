@@ -1,11 +1,26 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { Image as ImageIcon, Upload, Copy, Check, Sparkles, Database, ExternalLink, HardDrive } from 'lucide-react';
+import {
+  Image as ImageIcon,
+  Upload,
+  Copy,
+  Check,
+  Sparkles,
+  Database,
+  ExternalLink,
+  HardDrive,
+} from 'lucide-react';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminMediaPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [uploadedUrl, setUploadedUrl] = useState<string>('');
   const [copied, setCopied] = useState<string | null>(null);
   const [dbMedia, setDbMedia] = useState<any[]>([]);
@@ -65,10 +80,12 @@ export default function AdminMediaPage() {
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
           <ImageIcon className="w-7 h-7 text-[#0400CC]" />
-          SeaweedFS Media & Asset Library
+          {tr('SeaweedFS Media & Asset Library')}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Upload lossless high-resolution images to the SeaweedFS distributed file server. All URLs returned are stored directly in PostgreSQL.
+          {tr(
+            'Upload lossless high-resolution images to the SeaweedFS distributed file server. All URLs returned are stored directly in PostgreSQL.',
+          )}
         </p>
       </div>
 
@@ -77,35 +94,41 @@ export default function AdminMediaPage() {
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h2 className="text-base font-bold text-[#00001C] flex items-center gap-2">
             <Upload className="w-5 h-5 text-[#0400CC]" />
-            Upload New Full-Quality Asset
+            {tr('Upload New Full-Quality Asset')}
           </h2>
           <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 flex items-center gap-1">
             <HardDrive className="w-3.5 h-3.5" />
-            SeaweedFS Engine Active
+            {tr('SeaweedFS Engine Active')}
           </span>
         </div>
 
         <ImageUpload
-          label="Select or Drag High-Res Asset"
+          label={tr('Select or Drag High-Res Asset')}
           value={uploadedUrl}
           onChange={handleUploadSuccess}
-          placeholder="Upload to SeaweedFS..."
-          helpText="Images are transferred uncompressed directly into the SeaweedFS cluster bucket."
+          placeholder={tr('Upload to SeaweedFS...')}
+          helpText={tr(
+            'Images are transferred uncompressed directly into the SeaweedFS cluster bucket.',
+          )}
           aspectRatio="video"
         />
 
         {uploadedUrl && (
           <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between gap-4">
             <div className="text-xs text-emerald-800 space-y-0.5">
-              <span className="font-bold block">Uploaded to SeaweedFS & Registered:</span>
-              <span className="font-mono text-[11px] block break-all">{uploadedUrl}</span>
+              <span className="font-bold block">{tr('Uploaded to SeaweedFS & Registered:')}</span>
+              <span className="font-mono text-[11px] block break-all">{tr(uploadedUrl)}</span>
             </div>
             <button
               onClick={() => copyToClipboard(uploadedUrl)}
               className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg flex items-center gap-1 shadow shrink-0 cursor-pointer"
             >
-              {copied === uploadedUrl ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              {copied === uploadedUrl ? 'Copied' : 'Copy URL'}
+              {copied === uploadedUrl ? (
+                <Check className="w-3.5 h-3.5" />
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+              {tr(copied === uploadedUrl ? tr('Copied') : tr('Copy URL'))}
             </button>
           </div>
         )}
@@ -117,13 +140,14 @@ export default function AdminMediaPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-[#00001C] flex items-center gap-2">
               <Database className="w-5 h-5 text-[#0400CC]" />
-              Uploaded SeaweedFS Storage Assets ({dbMedia.length})
+              {tr('Uploaded SeaweedFS Storage Assets (')}
+              {dbMedia.length})
             </h2>
             <button
               onClick={loadDatabaseMedia}
               className="text-xs font-bold text-[#0400CC] hover:underline cursor-pointer"
             >
-              Refresh
+              {tr('Refresh')}
             </button>
           </div>
 
@@ -148,7 +172,7 @@ export default function AdminMediaPage() {
                   </div>
                   <h4 className="text-xs font-bold text-[#00001C] line-clamp-1">{item.fileName}</h4>
                   <p className="text-[10px] text-slate-400 font-mono">
-                    {item.size ? `${(item.size / 1024).toFixed(1)} KB` : 'SeaweedFS'}
+                    {tr(item.size ? `${(item.size / 1024).toFixed(1)} KB` : 'SeaweedFS')}
                   </p>
                 </div>
 
@@ -157,15 +181,19 @@ export default function AdminMediaPage() {
                     onClick={() => copyToClipboard(item.url)}
                     className="flex-1 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#0400CC] text-[11px] font-bold flex items-center justify-center gap-1 cursor-pointer transition-colors"
                   >
-                    {copied === item.url ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                    {copied === item.url ? 'Copied' : 'Copy URL'}
+                    {copied === item.url ? (
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3 h-3" />
+                    )}
+                    {tr(copied === item.url ? tr('Copied') : tr('Copy URL'))}
                   </button>
                   <a
                     href={item.url}
                     target="_blank"
                     rel="noreferrer"
                     className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#0400CC] flex items-center justify-center"
-                    title="Open in new tab"
+                    title={tr('Open in new tab')}
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
@@ -179,7 +207,7 @@ export default function AdminMediaPage() {
       {/* Asset Repository Showcase */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-[#00001C]">
-          Extracted Figma Assets Directory
+          {tr('Extracted Figma Assets Directory')}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {commonAssets.map((asset, idx) => (
@@ -192,20 +220,26 @@ export default function AdminMediaPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={asset.path}
-                    alt={asset.name}
+                    alt={tr(localize(asset, 'name'))}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
-                <h4 className="text-xs font-bold text-[#00001C] line-clamp-1">{asset.name}</h4>
-                <p className="text-[10px] font-mono text-slate-400 truncate">{asset.path}</p>
+                <h4 className="text-xs font-bold text-[#00001C] line-clamp-1">
+                  {tr(localize(asset, 'name'))}
+                </h4>
+                <p className="text-[10px] font-mono text-slate-400 truncate">{tr(asset.path)}</p>
               </div>
 
               <button
                 onClick={() => copyToClipboard(asset.path)}
                 className="mt-3 w-full py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#0400CC] text-[11px] font-bold flex items-center justify-center gap-1 cursor-pointer transition-colors"
               >
-                {copied === asset.path ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                {copied === asset.path ? 'Copied' : 'Copy Path'}
+                {copied === asset.path ? (
+                  <Check className="w-3 h-3 text-emerald-600" />
+                ) : (
+                  <Copy className="w-3 h-3" />
+                )}
+                {tr(copied === asset.path ? tr('Copied') : tr('Copy Path'))}
               </button>
             </div>
           ))}

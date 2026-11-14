@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -25,17 +29,17 @@ export class DepartmentsService {
     const cleanSlug = slug.trim().toLowerCase();
     const aliasMap: Record<string, string> = {
       'information-technology': 'it',
-      'information_technology': 'it',
+      information_technology: 'it',
       'it-department': 'it',
       'dept-it': 'it',
       'business-administration-economics': 'ba-economics',
       'business-administration': 'ba-economics',
-      'ba_economics': 'ba-economics',
-      'ba': 'ba-economics',
-      'economics': 'ba-economics',
+      ba_economics: 'ba-economics',
+      ba: 'ba-economics',
+      economics: 'ba-economics',
       'communication-arts': 'communication-arts',
-      'communication_arts': 'communication-arts',
-      'ca': 'communication-arts',
+      communication_arts: 'communication-arts',
+      ca: 'communication-arts',
     };
 
     const targetSlug = aliasMap[cleanSlug] || cleanSlug;
@@ -102,14 +106,20 @@ export class DepartmentsService {
       if (!value.trim()) return null;
       try {
         const url = new URL(value.trim());
-        if (['http:', 'https:'].includes(url.protocol) && !url.username && !url.password) {
+        if (
+          ['http:', 'https:'].includes(url.protocol) &&
+          !url.username &&
+          !url.password
+        ) {
           return url.href;
         }
       } catch {
         // Invalid URLs are rejected below.
       }
     }
-    throw new BadRequestException('External website URL must be a valid HTTP or HTTPS URL without credentials');
+    throw new BadRequestException(
+      'External website URL must be a valid HTTP or HTTPS URL without credentials',
+    );
   }
 
   private formatJsonField(value: any): string | null | undefined {
@@ -124,33 +134,47 @@ export class DepartmentsService {
   }
 
   async create(data: any) {
-    const slug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const slug =
+      data.slug ||
+      data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
     return this.prisma.department.create({
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         slug,
         externalUrl: this.formatExternalUrl(data.externalUrl),
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         heroImage: data.heroImage,
         imageUrl: data.imageUrl,
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
         boxDescriptions: this.formatJsonField(data.boxDescriptions),
         boxDescriptionsLa: this.formatJsonField(data.boxDescriptionsLa),
+        boxDescriptionsZh: this.formatJsonField(data.boxDescriptionsZh),
         coreFocusAreas: this.formatJsonField(data.coreFocusAreas),
         coreFocusAreasLa: this.formatJsonField(data.coreFocusAreasLa),
+        coreFocusAreasZh: this.formatJsonField(data.coreFocusAreasZh),
         careerOutcomeDesc: data.careerOutcomeDesc,
         careerOutcomeDescLa: data.careerOutcomeDescLa,
+        careerOutcomeDescZh: data.careerOutcomeDescZh,
         careerPlacementRate: data.careerPlacementRate,
         careerPlacementRateLa: data.careerPlacementRateLa,
+        careerPlacementRateZh: data.careerPlacementRateZh,
         careerAvgSalary: data.careerAvgSalary,
         careerAvgSalaryLa: data.careerAvgSalaryLa,
+        careerAvgSalaryZh: data.careerAvgSalaryZh,
         careerPartnerCompanies: data.careerPartnerCompanies,
         careerPartnerCompaniesLa: data.careerPartnerCompaniesLa,
+        careerPartnerCompaniesZh: data.careerPartnerCompaniesZh,
         careerTimeToEmployment: data.careerTimeToEmployment,
         careerTimeToEmploymentLa: data.careerTimeToEmploymentLa,
+        careerTimeToEmploymentZh: data.careerTimeToEmploymentZh,
       },
     });
   }
@@ -162,28 +186,81 @@ export class DepartmentsService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         slug: data.slug,
         externalUrl: this.formatExternalUrl(data.externalUrl),
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         heroImage: data.heroImage,
         imageUrl: data.imageUrl,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
         boxDescriptions: this.formatJsonField(data.boxDescriptions),
         boxDescriptionsLa: this.formatJsonField(data.boxDescriptionsLa),
+        boxDescriptionsZh: this.formatJsonField(data.boxDescriptionsZh),
         coreFocusAreas: this.formatJsonField(data.coreFocusAreas),
         coreFocusAreasLa: this.formatJsonField(data.coreFocusAreasLa),
-        careerOutcomeDesc: data.careerOutcomeDesc !== undefined ? data.careerOutcomeDesc : undefined,
-        careerOutcomeDescLa: data.careerOutcomeDescLa !== undefined ? data.careerOutcomeDescLa : undefined,
-        careerPlacementRate: data.careerPlacementRate !== undefined ? data.careerPlacementRate : undefined,
-        careerPlacementRateLa: data.careerPlacementRateLa !== undefined ? data.careerPlacementRateLa : undefined,
-        careerAvgSalary: data.careerAvgSalary !== undefined ? data.careerAvgSalary : undefined,
-        careerAvgSalaryLa: data.careerAvgSalaryLa !== undefined ? data.careerAvgSalaryLa : undefined,
-        careerPartnerCompanies: data.careerPartnerCompanies !== undefined ? data.careerPartnerCompanies : undefined,
-        careerPartnerCompaniesLa: data.careerPartnerCompaniesLa !== undefined ? data.careerPartnerCompaniesLa : undefined,
-        careerTimeToEmployment: data.careerTimeToEmployment !== undefined ? data.careerTimeToEmployment : undefined,
-        careerTimeToEmploymentLa: data.careerTimeToEmploymentLa !== undefined ? data.careerTimeToEmploymentLa : undefined,
+        coreFocusAreasZh: this.formatJsonField(data.coreFocusAreasZh),
+        careerOutcomeDesc:
+          data.careerOutcomeDesc !== undefined
+            ? data.careerOutcomeDesc
+            : undefined,
+        careerOutcomeDescLa:
+          data.careerOutcomeDescLa !== undefined
+            ? data.careerOutcomeDescLa
+            : undefined,
+        careerOutcomeDescZh:
+          data.careerOutcomeDescZh !== undefined
+            ? data.careerOutcomeDescZh
+            : undefined,
+        careerPlacementRate:
+          data.careerPlacementRate !== undefined
+            ? data.careerPlacementRate
+            : undefined,
+        careerPlacementRateLa:
+          data.careerPlacementRateLa !== undefined
+            ? data.careerPlacementRateLa
+            : undefined,
+        careerPlacementRateZh:
+          data.careerPlacementRateZh !== undefined
+            ? data.careerPlacementRateZh
+            : undefined,
+        careerAvgSalary:
+          data.careerAvgSalary !== undefined ? data.careerAvgSalary : undefined,
+        careerAvgSalaryLa:
+          data.careerAvgSalaryLa !== undefined
+            ? data.careerAvgSalaryLa
+            : undefined,
+        careerAvgSalaryZh:
+          data.careerAvgSalaryZh !== undefined
+            ? data.careerAvgSalaryZh
+            : undefined,
+        careerPartnerCompanies:
+          data.careerPartnerCompanies !== undefined
+            ? data.careerPartnerCompanies
+            : undefined,
+        careerPartnerCompaniesLa:
+          data.careerPartnerCompaniesLa !== undefined
+            ? data.careerPartnerCompaniesLa
+            : undefined,
+        careerPartnerCompaniesZh:
+          data.careerPartnerCompaniesZh !== undefined
+            ? data.careerPartnerCompaniesZh
+            : undefined,
+        careerTimeToEmployment:
+          data.careerTimeToEmployment !== undefined
+            ? data.careerTimeToEmployment
+            : undefined,
+        careerTimeToEmploymentLa:
+          data.careerTimeToEmploymentLa !== undefined
+            ? data.careerTimeToEmploymentLa
+            : undefined,
+        careerTimeToEmploymentZh:
+          data.careerTimeToEmploymentZh !== undefined
+            ? data.careerTimeToEmploymentZh
+            : undefined,
       },
     });
   }

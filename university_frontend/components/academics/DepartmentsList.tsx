@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Laptop, Briefcase, Film, BookOpen } from 'lucide-react';
@@ -11,10 +13,12 @@ interface Department {
   id: string;
   name: string;
   nameLa?: string | null;
+  nameZh?: string | null;
   slug: string;
   externalUrl?: string | null;
   description: string;
   descriptionLa?: string | null;
+  descriptionZh?: string | null;
   heroImage?: string | null;
   programs?: any[];
 }
@@ -24,6 +28,7 @@ interface DepartmentsListProps {
 }
 
 export function DepartmentsList({ data = [] }: DepartmentsListProps) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
@@ -32,21 +37,24 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
       id: '1',
       name: t.nav.deptIT,
       slug: 'it',
-      description: 'The Department of IT is dedicated to cultivating top-tier software engineers, AI specialists, cloud architects, and cybersecurity leaders.',
+      description:
+        'The Department of IT is dedicated to cultivating top-tier software engineers, AI specialists, cloud architects, and cybersecurity leaders.',
       heroImage: '/images/department_it_desktopview/img_1.jpg',
     },
     {
       id: '2',
       name: t.nav.deptBA,
       slug: 'ba-economics',
-      description: 'Equipping future business titans, financial strategists, and innovative entrepreneurs with cutting-edge analytics and market insights.',
+      description:
+        'Equipping future business titans, financial strategists, and innovative entrepreneurs with cutting-edge analytics and market insights.',
       heroImage: '/images/department_ba___economics_desktopview/img_1.jpg',
     },
     {
       id: '3',
       name: t.nav.deptCA,
       slug: 'communication-arts',
-      description: 'Fostering innovative media creators, PR experts, and brand communicators equipped with state-of-the-art digital broadcast studios.',
+      description:
+        'Fostering innovative media creators, PR experts, and brand communicators equipped with state-of-the-art digital broadcast studios.',
       heroImage: '/images/department_communication_arts_desktopview/img_1.jpg',
     },
   ];
@@ -54,8 +62,10 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
   const items = data.length > 0 ? data : defaultDepartments;
 
   const getDeptIcon = (slug: string) => {
-    if (slug.includes('it') || slug.includes('tech')) return <Laptop className="w-6 h-6 text-[#0400CC]" />;
-    if (slug.includes('bus') || slug.includes('econ')) return <Briefcase className="w-6 h-6 text-[#00B6FF]" />;
+    if (slug.includes('it') || slug.includes('tech'))
+      return <Laptop className="w-6 h-6 text-[#0400CC]" />;
+    if (slug.includes('bus') || slug.includes('econ'))
+      return <Briefcase className="w-6 h-6 text-[#00B6FF]" />;
     return <Film className="w-6 h-6 text-[#0400CC]" />;
   };
 
@@ -64,15 +74,25 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge={t.academics.ourDepartments}
-          title="Centres of Specialized Teaching & Research"
+          title={tr('Centres of Specialized Teaching & Research')}
           subtitle="Explore our specialized academic departments offering accredited undergraduate and graduate qualifications."
           align="center"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((dept, idx) => {
-            const name = (isLa && dept.nameLa) ? dept.nameLa : dept.name;
-            const description = (isLa && dept.descriptionLa) ? dept.descriptionLa : dept.description;
+            const name =
+              lang === 'ZH'
+                ? dept?.nameZh || dept.name
+                : isLa && dept.nameLa
+                  ? dept.nameLa
+                  : dept.name;
+            const description =
+              lang === 'ZH'
+                ? dept?.descriptionZh || dept.description
+                : isLa && dept.descriptionLa
+                  ? dept.descriptionLa
+                  : dept.description;
 
             return (
               <div
@@ -83,7 +103,7 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
                   <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                     <img
                       src={dept.heroImage || `/images/academics_desktopview/img_${idx + 1}.jpg`}
-                      alt={name}
+                      alt={tr(name)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
@@ -94,10 +114,10 @@ export function DepartmentsList({ data = [] }: DepartmentsListProps) {
 
                   <div className="p-6 sm:p-7 space-y-3">
                     <h3 className="text-xl font-extrabold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                      {name}
+                      {tr(name)}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                      {description}
+                      {tr(description)}
                     </p>
                   </div>
                 </div>

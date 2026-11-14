@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import { getCampusContacts } from '@/lib/contact-locations';
 import { CampusContactCard } from '@/components/contact/CampusContactCard';
 import React, { useState, useEffect } from 'react';
@@ -8,14 +10,10 @@ import { Footer } from '@/components/layout/Footer';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
-import {
-  Send,
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+import { Send, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function ContactPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [contactInfo, setContactInfo] = useState<any>(null);
@@ -31,13 +29,12 @@ export default function ContactPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api
-      .getContact()
-      .then(setContactInfo)
-      .catch(console.error);
+    api.getContact().then(setContactInfo).catch(console.error);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -98,7 +95,13 @@ export default function ContactPage() {
               {/* Left Column: Contact Cards */}
               <div className="lg:col-span-5 space-y-6">
                 {locations.map((campus) => (
-                  <CampusContactCard key={campus.id} campus={campus} isLa={isLa} labels={t.contact} />
+                  <CampusContactCard
+                    lang={lang}
+                    key={campus.id}
+                    campus={campus}
+                    isLa={isLa}
+                    labels={t.contact}
+                  />
                 ))}
 
                 {/* Social Media Links Card */}
@@ -118,7 +121,10 @@ export default function ContactPage() {
                     {
                       name: 'Facebook',
                       url: socialObj.facebook || 'https://facebook.com/situniversity',
-                      active: socialObj.facebookActive !== undefined ? socialObj.facebookActive : Boolean(socialObj.facebook),
+                      active:
+                        socialObj.facebookActive !== undefined
+                          ? socialObj.facebookActive
+                          : Boolean(socialObj.facebook),
                       color: '#1877F2',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -129,7 +135,10 @@ export default function ContactPage() {
                     {
                       name: 'Twitter / X',
                       url: socialObj.twitter || 'https://twitter.com/situniversity',
-                      active: socialObj.twitterActive !== undefined ? socialObj.twitterActive : Boolean(socialObj.twitter),
+                      active:
+                        socialObj.twitterActive !== undefined
+                          ? socialObj.twitterActive
+                          : Boolean(socialObj.twitter),
                       color: '#000000',
                       icon: (
                         <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -140,7 +149,10 @@ export default function ContactPage() {
                     {
                       name: 'Instagram',
                       url: socialObj.instagram || 'https://instagram.com/situniversity',
-                      active: socialObj.instagramActive !== undefined ? socialObj.instagramActive : Boolean(socialObj.instagram),
+                      active:
+                        socialObj.instagramActive !== undefined
+                          ? socialObj.instagramActive
+                          : Boolean(socialObj.instagram),
                       color: '#E1306C',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -151,7 +163,10 @@ export default function ContactPage() {
                     {
                       name: 'LinkedIn',
                       url: socialObj.linkedin || 'https://linkedin.com/school/situniversity',
-                      active: socialObj.linkedinActive !== undefined ? socialObj.linkedinActive : Boolean(socialObj.linkedin),
+                      active:
+                        socialObj.linkedinActive !== undefined
+                          ? socialObj.linkedinActive
+                          : Boolean(socialObj.linkedin),
                       color: '#0A66C2',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -162,7 +177,10 @@ export default function ContactPage() {
                     {
                       name: 'YouTube',
                       url: socialObj.youtube || 'https://youtube.com/@situniversity',
-                      active: socialObj.youtubeActive !== undefined ? socialObj.youtubeActive : Boolean(socialObj.youtube),
+                      active:
+                        socialObj.youtubeActive !== undefined
+                          ? socialObj.youtubeActive
+                          : Boolean(socialObj.youtube),
                       color: '#FF0000',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -173,7 +191,10 @@ export default function ContactPage() {
                     {
                       name: 'TikTok',
                       url: socialObj.tiktok || 'https://tiktok.com/@situniversity',
-                      active: socialObj.tiktokActive !== undefined ? socialObj.tiktokActive : Boolean(socialObj.tiktok),
+                      active:
+                        socialObj.tiktokActive !== undefined
+                          ? socialObj.tiktokActive
+                          : Boolean(socialObj.tiktok),
                       color: '#000000',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -184,7 +205,10 @@ export default function ContactPage() {
                     {
                       name: 'Telegram',
                       url: socialObj.telegram || 'https://t.me/situniversity',
-                      active: socialObj.telegramActive !== undefined ? socialObj.telegramActive : Boolean(socialObj.telegram),
+                      active:
+                        socialObj.telegramActive !== undefined
+                          ? socialObj.telegramActive
+                          : Boolean(socialObj.telegram),
                       color: '#229ED9',
                       icon: (
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -194,7 +218,11 @@ export default function ContactPage() {
                     },
                     {
                       name: 'WhatsApp',
-                      url: socialObj.whatsapp ? (socialObj.whatsapp.startsWith('http') ? socialObj.whatsapp : `https://wa.me/${socialObj.whatsapp.replace(/\D/g, '')}`) : '',
+                      url: socialObj.whatsapp
+                        ? socialObj.whatsapp.startsWith('http')
+                          ? socialObj.whatsapp
+                          : `https://wa.me/${socialObj.whatsapp.replace(/\D/g, '')}`
+                        : '',
                       active: Boolean(socialObj.whatsappActive && socialObj.whatsapp),
                       color: '#25D366',
                       icon: (
@@ -212,13 +240,15 @@ export default function ContactPage() {
                   return (
                     <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
                       <h3 className="text-lg font-bold text-[#00001C] pb-3 border-b border-slate-100 flex items-center justify-between">
-                        <span>Connect on Social Media</span>
+                        <span>{tr('Connect on Social Media')}</span>
                         <span className="text-xs font-semibold text-[#0400CC] bg-blue-50 px-2.5 py-0.5 rounded-full">
-                          Official
+                          {tr('Official')}
                         </span>
                       </h3>
                       <p className="text-xs text-slate-500">
-                        Follow SIT University across our official platforms for real-time updates and campus highlights.
+                        {tr(
+                          'Follow SIT University across our official platforms for real-time updates and campus highlights.',
+                        )}
                       </p>
 
                       <div className="grid grid-cols-2 gap-2.5 pt-2">
@@ -236,7 +266,7 @@ export default function ContactPage() {
                             >
                               {s.icon}
                             </div>
-                            <span className="truncate">{s.name}</span>
+                            <span className="truncate">{tr(s.name)}</span>
                           </a>
                         ))}
 
@@ -251,7 +281,7 @@ export default function ContactPage() {
                             <div className="w-7 h-7 rounded-lg bg-[#0400CC] flex items-center justify-center text-white shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                               <Sparkles className="w-3.5 h-3.5" />
                             </div>
-                            <span className="truncate">{c.name}</span>
+                            <span className="truncate">{tr(c.name)}</span>
                           </a>
                         ))}
                       </div>
@@ -264,9 +294,7 @@ export default function ContactPage() {
               <div className="lg:col-span-7">
                 <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-xl space-y-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-[#00001C]">
-                      {t.contact.sendMessage}
-                    </h2>
+                    <h2 className="text-2xl font-bold text-[#00001C]">{t.contact.sendMessage}</h2>
                     <p className="text-xs sm:text-sm text-slate-500 mt-1">
                       {t.contact.sendMessageDesc}
                     </p>
@@ -282,7 +310,7 @@ export default function ContactPage() {
                   {error && (
                     <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-700 text-sm">
                       <AlertCircle className="w-5 h-5 shrink-0" />
-                      <span>{error}</span>
+                      <span>{tr(error)}</span>
                     </div>
                   )}
 
@@ -298,7 +326,7 @@ export default function ContactPage() {
                           value={formData.fullName}
                           onChange={handleChange}
                           required
-                          placeholder="e.g. Soutsaka Phommachanh"
+                          placeholder={tr('e.g. Soutsaka Phommachanh')}
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                         />
                       </div>
@@ -327,7 +355,7 @@ export default function ContactPage() {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder="e.g. +856 20 1234 5678"
+                          placeholder={tr('e.g. +856 20 1234 5678')}
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                         />
                       </div>
@@ -353,7 +381,7 @@ export default function ContactPage() {
                       disabled={loading}
                       className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] disabled:opacity-60 text-white font-bold text-sm px-8 py-3.5 rounded-xl shadow-md transition-all cursor-pointer"
                     >
-                      {loading ? t.contact.sendingBtn : t.contact.sendBtn}
+                      {tr(loading ? t.contact.sendingBtn : t.contact.sendBtn)}
                       <Send className="w-4 h-4" />
                     </button>
                   </form>
@@ -362,8 +390,6 @@ export default function ContactPage() {
             </div>
           </div>
         </section>
-
-
       </main>
       <Footer />
     </div>

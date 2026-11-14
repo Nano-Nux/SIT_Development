@@ -18,12 +18,17 @@ export class ContactService {
             id: 'loc-1',
             title: 'Main Campus',
             titleLa: 'ວິທະຍາເຂດຫຼັກ',
+            titleZh: '主校区',
             address:
               info.address ||
               'Building 123, Russian Federation Boulevard (110), Sangkat Teuk Thla, Khan Sen Sok, Phnom Penh, Kingdom of Cambodia',
             addressLa:
               info.addressLa ||
               'ອາຄານ 123, ຖະໜົນນະວັດຕະກຳ, ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ',
+            addressZh:
+              info.addressZh ||
+              info.address ||
+              '柬埔寨金边市森速区德他分区俄罗斯联邦大道110号123栋',
             isPrimary: true,
           },
         ];
@@ -42,6 +47,7 @@ export class ContactService {
           number: num,
           label: idx === 0 ? 'General Inquiries' : 'Admissions Hotline',
           labelLa: idx === 0 ? 'ສອບຖາມທົ່ວໄປ' : 'ສາຍດ່ວນຮັບສະໝັກ',
+          labelZh: idx === 0 ? '一般咨询' : '招生热线',
           isPrimary: idx === 0,
         }));
         phones = JSON.stringify(defaultPhones);
@@ -49,7 +55,9 @@ export class ContactService {
 
       let emails = info.emails;
       if (!emails) {
-        const rawEmails = (info.email || 'info@sit.edu.la / admissions@sit.edu.la')
+        const rawEmails = (
+          info.email || 'info@sit.edu.la / admissions@sit.edu.la'
+        )
           .split('/')
           .map((e) => e.trim())
           .filter(Boolean);
@@ -59,6 +67,7 @@ export class ContactService {
           email: em,
           label: idx === 0 ? 'General Inquiries' : 'Admissions Office',
           labelLa: idx === 0 ? 'ສອບຖາມທົ່ວໄປ' : 'ຫ້ອງການຮັບສະໝັກ',
+          labelZh: idx === 0 ? '一般咨询' : '招生办公室',
           isPrimary: idx === 0,
         }));
         emails = JSON.stringify(defaultEmails);
@@ -71,19 +80,25 @@ export class ContactService {
             id: 'oh-1',
             days: 'Monday - Friday',
             daysLa: 'ວັນຈັນ - ວັນສຸກ',
+            daysZh: '周一至周五',
             hours: '8:00 AM - 5:00 PM',
             hoursLa: '8:00 ໂມງເຊົ້າ - 5:00 ໂມງແລງ',
+            hoursZh: '08:00–17:00',
             notes: 'Regular Working Hours',
             notesLa: 'ໂມງການປົກກະຕິ',
+            notesZh: '常规办公时间',
           },
           {
             id: 'oh-2',
             days: 'Saturday',
             daysLa: 'ວັນເສົາ',
+            daysZh: '周六',
             hours: '8:00 AM - 12:00 PM',
             hoursLa: '8:00 ໂມງເຊົ້າ - 12:00 ໂມງທ່ຽງ',
+            hoursZh: '08:00–12:00',
             notes: 'Weekend Support',
             notesLa: 'ການຊ່ວຍເຫຼືອທ້າຍອາທິດ',
+            notesZh: '周末服务',
           },
         ];
         officeHoursList = JSON.stringify(defaultSchedules);
@@ -91,7 +106,13 @@ export class ContactService {
 
       return {
         ...info,
-        locations: JSON.stringify(normalizeLocations(locations, info.mapEmbedUrl, false, { phones, emails, officeHoursList })),
+        locations: JSON.stringify(
+          normalizeLocations(locations, info.mapEmbedUrl, false, {
+            phones,
+            emails,
+            officeHoursList,
+          }),
+        ),
         phones,
         emails,
         officeHoursList,
@@ -103,9 +124,11 @@ export class ContactService {
         id: 'loc-1',
         title: 'Main Campus',
         titleLa: 'ວິທະຍາເຂດຫຼັກ',
+        titleZh: '主校区',
         address:
           'Building 123, Russian Federation Boulevard (110), Sangkat Teuk Thla, Khan Sen Sok, Phnom Penh, Kingdom of Cambodia',
         addressLa: 'ອາຄານ 123, ຖະໜົນນະວັດຕະກຳ, ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ',
+        addressZh: '柬埔寨金边市森速区德他分区俄罗斯联邦大道110号123栋',
         isPrimary: true,
       },
     ];
@@ -116,6 +139,7 @@ export class ContactService {
         number: '+856 21 123 456',
         label: 'General Inquiries',
         labelLa: 'ສອບຖາມທົ່ວໄປ',
+        labelZh: '一般咨询',
         isPrimary: true,
       },
       {
@@ -123,6 +147,7 @@ export class ContactService {
         number: '+856 20 555 1234',
         label: 'Admissions Hotline',
         labelLa: 'ສາຍດ່ວນຮັບສະໝັກ',
+        labelZh: '招生热线',
         isPrimary: false,
       },
     ];
@@ -133,6 +158,7 @@ export class ContactService {
         email: 'info@sit.edu.la',
         label: 'General Inquiries',
         labelLa: 'ສອບຖາມທົ່ວໄປ',
+        labelZh: '一般咨询',
         isPrimary: true,
       },
       {
@@ -140,6 +166,7 @@ export class ContactService {
         email: 'admissions@sit.edu.la',
         label: 'Admissions Office',
         labelLa: 'ຫ້ອງການຮັບສະໝັກ',
+        labelZh: '招生办公室',
         isPrimary: false,
       },
     ];
@@ -149,19 +176,25 @@ export class ContactService {
         id: 'oh-1',
         days: 'Monday - Friday',
         daysLa: 'ວັນຈັນ - ວັນສຸກ',
+        daysZh: '周一至周五',
         hours: '8:00 AM - 5:00 PM',
         hoursLa: '8:00 ໂມງເຊົ້າ - 5:00 ໂມງແລງ',
+        hoursZh: '08:00–17:00',
         notes: 'Regular Working Hours',
         notesLa: 'ໂມງການປົກກະຕິ',
+        notesZh: '常规办公时间',
       },
       {
         id: 'oh-2',
         days: 'Saturday',
         daysLa: 'ວັນເສົາ',
+        daysZh: '周六',
         hours: '8:00 AM - 12:00 PM',
         hoursLa: '8:00 ໂມງເຊົ້າ - 12:00 ໂມງທ່ຽງ',
+        hoursZh: '08:00–12:00',
         notes: 'Weekend Support',
         notesLa: 'ການຊ່ວຍເຫຼືອທ້າຍອາທິດ',
+        notesZh: '周末服务',
       },
     ];
 
@@ -169,6 +202,7 @@ export class ContactService {
       address:
         'Building 123, Russian Federation Boulevard (110), Sangkat Teuk Thla, Khan Sen Sok, Phnom Penh, Kingdom of Cambodia',
       addressLa: 'ອາຄານ 123, ຖະໜົນນະວັດຕະກຳ, ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ',
+      addressZh: '柬埔寨金边市森速区德他分区俄罗斯联邦大道110号123栋',
       phone: '+856 21 123 456 / +856 20 555 1234',
       email: 'info@sit.edu.la / admissions@sit.edu.la',
       mapEmbedUrl:
@@ -177,6 +211,7 @@ export class ContactService {
         'Monday - Friday: 8:00 AM - 5:00 PM, Saturday: 8:00 AM - 12:00 PM',
       officeHoursLa:
         'ວັນຈັນ - ວັນສຸກ: 8:00 ໂມງເຊົ້າ - 5:00 ໂມງແລງ, ວັນເສົາ: 8:00 ໂມງເຊົ້າ - 12:00 ໂມງທ່ຽງ',
+      officeHoursZh: '周一至周五：08:00–17:00；周六：08:00–12:00',
       locations: JSON.stringify(defaultLocs),
       phones: JSON.stringify(defaultPhones),
       emails: JSON.stringify(defaultEmails),
@@ -194,7 +229,9 @@ export class ContactService {
     };
     return {
       ...defaults,
-      locations: JSON.stringify(normalizeLocations(defaultLocs, defaults.mapEmbedUrl, false, defaults)),
+      locations: JSON.stringify(
+        normalizeLocations(defaultLocs, defaults.mapEmbedUrl, false, defaults),
+      ),
     };
   }
 
@@ -202,25 +239,92 @@ export class ContactService {
     const info = await this.prisma.contactInfo.findFirst();
 
     // Stringify array/object fields if passed as array or object
-    const campusLocations = data.locations !== undefined
-      ? normalizeLocations(data.locations ?? [], info?.mapEmbedUrl || '', true, {
-          phones: data.phones ?? info?.phones ?? (info?.phone || '').split('/').map((number) => number.trim()).filter(Boolean)
-            .map((number, index) => ({ id: `phone-${index}`, number, label: '' })),
-          emails: data.emails ?? info?.emails ?? (info?.email || '').split('/').map((email) => email.trim()).filter(Boolean)
-            .map((email, index) => ({ id: `email-${index}`, email, label: '' })),
-          officeHoursList: data.officeHoursList ?? info?.officeHoursList ?? (info?.officeHours
-            ? [{ id: 'hours', days: 'Office Hours', hours: info.officeHours, hoursLa: info.officeHoursLa || '' }] : []),
-        })
-      : undefined;
-    const locations = campusLocations !== undefined ? JSON.stringify(campusLocations) : undefined;
+    const campusLocations =
+      data.locations !== undefined
+        ? normalizeLocations(
+            data.locations ?? [],
+            info?.mapEmbedUrl || '',
+            true,
+            {
+              phones:
+                data.phones ??
+                info?.phones ??
+                (info?.phone || '')
+                  .split('/')
+                  .map((number) => number.trim())
+                  .filter(Boolean)
+                  .map((number, index) => ({
+                    id: `phone-${index}`,
+                    number,
+                    label: '',
+                  })),
+              emails:
+                data.emails ??
+                info?.emails ??
+                (info?.email || '')
+                  .split('/')
+                  .map((email) => email.trim())
+                  .filter(Boolean)
+                  .map((email, index) => ({
+                    id: `email-${index}`,
+                    email,
+                    label: '',
+                  })),
+              officeHoursList:
+                data.officeHoursList ??
+                info?.officeHoursList ??
+                (info?.officeHours
+                  ? [
+                      {
+                        id: 'hours',
+                        days: 'Office Hours',
+                        hours: info.officeHours,
+                        hoursLa: info.officeHoursLa || '',
+                        hoursZh: info.officeHoursZh || '',
+                      },
+                    ]
+                  : []),
+            },
+          )
+        : undefined;
+    const locations =
+      campusLocations !== undefined
+        ? JSON.stringify(campusLocations)
+        : undefined;
 
-    const primaryCampus = campusLocations?.find((location) => location.isPrimary) || campusLocations?.[0];
-    const phones = campusLocations !== undefined ? JSON.stringify(primaryCampus?.phones || [])
-      : data.phones !== undefined ? JSON.stringify(typeof data.phones === 'string' ? JSON.parse(data.phones) : data.phones || []) : undefined;
-    const emails = campusLocations !== undefined ? JSON.stringify(primaryCampus?.emails || [])
-      : data.emails !== undefined ? JSON.stringify(typeof data.emails === 'string' ? JSON.parse(data.emails) : data.emails || []) : undefined;
-    const officeHoursList = campusLocations !== undefined ? JSON.stringify(primaryCampus?.officeHoursList || [])
-      : data.officeHoursList !== undefined ? JSON.stringify(typeof data.officeHoursList === 'string' ? JSON.parse(data.officeHoursList) : data.officeHoursList || []) : undefined;
+    const primaryCampus =
+      campusLocations?.find((location) => location.isPrimary) ||
+      campusLocations?.[0];
+    const phones =
+      campusLocations !== undefined
+        ? JSON.stringify(primaryCampus?.phones || [])
+        : data.phones !== undefined
+          ? JSON.stringify(
+              typeof data.phones === 'string'
+                ? JSON.parse(data.phones)
+                : data.phones || [],
+            )
+          : undefined;
+    const emails =
+      campusLocations !== undefined
+        ? JSON.stringify(primaryCampus?.emails || [])
+        : data.emails !== undefined
+          ? JSON.stringify(
+              typeof data.emails === 'string'
+                ? JSON.parse(data.emails)
+                : data.emails || [],
+            )
+          : undefined;
+    const officeHoursList =
+      campusLocations !== undefined
+        ? JSON.stringify(primaryCampus?.officeHoursList || [])
+        : data.officeHoursList !== undefined
+          ? JSON.stringify(
+              typeof data.officeHoursList === 'string'
+                ? JSON.parse(data.officeHoursList)
+                : data.officeHoursList || [],
+            )
+          : undefined;
 
     const socialLinks =
       data.socialLinks !== undefined
@@ -229,22 +333,26 @@ export class ContactService {
           : JSON.stringify(data.socialLinks || {})
         : undefined;
 
-    const mapEmbedUrl = campusLocations !== undefined
-      ? primaryCampus?.mapEmbedUrl || ''
-      : data.mapEmbedUrl !== undefined
-        ? cleanMapEmbedUrl(data.mapEmbedUrl)
-        : undefined;
+    const mapEmbedUrl =
+      campusLocations !== undefined
+        ? primaryCampus?.mapEmbedUrl || ''
+        : data.mapEmbedUrl !== undefined
+          ? cleanMapEmbedUrl(data.mapEmbedUrl)
+          : undefined;
 
     // Synchronize legacy address/phone/email/officeHours if arrays provided
     let syncAddress = data.address;
     let syncAddressLa = data.addressLa;
+    let syncAddressZh = data.addressZh;
     if (locations !== undefined && !data.address) {
       try {
         const parsedLocs = JSON.parse(locations);
         if (Array.isArray(parsedLocs) && parsedLocs.length > 0) {
-          const primaryLoc = parsedLocs.find((l: any) => l.isPrimary) || parsedLocs[0];
+          const primaryLoc =
+            parsedLocs.find((l: any) => l.isPrimary) || parsedLocs[0];
           syncAddress = primaryLoc.address || syncAddress;
           syncAddressLa = primaryLoc.addressLa || syncAddressLa;
+          syncAddressZh = primaryLoc.addressZh || syncAddressZh;
         }
       } catch (e) {}
     }
@@ -254,7 +362,10 @@ export class ContactService {
       try {
         const parsedPhones = JSON.parse(phones);
         if (Array.isArray(parsedPhones) && parsedPhones.length > 0) {
-          syncPhone = parsedPhones.map((p: any) => p.number).filter(Boolean).join(' / ');
+          syncPhone = parsedPhones
+            .map((p: any) => p.number)
+            .filter(Boolean)
+            .join(' / ');
         }
       } catch (e) {}
     }
@@ -264,13 +375,17 @@ export class ContactService {
       try {
         const parsedEmails = JSON.parse(emails);
         if (Array.isArray(parsedEmails) && parsedEmails.length > 0) {
-          syncEmail = parsedEmails.map((e: any) => e.email).filter(Boolean).join(' / ');
+          syncEmail = parsedEmails
+            .map((e: any) => e.email)
+            .filter(Boolean)
+            .join(' / ');
         }
       } catch (e) {}
     }
 
     let syncOfficeHours = data.officeHours;
     let syncOfficeHoursLa = data.officeHoursLa;
+    let syncOfficeHoursZh = data.officeHoursZh;
     if (officeHoursList !== undefined && !data.officeHours) {
       try {
         const parsedSchedules = JSON.parse(officeHoursList);
@@ -281,6 +396,9 @@ export class ContactService {
           syncOfficeHoursLa = parsedSchedules
             .map((s: any) => `${s.daysLa || s.days}: ${s.hoursLa || s.hours}`)
             .join(', ');
+          syncOfficeHoursZh = parsedSchedules
+            .map((s: any) => `${s.daysZh || s.days}: ${s.hoursZh || s.hours}`)
+            .join(', ');
         }
       } catch (e) {}
     }
@@ -288,10 +406,24 @@ export class ContactService {
     if (campusLocations !== undefined) {
       syncAddress = primaryCampus?.address || '';
       syncAddressLa = primaryCampus?.addressLa || '';
-      syncPhone = (primaryCampus?.phones || []).map((row) => row.number).filter(Boolean).join(' / ');
-      syncEmail = (primaryCampus?.emails || []).map((row) => row.email).filter(Boolean).join(' / ');
-      syncOfficeHours = (primaryCampus?.officeHoursList || []).map((row) => `${row.days}: ${row.hours}`).join(', ');
-      syncOfficeHoursLa = (primaryCampus?.officeHoursList || []).map((row) => `${row.daysLa || row.days}: ${row.hoursLa || row.hours}`).join(', ');
+      syncAddressZh = primaryCampus?.addressZh || '';
+      syncPhone = (primaryCampus?.phones || [])
+        .map((row) => row.number)
+        .filter(Boolean)
+        .join(' / ');
+      syncEmail = (primaryCampus?.emails || [])
+        .map((row) => row.email)
+        .filter(Boolean)
+        .join(' / ');
+      syncOfficeHours = (primaryCampus?.officeHoursList || [])
+        .map((row) => `${row.days}: ${row.hours}`)
+        .join(', ');
+      syncOfficeHoursLa = (primaryCampus?.officeHoursList || [])
+        .map((row) => `${row.daysLa || row.days}: ${row.hoursLa || row.hours}`)
+        .join(', ');
+      syncOfficeHoursZh = (primaryCampus?.officeHoursList || [])
+        .map((row) => `${row.daysZh || row.days}: ${row.hoursZh || row.hours}`)
+        .join(', ');
     }
 
     if (info) {
@@ -301,18 +433,22 @@ export class ContactService {
           address: syncAddress !== undefined ? syncAddress : info.address,
           addressLa:
             syncAddressLa !== undefined ? syncAddressLa : info.addressLa,
+          addressZh:
+            syncAddressZh !== undefined ? syncAddressZh : info.addressZh,
           phone: syncPhone !== undefined ? syncPhone : info.phone,
           email: syncEmail !== undefined ? syncEmail : info.email,
           mapEmbedUrl:
             mapEmbedUrl !== undefined ? mapEmbedUrl : info.mapEmbedUrl,
           officeHours:
-            syncOfficeHours !== undefined
-              ? syncOfficeHours
-              : info.officeHours,
+            syncOfficeHours !== undefined ? syncOfficeHours : info.officeHours,
           officeHoursLa:
             syncOfficeHoursLa !== undefined
               ? syncOfficeHoursLa
               : info.officeHoursLa,
+          officeHoursZh:
+            syncOfficeHoursZh !== undefined
+              ? syncOfficeHoursZh
+              : info.officeHoursZh,
           locations: locations !== undefined ? locations : info.locations,
           phones: phones !== undefined ? phones : info.phones,
           emails: emails !== undefined ? emails : info.emails,
@@ -330,11 +466,13 @@ export class ContactService {
       data: {
         address: syncAddress || '',
         addressLa: syncAddressLa || null,
+        addressZh: syncAddressZh || null,
         phone: syncPhone || '',
         email: syncEmail || '',
         mapEmbedUrl: mapEmbedUrl || '',
         officeHours: syncOfficeHours || '',
         officeHoursLa: syncOfficeHoursLa || null,
+        officeHoursZh: syncOfficeHoursZh || null,
         locations: locations || '[]',
         phones: phones || '[]',
         emails: emails || '[]',

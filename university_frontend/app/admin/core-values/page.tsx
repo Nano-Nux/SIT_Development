@@ -1,21 +1,29 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Award, Plus, Edit2, Trash2, Save, X, Sparkles } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 
 export default function AdminCoreValuesPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [formData, setFormData] = useState({
     title: '',
     titleLa: '',
+    titleZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     icon: 'Award',
     order: 1,
   });
@@ -42,8 +50,10 @@ export default function AdminCoreValuesPage() {
     setFormData({
       title: '',
       titleLa: '',
+      titleZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       icon: 'Award',
       order: items.length + 1,
     });
@@ -56,8 +66,10 @@ export default function AdminCoreValuesPage() {
     setFormData({
       title: item.title || '',
       titleLa: item.titleLa || '',
+      titleZh: item.titleZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       icon: item.icon || 'Award',
       order: item.order || 1,
     });
@@ -65,12 +77,12 @@ export default function AdminCoreValuesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this core value?')) return;
+    if (!confirm(tr('Are you sure you want to delete this core value?'))) return;
     try {
       await api.deleteCoreValue(id);
       loadItems();
     } catch (e) {
-      alert('Failed to delete item');
+      alert(tr('Failed to delete item'));
     }
   };
 
@@ -85,7 +97,7 @@ export default function AdminCoreValuesPage() {
       setModalOpen(false);
       loadItems();
     } catch (e) {
-      alert('Failed to save core value');
+      alert(tr('Failed to save core value'));
     }
   };
 
@@ -95,10 +107,12 @@ export default function AdminCoreValuesPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
             <Award className="w-7 h-7 text-[#0400CC]" />
-            Core Values Management
+            {tr('Core Values Management')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Manage the institutional pillars displayed on the homepage in English and Lao.
+            {tr(
+              'Manage the institutional pillars displayed on the homepage in English, Lao, and Chinese.',
+            )}
           </p>
         </div>
         <button
@@ -106,13 +120,15 @@ export default function AdminCoreValuesPage() {
           className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Add New Core Value
+          {tr('Add New Core Value')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-400">Loading values...</div>
+          <div className="col-span-full py-12 text-center text-slate-400">
+            {tr('Loading values...')}
+          </div>
         ) : items.length > 0 ? (
           items.map((item, idx) => (
             <div
@@ -122,29 +138,38 @@ export default function AdminCoreValuesPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-bold px-2.5 py-1 rounded bg-blue-50 text-[#0400CC]">
-                    Order: {item.order}
+                    {tr('Order: ')}
+                    {item.order}
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">Icon: {item.icon}</span>
+                  <span className="text-xs font-semibold text-slate-400">
+                    {tr('Icon: ')}
+                    {item.icon}
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-[#00001C] mb-1">{item.title}</h3>
+                <h3 className="text-lg font-bold text-[#00001C] mb-1">
+                  {tr(localize(item, 'title'))}
+                </h3>
                 {item.titleLa && (
                   <p className="text-xs font-bold text-[#0400CC] mb-2">{item.titleLa}</p>
                 )}
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{item.description}</p>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  {tr(localize(item, 'description'))}
+                </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
                 <button
+                  aria-label={tr('Edit')}
                   onClick={() => handleOpenEdit(item)}
                   className="p-2 rounded-lg text-slate-500 hover:text-[#0400CC] hover:bg-slate-50 cursor-pointer"
-                  title="Edit"
+                  title={tr('Edit')}
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
-                  title="Delete"
+                  title={tr('Delete')}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -152,7 +177,9 @@ export default function AdminCoreValuesPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-slate-400">No core values found.</div>
+          <div className="col-span-full text-center py-12 text-slate-400">
+            {tr('No core values found.')}
+          </div>
         )}
       </div>
 
@@ -160,7 +187,7 @@ export default function AdminCoreValuesPage() {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? 'Edit Core Value' : 'Create Core Value'}
+        title={tr(editingItem ? 'Edit Core Value' : 'Create Core Value')}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Language Switcher Tabs */}
@@ -174,7 +201,7 @@ export default function AdminCoreValuesPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇬🇧 English
+              {tr('🇬🇧 English')}
             </button>
             <button
               type="button"
@@ -185,37 +212,79 @@ export default function AdminCoreValuesPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇱🇦 ພາສາລາວ (Lao)
+              {tr('🇱🇦 ພາສາລາວ (Lao)')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveLangTab('zh')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLangTab === 'zh'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-[#00001C]'
+              }`}
+            >
+              {tr('中文 (Chinese)')}
+              {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
 
-          {activeLangTab === 'en' ? (
-            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          {activeLangTab === 'zh' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Title (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Title')}
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. Integrity & Ethics"
+                  value={formData.titleZh}
+                  onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
+                  placeholder="请输入中文标题"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Description (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Description')}
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.descriptionZh}
+                  onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
+                  placeholder="请输入中文说明"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+            </div>
+          ) : activeLangTab === 'en' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Title (EN) ')}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder={tr('e.g. Integrity & Ethics')}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Description (EN) ')}
+                  <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe this core institutional value..."
+                  placeholder={tr('Describe this core institutional value...')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -224,7 +293,7 @@ export default function AdminCoreValuesPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຫົວຂໍ້ຄ່ານິຍົມ (Lao Title)
+                  {tr('ຫົວຂໍ້ຄ່ານິຍົມ (Lao Title)')}
                 </label>
                 <input
                   type="text"
@@ -237,7 +306,7 @@ export default function AdminCoreValuesPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)
+                  {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
                 </label>
                 <textarea
                   rows={3}
@@ -253,7 +322,7 @@ export default function AdminCoreValuesPage() {
           <div className="grid grid-cols-2 gap-4 pt-2">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Icon (Award, Lightbulb, Shield, Globe)
+                {tr('Icon (Award, Lightbulb, Shield, Globe)')}
               </label>
               <input
                 type="text"
@@ -264,7 +333,7 @@ export default function AdminCoreValuesPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Display Order
+                {tr('Display Order')}
               </label>
               <input
                 type="number"
@@ -281,13 +350,13 @@ export default function AdminCoreValuesPage() {
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
-              Cancel
+              {tr('Cancel')}
             </button>
             <button
               type="submit"
               className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer"
             >
-              Save Core Value
+              {tr('Save Core Value')}
             </button>
           </div>
         </form>

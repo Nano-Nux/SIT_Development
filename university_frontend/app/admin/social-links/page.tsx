@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '@/lib/api';
 import {
@@ -49,11 +53,17 @@ interface ActiveTogglesState {
 }
 
 export default function AdminSocialLinksPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [loading, setLoading] = useState(true);
-  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>(
+    'idle',
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'all' | 'primary' | 'media' | 'messaging' | 'custom'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'primary' | 'media' | 'messaging' | 'custom'>(
+    'all',
+  );
 
   const [links, setLinks] = useState<SocialPlatformsState>({
     facebook: 'https://facebook.com/situniversity',
@@ -118,26 +128,64 @@ export default function AdminSocialLinksPage() {
       }
 
       const initialLinks: SocialPlatformsState = {
-        facebook: parsedSocial.facebook || (parsedSocial.facebook === '' ? '' : 'https://facebook.com/situniversity'),
-        twitter: parsedSocial.twitter || (parsedSocial.twitter === '' ? '' : 'https://twitter.com/situniversity'),
-        instagram: parsedSocial.instagram || (parsedSocial.instagram === '' ? '' : 'https://instagram.com/situniversity'),
-        linkedin: parsedSocial.linkedin || (parsedSocial.linkedin === '' ? '' : 'https://linkedin.com/school/situniversity'),
-        youtube: parsedSocial.youtube || (parsedSocial.youtube === '' ? '' : 'https://youtube.com/@situniversity'),
-        tiktok: parsedSocial.tiktok || (parsedSocial.tiktok === '' ? '' : 'https://tiktok.com/@situniversity'),
-        telegram: parsedSocial.telegram || (parsedSocial.telegram === '' ? '' : 'https://t.me/situniversity'),
+        facebook:
+          parsedSocial.facebook ||
+          (parsedSocial.facebook === '' ? '' : 'https://facebook.com/situniversity'),
+        twitter:
+          parsedSocial.twitter ||
+          (parsedSocial.twitter === '' ? '' : 'https://twitter.com/situniversity'),
+        instagram:
+          parsedSocial.instagram ||
+          (parsedSocial.instagram === '' ? '' : 'https://instagram.com/situniversity'),
+        linkedin:
+          parsedSocial.linkedin ||
+          (parsedSocial.linkedin === '' ? '' : 'https://linkedin.com/school/situniversity'),
+        youtube:
+          parsedSocial.youtube ||
+          (parsedSocial.youtube === '' ? '' : 'https://youtube.com/@situniversity'),
+        tiktok:
+          parsedSocial.tiktok ||
+          (parsedSocial.tiktok === '' ? '' : 'https://tiktok.com/@situniversity'),
+        telegram:
+          parsedSocial.telegram ||
+          (parsedSocial.telegram === '' ? '' : 'https://t.me/situniversity'),
         whatsapp: parsedSocial.whatsapp || '',
         customLinks: Array.isArray(parsedSocial.customLinks) ? parsedSocial.customLinks : [],
       };
 
       const initialToggles: ActiveTogglesState = {
-        facebook: parsedSocial.facebookActive !== undefined ? !!parsedSocial.facebookActive : Boolean(initialLinks.facebook),
-        twitter: parsedSocial.twitterActive !== undefined ? !!parsedSocial.twitterActive : Boolean(initialLinks.twitter),
-        instagram: parsedSocial.instagramActive !== undefined ? !!parsedSocial.instagramActive : Boolean(initialLinks.instagram),
-        linkedin: parsedSocial.linkedinActive !== undefined ? !!parsedSocial.linkedinActive : Boolean(initialLinks.linkedin),
-        youtube: parsedSocial.youtubeActive !== undefined ? !!parsedSocial.youtubeActive : Boolean(initialLinks.youtube),
-        tiktok: parsedSocial.tiktokActive !== undefined ? !!parsedSocial.tiktokActive : Boolean(initialLinks.tiktok),
-        telegram: parsedSocial.telegramActive !== undefined ? !!parsedSocial.telegramActive : Boolean(initialLinks.telegram),
-        whatsapp: parsedSocial.whatsappActive !== undefined ? !!parsedSocial.whatsappActive : Boolean(initialLinks.whatsapp),
+        facebook:
+          parsedSocial.facebookActive !== undefined
+            ? !!parsedSocial.facebookActive
+            : Boolean(initialLinks.facebook),
+        twitter:
+          parsedSocial.twitterActive !== undefined
+            ? !!parsedSocial.twitterActive
+            : Boolean(initialLinks.twitter),
+        instagram:
+          parsedSocial.instagramActive !== undefined
+            ? !!parsedSocial.instagramActive
+            : Boolean(initialLinks.instagram),
+        linkedin:
+          parsedSocial.linkedinActive !== undefined
+            ? !!parsedSocial.linkedinActive
+            : Boolean(initialLinks.linkedin),
+        youtube:
+          parsedSocial.youtubeActive !== undefined
+            ? !!parsedSocial.youtubeActive
+            : Boolean(initialLinks.youtube),
+        tiktok:
+          parsedSocial.tiktokActive !== undefined
+            ? !!parsedSocial.tiktokActive
+            : Boolean(initialLinks.tiktok),
+        telegram:
+          parsedSocial.telegramActive !== undefined
+            ? !!parsedSocial.telegramActive
+            : Boolean(initialLinks.telegram),
+        whatsapp:
+          parsedSocial.whatsappActive !== undefined
+            ? !!parsedSocial.whatsappActive
+            : Boolean(initialLinks.whatsapp),
       };
 
       setLinks(initialLinks);
@@ -151,67 +199,72 @@ export default function AdminSocialLinksPage() {
   };
 
   // Immediate API save function
-  const saveToApi = useCallback(async (
-    targetLinks: SocialPlatformsState,
-    targetToggles: ActiveTogglesState
-  ) => {
-    setAutoSaveStatus('saving');
-    setErrorMessage(null);
+  const saveToApi = useCallback(
+    async (targetLinks: SocialPlatformsState, targetToggles: ActiveTogglesState) => {
+      setAutoSaveStatus('saving');
+      setErrorMessage(null);
 
-    try {
-      const payloadSocial = {
-        facebook: targetLinks.facebook.trim(),
-        facebookActive: targetToggles.facebook,
-        twitter: targetLinks.twitter.trim(),
-        twitterActive: targetToggles.twitter,
-        instagram: targetLinks.instagram.trim(),
-        instagramActive: targetToggles.instagram,
-        linkedin: targetLinks.linkedin.trim(),
-        linkedinActive: targetToggles.linkedin,
-        youtube: targetLinks.youtube.trim(),
-        youtubeActive: targetToggles.youtube,
-        tiktok: targetLinks.tiktok.trim(),
-        tiktokActive: targetToggles.tiktok,
-        telegram: targetLinks.telegram.trim(),
-        telegramActive: targetToggles.telegram,
-        whatsapp: targetLinks.whatsapp.trim(),
-        whatsappActive: targetToggles.whatsapp,
-        customLinks: targetLinks.customLinks.map((item) => ({
-          id: item.id,
-          name: item.name.trim(),
-          url: item.url.trim(),
-          isActive: item.isActive,
-        })),
-      };
+      try {
+        const payloadSocial = {
+          facebook: targetLinks.facebook.trim(),
+          facebookActive: targetToggles.facebook,
+          twitter: targetLinks.twitter.trim(),
+          twitterActive: targetToggles.twitter,
+          instagram: targetLinks.instagram.trim(),
+          instagramActive: targetToggles.instagram,
+          linkedin: targetLinks.linkedin.trim(),
+          linkedinActive: targetToggles.linkedin,
+          youtube: targetLinks.youtube.trim(),
+          youtubeActive: targetToggles.youtube,
+          tiktok: targetLinks.tiktok.trim(),
+          tiktokActive: targetToggles.tiktok,
+          telegram: targetLinks.telegram.trim(),
+          telegramActive: targetToggles.telegram,
+          whatsapp: targetLinks.whatsapp.trim(),
+          whatsappActive: targetToggles.whatsapp,
+          customLinks: targetLinks.customLinks.map((item) => ({
+            id: item.id,
+            name: item.name.trim(),
+            url: item.url.trim(),
+            isActive: item.isActive,
+          })),
+        };
 
-      await api.updateContact({
-        socialLinks: payloadSocial,
-      });
+        await api.updateContact({
+          socialLinks: payloadSocial,
+        });
 
-      setAutoSaveStatus('saved');
-    } catch (err: any) {
-      console.error('Failed to auto-save social links:', err);
-      setAutoSaveStatus('error');
-      setErrorMessage(err.message || 'Failed to auto-save social links. Please check network connection.');
-    }
-  }, []);
+        setAutoSaveStatus('saved');
+      } catch (err: any) {
+        console.error('Failed to auto-save social links:', err);
+        setAutoSaveStatus('error');
+        setErrorMessage(
+          err.message || 'Failed to auto-save social links. Please check network connection.',
+        );
+      }
+    },
+    [],
+  );
 
   // Debounced save for text typing
-  const debouncedSave = useCallback((
-    nextLinks: SocialPlatformsState,
-    nextToggles: ActiveTogglesState
-  ) => {
-    setAutoSaveStatus('saving');
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    debounceTimerRef.current = setTimeout(() => {
-      saveToApi(nextLinks, nextToggles);
-    }, 600);
-  }, [saveToApi]);
+  const debouncedSave = useCallback(
+    (nextLinks: SocialPlatformsState, nextToggles: ActiveTogglesState) => {
+      setAutoSaveStatus('saving');
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      debounceTimerRef.current = setTimeout(() => {
+        saveToApi(nextLinks, nextToggles);
+      }, 600);
+    },
+    [saveToApi],
+  );
 
   // Handle URL change (auto-saved on debounce + onBlur)
-  const handleLinkChange = (key: keyof Omit<SocialPlatformsState, 'customLinks'>, value: string) => {
+  const handleLinkChange = (
+    key: keyof Omit<SocialPlatformsState, 'customLinks'>,
+    value: string,
+  ) => {
     const nextLinks = { ...links, [key]: value };
     setLinks(nextLinks);
     debouncedSave(nextLinks, toggles);
@@ -235,7 +288,11 @@ export default function AdminSocialLinksPage() {
   };
 
   // Handle Custom Link Change
-  const handleCustomLinkChange = (index: number, field: 'name' | 'url' | 'isActive', value: any) => {
+  const handleCustomLinkChange = (
+    index: number,
+    field: 'name' | 'url' | 'isActive',
+    value: any,
+  ) => {
     const nextCustom = [...links.customLinks];
     nextCustom[index] = { ...nextCustom[index], [field]: value };
     const nextLinks = { ...links, customLinks: nextCustom };
@@ -431,7 +488,9 @@ export default function AdminSocialLinksPage() {
     return p.category === activeTab;
   });
 
-  const activeCount = Object.values(toggles).filter(Boolean).length + links.customLinks.filter((c) => c.isActive && c.url).length;
+  const activeCount =
+    Object.values(toggles).filter(Boolean).length +
+    links.customLinks.filter((c) => c.isActive && c.url).length;
 
   return (
     <div className="space-y-8 pb-16">
@@ -440,13 +499,15 @@ export default function AdminSocialLinksPage() {
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#0400CC] text-xs font-bold tracking-wide uppercase">
             <Share2 className="w-3.5 h-3.5 text-[#0400CC]" />
-            <span>Social Network & Link Manager</span>
+            <span>{tr('Social Network & Link Manager')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#00001C] tracking-tight">
-            Official Social Media Links
+            {tr('Official Social Media Links')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
-            Configure, enable, and verify university social channels across Facebook, Twitter / X, Instagram, LinkedIn, YouTube, TikTok, Telegram, and custom links. All changes update in real time.
+            {tr(
+              'Configure, enable, and verify university social channels across Facebook, Twitter / X, Instagram, LinkedIn, YouTube, TikTok, Telegram, and custom links. All changes update in real time.',
+            )}
           </p>
         </div>
 
@@ -455,28 +516,28 @@ export default function AdminSocialLinksPage() {
           {autoSaveStatus === 'saving' && (
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-blue-50 text-[#0400CC] border border-blue-200/80 text-xs sm:text-sm font-bold shadow-xs">
               <div className="w-4 h-4 border-2 border-[#0400CC] border-t-transparent rounded-full animate-spin" />
-              <span>Saving in real-time...</span>
+              <span>{tr('Saving in real-time...')}</span>
             </div>
           )}
 
           {autoSaveStatus === 'saved' && (
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs sm:text-sm font-bold shadow-xs">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Saved live automatically</span>
+              <span>{tr('Saved live automatically')}</span>
             </div>
           )}
 
           {autoSaveStatus === 'error' && (
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-red-50 text-red-700 border border-red-200 text-xs sm:text-sm font-bold shadow-xs">
               <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-              <span>Failed to save</span>
+              <span>{tr('Failed to save')}</span>
             </div>
           )}
 
           {autoSaveStatus === 'idle' && (
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 text-slate-600 border border-slate-200 text-xs sm:text-sm font-medium">
               <Zap className="w-3.5 h-3.5 text-amber-500" />
-              <span>Auto-save enabled</span>
+              <span>{tr('Auto-save enabled')}</span>
             </div>
           )}
         </div>
@@ -486,7 +547,7 @@ export default function AdminSocialLinksPage() {
       {errorMessage && (
         <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-700 text-sm shadow-sm">
           <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-          <span>{errorMessage}</span>
+          <span>{tr(errorMessage)}</span>
         </div>
       )}
 
@@ -501,7 +562,8 @@ export default function AdminSocialLinksPage() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            All Platforms ({platforms.length + links.customLinks.length})
+            {tr('All Platforms (')}
+            {platforms.length + links.customLinks.length})
           </button>
           <button
             onClick={() => setActiveTab('primary')}
@@ -511,7 +573,7 @@ export default function AdminSocialLinksPage() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            Primary (FB, X, IG, LinkedIn)
+            {tr('Primary (FB, X, IG, LinkedIn)')}
           </button>
           <button
             onClick={() => setActiveTab('media')}
@@ -521,7 +583,7 @@ export default function AdminSocialLinksPage() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            Video (YouTube, TikTok)
+            {tr('Video (YouTube, TikTok)')}
           </button>
           <button
             onClick={() => setActiveTab('messaging')}
@@ -531,7 +593,7 @@ export default function AdminSocialLinksPage() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            Messaging (Telegram, WhatsApp)
+            {tr('Messaging (Telegram, WhatsApp)')}
           </button>
           <button
             onClick={() => setActiveTab('custom')}
@@ -541,14 +603,15 @@ export default function AdminSocialLinksPage() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            Custom ({links.customLinks.length})
+            {tr('Custom (')}
+            {links.customLinks.length})
           </button>
         </div>
 
         <div className="flex items-center gap-3 text-xs font-bold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm shrink-0">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            Active on Public Site:
+            {tr('Active on Public Site:')}
           </span>
           <span className="text-[#0400CC] font-extrabold text-sm">{activeCount}</span>
         </div>
@@ -561,7 +624,7 @@ export default function AdminSocialLinksPage() {
           {loading ? (
             <div className="bg-white rounded-3xl p-12 text-center text-slate-400 border border-slate-200">
               <div className="w-8 h-8 border-4 border-[#0400CC] border-t-[#00B6FF] rounded-full animate-spin mx-auto mb-3" />
-              <span>Loading Social Media Configurations...</span>
+              <span>{tr('Loading Social Media Configurations...')}</span>
             </div>
           ) : (
             <>
@@ -594,22 +657,24 @@ export default function AdminSocialLinksPage() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-extrabold text-base text-[#00001C]">
-                                  {platform.name}
+                                  {tr(localize(platform, 'name'))}
                                 </h3>
                                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                                  {platform.badge}
+                                  {tr(platform.badge)}
                                 </span>
                               </div>
                               <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                                {platform.hint}
+                                {tr(platform.hint)}
                               </p>
                             </div>
                           </div>
 
                           {/* Active / Inactive Switch Toggle */}
                           <div className="flex items-center gap-3 self-end sm:self-center">
-                            <span className={`text-xs font-bold ${isEnabled ? 'text-emerald-600' : 'text-slate-400'}`}>
-                              {isEnabled ? 'Active' : 'Disabled'}
+                            <span
+                              className={`text-xs font-bold ${isEnabled ? 'text-emerald-600' : 'text-slate-400'}`}
+                            >
+                              {tr(isEnabled ? tr('Active') : tr('Disabled'))}
                             </span>
                             <button
                               type="button"
@@ -633,35 +698,43 @@ export default function AdminSocialLinksPage() {
                         {/* URL Input & Quick Actions */}
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
-                            <label htmlFor={`url-${platform.key}`}>Destination Profile / Channel URL</label>
+                            <label htmlFor={`url-${platform.key}`}>
+                              {tr('Destination Profile / Channel URL')}
+                            </label>
                             {currentUrl && (
                               <div className="flex items-center gap-3">
                                 <button
                                   type="button"
                                   onClick={() => handleCopy(platform.key, currentUrl)}
                                   className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-[#0400CC] transition-colors"
-                                  title="Copy URL"
+                                  title={tr('Copy URL')}
                                 >
                                   {isCopied ? (
                                     <>
                                       <Check className="w-3 h-3 text-emerald-600" />
-                                      <span className="text-emerald-600 font-bold">Copied!</span>
+                                      <span className="text-emerald-600 font-bold">
+                                        {tr('Copied!')}
+                                      </span>
                                     </>
                                   ) : (
                                     <>
                                       <Copy className="w-3 h-3" />
-                                      <span>Copy</span>
+                                      <span>{tr('Copy')}</span>
                                     </>
                                   )}
                                 </button>
                                 <a
-                                  href={currentUrl.startsWith('http') ? currentUrl : `https://${currentUrl}`}
+                                  href={
+                                    currentUrl.startsWith('http')
+                                      ? currentUrl
+                                      : `https://${currentUrl}`
+                                  }
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-1 text-[11px] text-[#0400CC] hover:underline font-bold"
-                                  title="Open in new tab"
+                                  title={tr('Open in new tab')}
                                 >
-                                  <span>Test Link</span>
+                                  <span>{tr('Test Link')}</span>
                                   <ExternalLink className="w-3 h-3" />
                                 </a>
                               </div>
@@ -675,7 +748,7 @@ export default function AdminSocialLinksPage() {
                               value={currentUrl}
                               onChange={(e) => handleLinkChange(platform.key, e.target.value)}
                               onBlur={handleLinkBlur}
-                              placeholder={platform.placeholder}
+                              placeholder={tr(platform.placeholder)}
                               className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0400CC] focus:border-transparent transition-all font-mono"
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -696,10 +769,12 @@ export default function AdminSocialLinksPage() {
                     <div>
                       <h3 className="text-lg font-bold text-[#00001C] flex items-center gap-2">
                         <Sparkles className="w-5 h-5 text-[#00B6FF]" />
-                        Custom Channels & Additional Networks
+                        {tr('Custom Channels & Additional Networks')}
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        Add custom communities such as Discord, WeChat, Threads, GitHub, ResearchGate, or Podcast links.
+                        {tr(
+                          'Add custom communities such as Discord, WeChat, Threads, GitHub, ResearchGate, or Podcast links.',
+                        )}
                       </p>
                     </div>
                     <button
@@ -708,16 +783,20 @@ export default function AdminSocialLinksPage() {
                       className="inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-[#0400CC] font-bold text-xs px-3.5 py-2 rounded-xl border border-blue-200 transition-colors cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Add Custom Link</span>
+                      <span>{tr('Add Custom Link')}</span>
                     </button>
                   </div>
 
                   {links.customLinks.length === 0 ? (
                     <div className="text-center py-8 px-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50">
                       <Globe className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
-                      <p className="text-xs font-semibold text-slate-600">No custom links added yet.</p>
+                      <p className="text-xs font-semibold text-slate-600">
+                        {tr('No custom links added yet.')}
+                      </p>
                       <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
-                        Click "Add Custom Link" above if you want to display extra social or community channels.
+                        {tr(
+                          'Click "Add Custom Link" above if you want to display extra social or community channels.',
+                        )}
                       </p>
                     </div>
                   ) : (
@@ -731,25 +810,29 @@ export default function AdminSocialLinksPage() {
                             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <div>
                                 <label className="block text-[11px] font-bold uppercase text-slate-500 mb-1">
-                                  Platform Name
+                                  {tr('Platform Name')}
                                 </label>
                                 <input
                                   type="text"
                                   value={customItem.name}
-                                  onChange={(e) => handleCustomLinkChange(idx, 'name', e.target.value)}
+                                  onChange={(e) =>
+                                    handleCustomLinkChange(idx, 'name', e.target.value)
+                                  }
                                   onBlur={handleLinkBlur}
-                                  placeholder="e.g. Discord, Threads, GitHub"
+                                  placeholder={tr('e.g. Discord, Threads, GitHub')}
                                   className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
                                 />
                               </div>
                               <div>
                                 <label className="block text-[11px] font-bold uppercase text-slate-500 mb-1">
-                                  URL Link
+                                  {tr('URL Link')}
                                 </label>
                                 <input
                                   type="url"
                                   value={customItem.url}
-                                  onChange={(e) => handleCustomLinkChange(idx, 'url', e.target.value)}
+                                  onChange={(e) =>
+                                    handleCustomLinkChange(idx, 'url', e.target.value)
+                                  }
                                   onBlur={handleLinkBlur}
                                   placeholder="https://..."
                                   className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
@@ -760,20 +843,22 @@ export default function AdminSocialLinksPage() {
                             <div className="flex items-center gap-2 shrink-0 pt-4 sm:pt-0">
                               <button
                                 type="button"
-                                onClick={() => handleCustomLinkChange(idx, 'isActive', !customItem.isActive)}
+                                onClick={() =>
+                                  handleCustomLinkChange(idx, 'isActive', !customItem.isActive)
+                                }
                                 className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer ${
                                   customItem.isActive
                                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                     : 'bg-slate-200 text-slate-600 border-slate-300'
                                 }`}
                               >
-                                {customItem.isActive ? 'Active' : 'Disabled'}
+                                {tr(customItem.isActive ? tr('Active') : tr('Disabled'))}
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveCustomLink(idx)}
                                 className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                                title="Remove link"
+                                title={tr('Remove link')}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -796,22 +881,26 @@ export default function AdminSocialLinksPage() {
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2 text-[#00001C] font-bold text-base">
                 <Eye className="w-4 h-4 text-[#0400CC]" />
-                <span>Live Interactive Preview</span>
+                <span>{tr('Live Interactive Preview')}</span>
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0400CC] border border-blue-200">
-                WYSIWYG
+                {tr('WYSIWYG')}
               </span>
             </div>
 
             {/* Dark Theme Footer Preview */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-                <span>Public Footer Appearance (Dark Mode)</span>
-                <span className="text-[11px] font-normal text-slate-400">Sit Website Footer</span>
+                <span>{tr('Public Footer Appearance (Dark Mode)')}</span>
+                <span className="text-[11px] font-normal text-slate-400">
+                  {tr('Sit Website Footer')}
+                </span>
               </div>
               <div className="bg-[#00001C] rounded-2xl p-6 text-white border border-white/10 shadow-inner">
                 <p className="text-xs text-white/70 mb-4 leading-relaxed">
-                  Empowering the next generation of leaders through innovation, excellence, and global perspective.
+                  {tr(
+                    'Empowering the next generation of leaders through innovation, excellence, and global perspective.',
+                  )}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2.5 pt-1">
@@ -827,7 +916,7 @@ export default function AdminSocialLinksPage() {
                         target="_blank"
                         rel="noreferrer"
                         className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#0400CC] flex items-center justify-center text-white transition-all hover:scale-110 shadow-sm"
-                        title={p.name}
+                        title={tr(localize(p, 'name'))}
                       >
                         {p.iconSvg}
                       </a>
@@ -843,17 +932,17 @@ export default function AdminSocialLinksPage() {
                         target="_blank"
                         rel="noreferrer"
                         className="h-9 px-3 rounded-full bg-white/10 hover:bg-[#0400CC] flex items-center gap-1.5 text-xs text-white transition-all hover:scale-105"
-                        title={custom.name}
+                        title={tr(localize(custom, 'name'))}
                       >
                         <Globe className="w-3.5 h-3.5" />
-                        <span>{custom.name}</span>
+                        <span>{tr(localize(custom, 'name'))}</span>
                       </a>
                     );
                   })}
 
                   {activeCount === 0 && (
                     <span className="text-xs text-white/40 italic">
-                      No active social links to display.
+                      {tr('No active social links to display.')}
                     </span>
                   )}
                 </div>
@@ -863,12 +952,14 @@ export default function AdminSocialLinksPage() {
             {/* Light Theme Contact Page Preview */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-                <span>Contact Page Appearance (Light Mode)</span>
-                <span className="text-[11px] font-normal text-slate-400">Campus Contact Section</span>
+                <span>{tr('Contact Page Appearance (Light Mode)')}</span>
+                <span className="text-[11px] font-normal text-slate-400">
+                  {tr('Campus Contact Section')}
+                </span>
               </div>
               <div className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                  Connect With SIT Online
+                  {tr('Connect With SIT Online')}
                 </h4>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -888,7 +979,7 @@ export default function AdminSocialLinksPage() {
                         >
                           <div className="scale-75">{p.iconSvg}</div>
                         </div>
-                        <span className="truncate">{p.name}</span>
+                        <span className="truncate">{tr(localize(p, 'name'))}</span>
                       </div>
                     );
                   })}
@@ -903,7 +994,7 @@ export default function AdminSocialLinksPage() {
                         <div className="w-6 h-6 rounded-lg bg-[#0400CC] flex items-center justify-center text-white shrink-0">
                           <Globe className="w-3.5 h-3.5" />
                         </div>
-                        <span className="truncate">{custom.name}</span>
+                        <span className="truncate">{tr(localize(custom, 'name'))}</span>
                       </div>
                     );
                   })}
@@ -916,25 +1007,33 @@ export default function AdminSocialLinksPage() {
           <div className="bg-gradient-to-br from-slate-900 to-[#00001C] rounded-3xl p-6 text-white space-y-4 shadow-md">
             <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm">
               <HelpCircle className="w-4 h-4" />
-              <span>Real-Time Updates</span>
+              <span>{tr('Real-Time Updates')}</span>
             </div>
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li className="flex items-start gap-2">
                 <span className="text-[#00B6FF] font-bold">•</span>
                 <span>
-                  <strong>Instant Sync:</strong> Toggling a platform on/off, changing URLs, or adding/removing custom links immediately saves to the backend and updates the live site.
+                  <strong>{tr('Instant Sync:')}</strong>
+                  {tr(
+                    ' Toggling a platform on/off, changing URLs, or adding/removing custom links immediately saves to the backend and updates the live site.',
+                  )}
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00B6FF] font-bold">•</span>
                 <span>
-                  <strong>Full URLs:</strong> Always enter the complete web address (e.g. <code>https://facebook.com/situniversity</code>).
+                  <strong>{tr('Full URLs:')}</strong>
+                  {tr(' Always enter the complete web address (e.g. ')}
+                  <code>https://facebook.com/situniversity</code>).
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00B6FF] font-bold">•</span>
                 <span>
-                  <strong>Verification:</strong> Click <em>"Test Link"</em> next to any field to test that the destination profile opens properly.
+                  <strong>{tr('Verification:')}</strong>
+                  {tr(' Click ')}
+                  <em>{tr('"Test Link"')}</em>
+                  {tr(' next to any field to test that the destination profile opens properly.')}
                 </span>
               </li>
             </ul>

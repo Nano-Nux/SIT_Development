@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,11 +11,13 @@ import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function AboutHero() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
-    api.getHero('ABOUT')
+    api
+      .getHero('ABOUT')
       .then((res) => {
         if (res) setHeroData(res);
       })
@@ -37,7 +41,7 @@ export function AboutHero() {
         <div className="absolute inset-0 z-0">
           <Image
             src={bgImage}
-            alt="About SIT Hero Background"
+            alt={tr('About SIT Hero Background')}
             fill
             className="object-cover object-center opacity-30 brightness-75"
             priority
@@ -57,17 +61,17 @@ export function AboutHero() {
       <div className="max-w-[1000px] mx-auto px-6 relative z-10 space-y-4">
         {subtitle && (
           <span className="block text-xs sm:text-sm font-bold tracking-widest text-white uppercase">
-            {subtitle}
+            {tr(subtitle)}
           </span>
         )}
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight">
-          {title}
+          {tr(title)}
         </h1>
 
         {description && (
           <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed pt-2">
-            {description}
+            {tr(description)}
           </p>
         )}
       </div>

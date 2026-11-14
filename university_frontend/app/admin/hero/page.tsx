@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,18 +14,24 @@ import { VideoUpload } from '@/components/ui/VideoUpload';
 import { HeroVideo } from '@/components/ui/HeroVideo';
 
 export default function AdminHeroPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [selectedPage, setSelectedPage] = useState('HOME');
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [formData, setFormData] = useState({
     page: 'HOME',
     title: '',
     titleLa: '',
+    titleZh: '',
     subtitle: '',
     subtitleLa: '',
+    subtitleZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     buttonText: '',
     buttonTextLa: '',
+    buttonTextZh: '',
     buttonUrl: '',
     imageUrl: '',
     image2Url: '',
@@ -61,12 +71,16 @@ export default function AdminHeroPage() {
           page: data.page,
           title: data.title || '',
           titleLa: data.titleLa || '',
+          titleZh: data.titleZh || '',
           subtitle: data.subtitle || '',
           subtitleLa: data.subtitleLa || '',
+          subtitleZh: data.subtitleZh || '',
           description: data.description || '',
           descriptionLa: data.descriptionLa || '',
+          descriptionZh: data.descriptionZh || '',
           buttonText: data.buttonText || '',
           buttonTextLa: data.buttonTextLa || '',
+          buttonTextZh: data.buttonTextZh || '',
           buttonUrl: data.buttonUrl || '',
           imageUrl: data.page === 'HOME' ? '' : data.imageUrl || '',
           image2Url: data.image2Url || '',
@@ -79,12 +93,16 @@ export default function AdminHeroPage() {
           page: pageCode,
           title: '',
           titleLa: '',
+          titleZh: '',
           subtitle: '',
           subtitleLa: '',
+          subtitleZh: '',
           description: '',
           descriptionLa: '',
+          descriptionZh: '',
           buttonText: '',
           buttonTextLa: '',
+          buttonTextZh: '',
           buttonUrl: '',
           imageUrl: '',
           image2Url: '',
@@ -132,10 +150,12 @@ export default function AdminHeroPage() {
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
           <Sparkles className="w-7 h-7 text-[#0400CC]" />
-          Hero Sections Manager
+          {tr('Hero Sections Manager')}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Customize the homepage video, headlines, background imagery, and CTA actions for each main university page in English and Lao.
+          {tr(
+            'Customize the homepage video, headlines, background imagery, and CTA actions for each main university page in English, Lao, and Chinese.',
+          )}
         </p>
       </div>
 
@@ -153,7 +173,7 @@ export default function AdminHeroPage() {
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              {p.name}
+              {tr(localize(p, 'name'))}
             </button>
           ))}
         </div>
@@ -166,7 +186,7 @@ export default function AdminHeroPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#0400CC] bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors"
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>View Live Page</span>
+            <span>{tr('View Live Page')}</span>
             <ExternalLink className="w-3 h-3 ml-0.5 opacity-70" />
           </Link>
         )}
@@ -177,19 +197,21 @@ export default function AdminHeroPage() {
         {success && (
           <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3 text-emerald-700 text-sm">
             <CheckCircle2 className="w-5 h-5 shrink-0" />
-            <span>Hero banner updated successfully! Live page will reflect updates immediately.</span>
+            <span>
+              {tr('Hero banner updated successfully! Live page will reflect updates immediately.')}
+            </span>
           </div>
         )}
 
         {error && (
           <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-700 text-sm">
             <AlertCircle className="w-5 h-5 shrink-0" />
-            <span>{error}</span>
+            <span>{tr(error)}</span>
           </div>
         )}
 
         {loading ? (
-          <div className="py-12 text-center text-slate-400">Loading banner settings...</div>
+          <div className="py-12 text-center text-slate-400">{tr('Loading banner settings...')}</div>
         ) : (
           <form onSubmit={handleSave} className="space-y-6">
             {/* Language Switcher Tabs */}
@@ -203,7 +225,7 @@ export default function AdminHeroPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                <span>🇬🇧 English</span>
+                <span>{tr('🇬🇧 English')}</span>
               </button>
               <button
                 type="button"
@@ -214,47 +236,71 @@ export default function AdminHeroPage() {
                     : 'text-slate-600 hover:text-[#00001C]'
                 }`}
               >
-                <span>🇱🇦 ພາສາລາວ (Lao)</span>
+                <span>{tr('🇱🇦 ພາສາລາວ (Lao)')}</span>
                 {formData.titleLa && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" title="Lao translation present" />
+                  <span
+                    className="w-2 h-2 rounded-full bg-emerald-500"
+                    title={tr('Lao translation present')}
+                  />
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveLangTab('zh')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeLangTab === 'zh'
+                    ? 'bg-white text-[#0400CC] shadow-sm'
+                    : 'text-slate-600 hover:text-[#00001C]'
+                }`}
+              >
+                <span>{tr('中文 (Chinese)')}</span>
+                {formData.titleZh && (
+                  <span
+                    className="w-2 h-2 rounded-full bg-emerald-500"
+                    title={tr('Chinese translation present')}
+                  />
                 )}
               </button>
             </div>
 
             {/* English Fields */}
-            {activeLangTab === 'en' ? (
-              <div className="space-y-6 p-5 rounded-2xl bg-slate-50/60 border border-slate-200/80">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">English Content Fields</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-[#0400CC]">EN</span>
+            {activeLangTab === 'zh' ? (
+              /* Chinese Fields */
+              <div className="space-y-6 p-5 rounded-2xl bg-amber-50/40 border border-amber-200/80">
+                <div className="flex items-center justify-between pb-2 border-b border-amber-200">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
+                    {tr('Chinese Content Fields')}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">
+                    {tr('ZH')}
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      Subtitle / Badge Label (EN)
+                      {tr('Chinese Subtitle')}
                     </label>
                     <input
                       type="text"
-                      name="subtitle"
-                      value={formData.subtitle}
+                      name="subtitleZh"
+                      value={formData.subtitleZh}
                       onChange={handleChange}
-                      placeholder="e.g. WELCOME TO SIT UNIVERSITY"
+                      placeholder="请输入中文副标题"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      Main Headline Title (EN) <span className="text-red-500">*</span>
+                      {tr('Chinese Headline Title')}
                     </label>
                     <input
                       type="text"
-                      name="title"
-                      value={formData.title}
+                      name="titleZh"
+                      value={formData.titleZh}
                       onChange={handleChange}
-                      required
-                      placeholder="e.g. Shaping Future Leaders Through Innovation & Excellence"
+                      placeholder="请输入中文标题"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-semibold"
                     />
                   </div>
@@ -262,14 +308,103 @@ export default function AdminHeroPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Hero Paragraph Description (EN)
+                    {tr('Chinese Description')}
+                  </label>
+                  <textarea
+                    name="descriptionZh"
+                    rows={3}
+                    value={formData.descriptionZh}
+                    onChange={handleChange}
+                    placeholder="请输入中文说明"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                  />
+                </div>
+
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      Chinese Button Text
+                    </label>
+                    <input
+                      type="text"
+                      name="buttonTextZh"
+                      value={formData.buttonTextZh}
+                      onChange={handleChange}
+                      placeholder="中文"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      Action Button URL / Destination
+                    </label>
+                    <input
+                      type="text"
+                      name="buttonUrl"
+                      value={formData.buttonUrl}
+                      onChange={handleChange}
+                      placeholder="e.g. /academics or /apply"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                    />
+                  </div>
+                </div> */}
+              </div>
+            ) : activeLangTab === 'en' ? (
+              <div className="space-y-6 p-5 rounded-2xl bg-slate-50/60 border border-slate-200/80">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    {tr('English Content Fields')}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-[#0400CC]">
+                    {tr('EN')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      {tr('Subtitle / Badge Label (EN)')}
+                    </label>
+                    <input
+                      type="text"
+                      name="subtitle"
+                      value={formData.subtitle}
+                      onChange={handleChange}
+                      placeholder={tr('e.g. WELCOME TO SIT UNIVERSITY')}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      {tr('Main Headline Title (EN) ')}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      required
+                      placeholder={tr(
+                        'e.g. Shaping Future Leaders Through Innovation & Excellence',
+                      )}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    {tr('Hero Paragraph Description (EN)')}
                   </label>
                   <textarea
                     name="description"
                     rows={3}
                     value={formData.description}
                     onChange={handleChange}
-                    placeholder="Write compelling descriptive text for the banner..."
+                    placeholder={tr('Write compelling descriptive text for the banner...')}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                   />
                 </div>
@@ -308,14 +443,18 @@ export default function AdminHeroPage() {
               /* Lao Fields */
               <div className="space-y-6 p-5 rounded-2xl bg-amber-50/40 border border-amber-200/80">
                 <div className="flex items-center justify-between pb-2 border-b border-amber-200">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-800">ຊ່ອງປ້ອນຂໍ້ມູນພາສາລາວ (Lao Content Fields)</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">LA</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
+                    {tr('ຊ່ອງປ້ອນຂໍ້ມູນພາສາລາວ (Lao Content Fields)')}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">
+                    {tr('LA')}
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      ຫົວຂໍ້ຍ່ອຍ / ປ້າຍຂໍ້ຄວາມ (Lao Subtitle)
+                      {tr('ຫົວຂໍ້ຍ່ອຍ / ປ້າຍຂໍ້ຄວາມ (Lao Subtitle)')}
                     </label>
                     <input
                       type="text"
@@ -329,7 +468,7 @@ export default function AdminHeroPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                      ຫົວຂໍ້ຫຼັກ (Lao Headline Title)
+                      {tr('ຫົວຂໍ້ຫຼັກ (Lao Headline Title)')}
                     </label>
                     <input
                       type="text"
@@ -344,7 +483,7 @@ export default function AdminHeroPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)
+                    {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
                   </label>
                   <textarea
                     name="descriptionLa"
@@ -394,23 +533,28 @@ export default function AdminHeroPage() {
                 <div className="flex items-center gap-2">
                   <Video className="w-5 h-5 text-[#0400CC]" />
                   <h3 className="text-sm font-extrabold text-[#00001C] uppercase tracking-wider">
-                    Homepage Hero Video
+                    {tr('Homepage Hero Video')}
                   </h3>
                 </div>
                 <p className="text-xs text-slate-500">
-                  Upload the video visitors will see at the top of the homepage.
+                  {tr('Upload the video visitors will see at the top of the homepage.')}
                 </p>
 
-                <VideoUpload value={formData.bgVideoUrl} onChange={(bgVideoUrl) => setFormData((prev) => ({ ...prev, bgVideoUrl }))} onUploadingChange={setUploading} disabled={saving} />
+                <VideoUpload
+                  value={formData.bgVideoUrl}
+                  onChange={(bgVideoUrl) => setFormData((prev) => ({ ...prev, bgVideoUrl }))}
+                  onUploadingChange={setUploading}
+                  disabled={saving}
+                />
               </div>
             ) : (
               <div className="border-t border-slate-200 pt-6 space-y-3">
                 <ImageUpload
-                  label="Banner Background Image (SeaweedFS)"
+                  label={tr('Banner Background Image (SeaweedFS)')}
                   value={formData.imageUrl}
                   onChange={(url) => setFormData({ ...formData, imageUrl: url })}
                   placeholder="/images/about_desktopview/img_1.jpg"
-                  helpText="Full resolution banner background stored directly in SeaweedFS."
+                  helpText={tr('Full resolution banner background stored directly in SeaweedFS.')}
                   aspectRatio="wide"
                 />
               </div>
@@ -422,7 +566,13 @@ export default function AdminHeroPage() {
                 disabled={saving || uploading}
                 className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] disabled:opacity-60 text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-md transition-all cursor-pointer"
               >
-                {uploading ? 'Uploading Video...' : saving ? 'Saving Changes...' : 'Save Banner Updates'}
+                {tr(
+                  uploading
+                    ? tr('Uploading Video...')
+                    : saving
+                      ? tr('Saving Changes...')
+                      : tr('Save Banner Updates'),
+                )}
                 <Save className="w-4 h-4" />
               </button>
             </div>
@@ -436,38 +586,76 @@ export default function AdminHeroPage() {
           <div className="flex items-center gap-2">
             <Eye className="w-5 h-5 text-blue-400" />
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Live Preview ({activeLangTab === 'en' ? 'English' : 'Lao'}) — {currentPage?.name}
+              {tr('Live Preview (')}
+              {tr(
+                activeLangTab === 'zh' ? 'Chinese' : activeLangTab === 'en' ? tr('English') : 'Lao',
+              )}
+              ) — {tr(localize(currentPage, 'name'))}
             </h3>
           </div>
           <span className="text-[10px] font-semibold uppercase px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
-            Previewing: {selectedPage}
+            {tr('Previewing: ')}
+            {tr(selectedPage)}
           </span>
         </div>
 
         {selectedPage === 'HOME' ? (
-          <HeroVideo key={formData.bgVideoUrl || 'video'} src={formData.bgVideoUrl} className="aspect-video w-full rounded-2xl border border-slate-700" />
+          <HeroVideo
+            key={formData.bgVideoUrl || 'video'}
+            src={formData.bgVideoUrl}
+            className="aspect-video w-full rounded-2xl border border-slate-700"
+          />
         ) : (
           <div className="relative rounded-2xl overflow-hidden bg-[#00001C] p-6 sm:p-8 min-h-[180px] flex flex-col justify-center text-center border border-slate-700">
             {formData.imageUrl && (
               <div className="absolute inset-0 z-0">
-                <Image src={formData.imageUrl} alt="Background" fill className="object-cover opacity-25" />
+                <Image
+                  src={formData.imageUrl}
+                  alt={tr('Background')}
+                  fill
+                  className="object-cover opacity-25"
+                />
                 <div className="absolute inset-0 bg-[#0400CC]/40" />
               </div>
             )}
             <div className="relative z-10 space-y-2">
               <span className="inline-block text-[11px] font-bold tracking-widest text-blue-300 uppercase">
-                {activeLangTab === 'en' ? (formData.subtitle || 'SUBTITLE') : (formData.subtitleLa || formData.subtitle || 'ຫົວຂໍ້ຍ່ອຍ')}
+                {tr(
+                  activeLangTab === 'zh'
+                    ? formData.subtitleZh || formData.subtitle || '中文'
+                    : activeLangTab === 'en'
+                      ? formData.subtitle || tr('SUBTITLE')
+                      : formData.subtitleLa || formData.subtitle || 'ຫົວຂໍ້ຍ່ອຍ',
+                )}
               </span>
               <h4 className="text-xl sm:text-2xl font-extrabold text-white">
-                {activeLangTab === 'en' ? (formData.title || 'Headline Title') : (formData.titleLa || formData.title || 'ຫົວຂໍ້ຫຼັກ')}
+                {tr(
+                  activeLangTab === 'zh'
+                    ? formData.titleZh || formData.title || '中文'
+                    : activeLangTab === 'en'
+                      ? formData.title || tr('Headline Title')
+                      : formData.titleLa || formData.title || 'ຫົວຂໍ້ຫຼັກ',
+                )}
               </h4>
               <p className="text-xs text-white/80 max-w-xl mx-auto line-clamp-2">
-                {activeLangTab === 'en' ? (formData.description || 'Hero description...') : (formData.descriptionLa || formData.description || 'ເນື້ອຫາຄຳອະທິບາຍ...')}
+                {tr(
+                  activeLangTab === 'zh'
+                    ? formData.descriptionZh || formData.description || '中文'
+                    : activeLangTab === 'en'
+                      ? formData.description || tr('Hero description...')
+                      : formData.descriptionLa || formData.description || 'ເນື້ອຫາຄຳອະທິບາຍ...',
+                )}
               </p>
               {(formData.buttonText || formData.buttonTextLa) && (
                 <div className="pt-2">
                   <span className="inline-block bg-[#0400CC] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow">
-                    {activeLangTab === 'en' ? (formData.buttonText || 'Button') : (formData.buttonTextLa || formData.buttonText || 'ປຸ່ມ')}
+                    {tr(
+                      activeLangTab === 'zh'
+                        ? formData.buttonTextZh || formData.buttonText || '中文'
+                        : activeLangTab === 'en'
+                          ? formData.buttonText || tr('Button')
+                          : formData.buttonTextLa || formData.buttonText || 'ປຸ່ມ',
+                    )}
                   </span>
                 </div>
               )}

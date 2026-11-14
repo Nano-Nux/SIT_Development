@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,11 +15,13 @@ import { api, HeroItem } from '@/lib/api';
 import { getLocalizedHeroText } from '@/lib/hero-content';
 
 export default function AdmissionsPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
-    api.getHero('ADMISSIONS')
+    api
+      .getHero('ADMISSIONS')
       .then((res) => {
         if (res) setHeroData(res);
       })
@@ -49,7 +53,9 @@ export default function AdmissionsPage() {
 
   const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.admissions.heroSubtitle);
   const welcomeHeading = getLocalizedHeroText(heroData, 'title', lang, t.admissions.welcomeHeading);
-  const defaultDescription = [t.admissions.welcomeP1, t.admissions.welcomeP2].filter(Boolean).join('\n\n');
+  const defaultDescription = [t.admissions.welcomeP1, t.admissions.welcomeP2]
+    .filter(Boolean)
+    .join('\n\n');
   const customDescription = getLocalizedHeroText(heroData, 'description', lang, defaultDescription);
 
   const showcaseImage = heroData?.imageUrl?.trim() || '/images/home_desktopview/img_1.jpg';
@@ -69,18 +75,20 @@ export default function AdmissionsPage() {
 
             {heroSubtitle && (
               <span className="inline-block text-xs sm:text-sm font-bold tracking-widest text-[#0400CC] uppercase">
-                {heroSubtitle}
+                {tr(heroSubtitle)}
               </span>
             )}
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#00001C] tracking-tight uppercase">
               {welcomeHeading.includes('ADMISSIONS') ? (
                 <>
-                  {welcomeHeading.replace('ADMISSIONS', '')} <span className="text-[#0400CC]">ADMISSIONS</span>
+                  {tr(welcomeHeading.replace('ADMISSIONS', ''))}{' '}
+                  <span className="text-[#0400CC]">{tr('ADMISSIONS')}</span>
                 </>
               ) : welcomeHeading.includes('ການຮັບສະໝັກນັກສຶກສາ') ? (
                 <>
-                  {welcomeHeading.replace('ການຮັບສະໝັກນັກສຶກສາ', '')} <span className="text-[#0400CC]">ການຮັບສະໝັກນັກສຶກສາ</span>
+                  {tr(welcomeHeading.replace('ການຮັບສະໝັກນັກສຶກສາ', ''))}{' '}
+                  <span className="text-[#0400CC]">ການຮັບສະໝັກນັກສຶກສາ</span>
                 </>
               ) : (
                 welcomeHeading
@@ -90,7 +98,7 @@ export default function AdmissionsPage() {
             <div className="text-base sm:text-lg text-[#4A5565] leading-relaxed space-y-4 max-w-3xl mx-auto">
               {customDescription.split(/\n\s*\n/).map((paragraph, idx) => (
                 <p key={idx} className={idx > 0 ? 'font-semibold text-[#00001C]' : ''}>
-                  {paragraph}
+                  {tr(paragraph)}
                 </p>
               ))}
             </div>
@@ -101,7 +109,7 @@ export default function AdmissionsPage() {
                   href={buttonUrl}
                   className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 text-sm uppercase tracking-wider"
                 >
-                  <span>{buttonText}</span>
+                  <span>{tr(buttonText)}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -114,7 +122,7 @@ export default function AdmissionsPage() {
           <div className="relative w-full aspect-[21/9] sm:aspect-[24/9] rounded-3xl overflow-hidden shadow-2xl bg-slate-100">
             <Image
               src={showcaseImage}
-              alt="SIT Admissions Showcase"
+              alt={tr('SIT Admissions Showcase')}
               fill
               className="object-cover object-center"
               priority
@@ -129,7 +137,8 @@ export default function AdmissionsPage() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight uppercase">
                 {t.admissions.proceduresTitle.includes('PROCEDURES') ? (
                   <>
-                    {t.admissions.proceduresTitle.replace('PROCEDURES', '')} <span className="text-[#0400CC]">PROCEDURES</span>
+                    {t.admissions.proceduresTitle.replace('PROCEDURES', '')}{' '}
+                    <span className="text-[#0400CC]">{tr('PROCEDURES')}</span>
                   </>
                 ) : (
                   t.admissions.proceduresTitle
@@ -154,15 +163,18 @@ export default function AdmissionsPage() {
 
                     <div className="space-y-2">
                       <h3 className="text-lg font-bold text-[#00001C] leading-snug">
-                        {item.step}
+                        {tr(item.step)}
                       </h3>
                       <p className="text-xs sm:text-sm text-[#4A5565] leading-relaxed">
-                        {item.desc}
+                        {tr(item.desc)}
                       </p>
                     </div>
 
                     <div className="text-xs font-bold text-[#0400CC] tracking-wider uppercase flex items-center gap-1">
-                      <span>STEP 0{idx + 1}</span>
+                      <span>
+                        {tr('STEP 0')}
+                        {idx + 1}
+                      </span>
                     </div>
                   </div>
                 );

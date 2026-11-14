@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React from 'react';
 import Link from 'next/link';
 import { Award, DollarSign, CheckCircle2, ArrowRight } from 'lucide-react';
@@ -7,6 +9,7 @@ import { SectionHeader } from '../ui/SectionHeader';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function TuitionScholarships() {
+  const tr = useUiTranslation();
   const { t } = useLanguage();
 
   const scholarships = [
@@ -47,13 +50,11 @@ export function TuitionScholarships() {
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#0400CC]">
                   <Award className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-[#00001C]">{sch.title}</h3>
+                <h3 className="text-lg font-bold text-[#00001C]">{tr(sch.title)}</h3>
                 <span className="inline-block text-xs font-extrabold text-[#0400CC] bg-blue-50 px-3 py-1 rounded-full">
-                  {sch.amount}
+                  {tr(sch.amount)}
                 </span>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {sch.desc}
-                </p>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{tr(sch.desc)}</p>
               </div>
             </div>
           ))}
@@ -64,9 +65,7 @@ export function TuitionScholarships() {
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
               {t.admissions.questionsScholarships}
             </h3>
-            <p className="text-sm text-slate-300">
-              {t.admissions.questionsScholarshipsDesc}
-            </p>
+            <p className="text-sm text-slate-300">{t.admissions.questionsScholarshipsDesc}</p>
           </div>
           <Link
             href="/request-info"

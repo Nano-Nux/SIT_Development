@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState } from 'react';
 import { CheckCircle2, GraduationCap, Globe, BookOpen } from 'lucide-react';
 import { SectionHeader } from '../ui/SectionHeader';
@@ -9,12 +11,16 @@ interface AdmissionRequirement {
   id: string;
   degreeLevel: string;
   degreeLevelLa?: string | null;
+  degreeLevelZh?: string | null;
   title: string;
   titleLa?: string | null;
+  titleZh?: string | null;
   description: string;
   descriptionLa?: string | null;
+  descriptionZh?: string | null;
   requirementsList: string;
   requirementsListLa?: string | null;
+  requirementsListZh?: string | null;
 }
 
 interface RequirementsSectionProps {
@@ -22,7 +28,10 @@ interface RequirementsSectionProps {
 }
 
 export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
-  const [activeTab, setActiveTab] = useState<'Undergraduate' | 'Graduate' | 'International'>('Undergraduate');
+  const tr = useUiTranslation();
+  const [activeTab, setActiveTab] = useState<'Undergraduate' | 'Graduate' | 'International'>(
+    'Undergraduate',
+  );
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
@@ -31,7 +40,8 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
       id: '1',
       degreeLevel: 'Undergraduate',
       title: 'Undergraduate Program Requirements',
-      description: 'Entry criteria for secondary school graduates seeking a Bachelor of Science or Bachelor of Arts degree at SIT.',
+      description:
+        'Entry criteria for secondary school graduates seeking a Bachelor of Science or Bachelor of Arts degree at SIT.',
       requirementsList: JSON.stringify([
         'High School Diploma (BacII) with minimum Grade C or international equivalent (A-Levels, IB, GED)',
         'English Language Proficiency: IELTS 5.5+, TOEFL iBT 65+, or passing score on SIT English Placement Test',
@@ -45,7 +55,8 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
       id: '2',
       degreeLevel: 'Graduate',
       title: 'Master’s Degree Requirements',
-      description: 'Criteria for professionals and graduates pursuing an advanced Master of Science or MBA program.',
+      description:
+        'Criteria for professionals and graduates pursuing an advanced Master of Science or MBA program.',
       requirementsList: JSON.stringify([
         'Accredited Bachelor’s Degree in a relevant field with a minimum cumulative GPA of 3.0 / 4.0',
         'English Proficiency: IELTS 6.5+ or TOEFL iBT 80+',
@@ -59,7 +70,8 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
       id: '3',
       degreeLevel: 'International',
       title: 'International Student Admissions',
-      description: 'Specific guidelines, visa assistance, and equivalency requirements for foreign applicants.',
+      description:
+        'Specific guidelines, visa assistance, and equivalency requirements for foreign applicants.',
       requirementsList: JSON.stringify([
         'Valid International Passport (minimum 1-year validity)',
         'Certified English translation of secondary school or university degree certificates',
@@ -71,12 +83,15 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
   ];
 
   const items = data.length > 0 ? data : defaultReqs;
-  const currentReq = items.find((r) => r.degreeLevel.toLowerCase() === activeTab.toLowerCase()) || items[0];
+  const currentReq =
+    items.find((r) => r.degreeLevel.toLowerCase() === activeTab.toLowerCase()) || items[0];
 
   let list: string[] = [];
-  if (isLa && currentReq?.requirementsListLa) {
+  if (lang === 'ZH' ? currentReq?.requirementsListZh : isLa && currentReq?.requirementsListLa) {
     try {
-      list = JSON.parse(currentReq.requirementsListLa);
+      list = JSON.parse(
+        (lang === 'ZH' ? currentReq?.requirementsListZh : currentReq?.requirementsListLa) || '[]',
+      );
     } catch {
       list = [];
     }
@@ -88,8 +103,18 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
     }
   }
 
-  const reqTitle = (isLa && currentReq?.titleLa) ? currentReq.titleLa : currentReq?.title;
-  const reqDesc = (isLa && currentReq?.descriptionLa) ? currentReq.descriptionLa : currentReq?.description;
+  const reqTitle =
+    lang === 'ZH'
+      ? currentReq?.titleZh || currentReq?.title
+      : isLa && currentReq?.titleLa
+        ? currentReq.titleLa
+        : currentReq?.title;
+  const reqDesc =
+    lang === 'ZH'
+      ? currentReq?.descriptionZh || currentReq?.description
+      : isLa && currentReq?.descriptionLa
+        ? currentReq.descriptionLa
+        : currentReq?.description;
 
   return (
     <section className="py-20 sm:py-28 bg-[#F8FAFC]">
@@ -107,7 +132,9 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
             <button
               onClick={() => setActiveTab('Undergraduate')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeTab === 'Undergraduate' ? 'bg-white text-[#0400CC] shadow-md' : 'text-slate-600 hover:text-slate-900'
+                activeTab === 'Undergraduate'
+                  ? 'bg-white text-[#0400CC] shadow-md'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <GraduationCap className="w-4 h-4" />
@@ -116,7 +143,9 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
             <button
               onClick={() => setActiveTab('Graduate')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeTab === 'Graduate' ? 'bg-white text-[#0400CC] shadow-md' : 'text-slate-600 hover:text-slate-900'
+                activeTab === 'Graduate'
+                  ? 'bg-white text-[#0400CC] shadow-md'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <BookOpen className="w-4 h-4" />
@@ -125,7 +154,9 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
             <button
               onClick={() => setActiveTab('International')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeTab === 'International' ? 'bg-white text-[#0400CC] shadow-md' : 'text-slate-600 hover:text-slate-900'
+                activeTab === 'International'
+                  ? 'bg-white text-[#0400CC] shadow-md'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Globe className="w-4 h-4" />
@@ -138,12 +169,8 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
         {currentReq && (
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm space-y-6">
             <div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-[#00001C]">
-                {reqTitle}
-              </h3>
-              <p className="text-sm sm:text-base text-slate-600 mt-2">
-                {reqDesc}
-              </p>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-[#00001C]">{tr(reqTitle)}</h3>
+              <p className="text-sm sm:text-base text-slate-600 mt-2">{tr(reqDesc)}</p>
             </div>
 
             <div className="pt-4 border-t border-slate-100">
@@ -155,7 +182,7 @@ export function RequirementsSection({ data = [] }: RequirementsSectionProps) {
                   <div key={idx} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#0400CC] shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-                      {item}
+                      {tr(item)}
                     </span>
                   </div>
                 ))}

@@ -1,5 +1,8 @@
 'use client';
 
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -8,6 +11,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function AdminLoginPage() {
+  const tr = useUiTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,6 +34,9 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-[#00001C] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="absolute top-4 right-4 z-20">
+        <LanguageSwitcher />
+      </div>
       {/* Background glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0400CC]/30 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#00B6FF]/20 rounded-full blur-3xl" />
@@ -39,7 +46,7 @@ export default function AdminLoginPage() {
           <div className="w-16 h-16 rounded-2xl bg-white/10 p-2.5 flex items-center justify-center shadow-xl border border-white/20 backdrop-blur-md group-hover:scale-105 transition-transform">
             <Image
               src="/assets/sit-logo-icon.png"
-              alt="SIT Logo"
+              alt={tr('SIT Logo')}
               width={64}
               height={64}
               className="w-full h-full object-contain drop-shadow-md"
@@ -49,10 +56,10 @@ export default function AdminLoginPage() {
         </Link>
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            SIT University CMS
+            {tr('SIT University CMS')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Administrative Management & Dynamic Content Portal
+            {tr('Administrative Management & Dynamic Content Portal')}
           </p>
         </div>
       </div>
@@ -62,14 +69,14 @@ export default function AdminLoginPage() {
           {error && (
             <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center gap-3 text-red-200 text-xs sm:text-sm">
               <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
-              <span>{error}</span>
+              <span>{tr(error)}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                Administrator Email
+                {tr('Administrator Email')}
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -78,7 +85,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="Please enter email"
+                  placeholder={tr('Please enter email')}
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#00B6FF]"
                 />
               </div>
@@ -86,7 +93,7 @@ export default function AdminLoginPage() {
 
             <div>
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                Password
+                {tr('Password')}
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -106,14 +113,14 @@ export default function AdminLoginPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 bg-[#0400CC] hover:bg-[#030099] disabled:opacity-60 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all cursor-pointer text-sm"
             >
-              {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
+              {tr(loading ? tr('Authenticating...') : tr('Sign In to Dashboard'))}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           <div className="text-center pt-2">
             <Link href="/" className="text-xs text-slate-400 hover:text-white transition-colors">
-              ← Return to SIT University Website
+              {tr('← Return to SIT University Website')}
             </Link>
           </div>
         </div>

@@ -5,7 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ProgramsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query?: { departmentId?: string; degree?: string; all?: boolean }) {
+  async findAll(query?: {
+    departmentId?: string;
+    degree?: string;
+    all?: boolean;
+  }) {
     const where: any = {};
     if (!query?.all) where.isPublished = true;
     if (query?.departmentId) where.departmentId = query.departmentId;
@@ -14,7 +18,15 @@ export class ProgramsService {
     return this.prisma.program.findMany({
       where,
       include: {
-        department: { select: { id: true, name: true, slug: true } },
+        department: {
+          select: {
+            id: true,
+            name: true,
+            nameLa: true,
+            nameZh: true,
+            slug: true,
+          },
+        },
         directors: true,
       },
       orderBy: { order: 'asc' },
@@ -46,31 +58,54 @@ export class ProgramsService {
   }
 
   async create(data: any) {
-    const slug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const coreFocusAreas = typeof data.coreFocusAreas === 'string'
-      ? data.coreFocusAreas
-      : JSON.stringify(data.coreFocusAreas || []);
-    const coreFocusAreasLa = data.coreFocusAreasLa !== undefined
-      ? (typeof data.coreFocusAreasLa === 'string' ? data.coreFocusAreasLa : JSON.stringify(data.coreFocusAreasLa))
-      : null;
+    const slug =
+      data.slug ||
+      data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    const coreFocusAreas =
+      typeof data.coreFocusAreas === 'string'
+        ? data.coreFocusAreas
+        : JSON.stringify(data.coreFocusAreas || []);
+    const coreFocusAreasLa =
+      data.coreFocusAreasLa !== undefined
+        ? typeof data.coreFocusAreasLa === 'string'
+          ? data.coreFocusAreasLa
+          : JSON.stringify(data.coreFocusAreasLa)
+        : null;
+    const coreFocusAreasZh =
+      data.coreFocusAreasZh !== undefined
+        ? data.coreFocusAreasZh === null
+          ? null
+          : typeof data.coreFocusAreasZh === 'string'
+            ? data.coreFocusAreasZh
+            : JSON.stringify(data.coreFocusAreasZh)
+        : null;
 
     return this.prisma.program.create({
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         slug,
         degree: data.degree || 'Bachelor',
         degreeLa: data.degreeLa,
+        degreeZh: data.degreeZh,
         duration: data.duration || '4 Years',
         durationLa: data.durationLa,
+        durationZh: data.durationZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         heroImage: data.heroImage,
         coreFocusAreas,
         coreFocusAreasLa,
+        coreFocusAreasZh,
         departmentId: data.departmentId || null,
         order: data.order !== undefined ? Number(data.order) : 0,
-        isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+        isPublished:
+          data.isPublished !== undefined ? Boolean(data.isPublished) : true,
       },
       include: {
         department: true,
@@ -81,31 +116,54 @@ export class ProgramsService {
 
   async update(id: string, data: any) {
     await this.findOne(id);
-    const coreFocusAreas = data.coreFocusAreas !== undefined
-      ? (typeof data.coreFocusAreas === 'string' ? data.coreFocusAreas : JSON.stringify(data.coreFocusAreas))
-      : undefined;
-    const coreFocusAreasLa = data.coreFocusAreasLa !== undefined
-      ? (typeof data.coreFocusAreasLa === 'string' ? data.coreFocusAreasLa : JSON.stringify(data.coreFocusAreasLa))
-      : undefined;
+    const coreFocusAreas =
+      data.coreFocusAreas !== undefined
+        ? typeof data.coreFocusAreas === 'string'
+          ? data.coreFocusAreas
+          : JSON.stringify(data.coreFocusAreas)
+        : undefined;
+    const coreFocusAreasLa =
+      data.coreFocusAreasLa !== undefined
+        ? typeof data.coreFocusAreasLa === 'string'
+          ? data.coreFocusAreasLa
+          : JSON.stringify(data.coreFocusAreasLa)
+        : undefined;
+    const coreFocusAreasZh =
+      data.coreFocusAreasZh !== undefined
+        ? data.coreFocusAreasZh === null
+          ? null
+          : typeof data.coreFocusAreasZh === 'string'
+            ? data.coreFocusAreasZh
+            : JSON.stringify(data.coreFocusAreasZh)
+        : undefined;
 
     return this.prisma.program.update({
       where: { id },
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         slug: data.slug,
         degree: data.degree,
         degreeLa: data.degreeLa,
+        degreeZh: data.degreeZh,
         duration: data.duration,
         durationLa: data.durationLa,
+        durationZh: data.durationZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         heroImage: data.heroImage,
         coreFocusAreas,
         coreFocusAreasLa,
-        departmentId: data.departmentId !== undefined ? data.departmentId : undefined,
+        coreFocusAreasZh,
+        departmentId:
+          data.departmentId !== undefined ? data.departmentId : undefined,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : undefined,
+        isPublished:
+          data.isPublished !== undefined
+            ? Boolean(data.isPublished)
+            : undefined,
       },
       include: {
         department: true,
@@ -122,7 +180,7 @@ export class ProgramsService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.program.update({
           where: { id: item.id },
           data: { order: item.order },

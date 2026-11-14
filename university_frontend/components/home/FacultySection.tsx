@@ -1,26 +1,32 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { api, FacultyMember } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function FacultySection({ data }: { data?: FacultyMember[] }) {
+  const tr = useUiTranslation();
   const [faculty, setFaculty] = useState<FacultyMember[]>(data || []);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      api.getFaculty({ isFeatured: true }).then((res) => {
-        if (res && res.length > 0) {
-          // Take all featured members without numerical limit
-          const featured = res.filter((f) => Boolean(f.isFeatured));
-          setFaculty(featured);
-        } else {
-          setFaculty([]);
-        }
-      }).catch(console.error);
+      api
+        .getFaculty({ isFeatured: true })
+        .then((res) => {
+          if (res && res.length > 0) {
+            // Take all featured members without numerical limit
+            const featured = res.filter((f) => Boolean(f.isFeatured));
+            setFaculty(featured);
+          } else {
+            setFaculty([]);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -47,9 +53,24 @@ export function FacultySection({ data }: { data?: FacultyMember[] }) {
         {/* Dynamic Faculty Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {faculty.map((member, idx) => {
-            const memberName = (isLa && member.nameLa) ? member.nameLa : member.name;
-            const memberPosition = (isLa && member.positionLa) ? member.positionLa : member.position;
-            const memberDept = (isLa && member.departmentNameLa) ? member.departmentNameLa : member.departmentName;
+            const memberName =
+              lang === 'ZH'
+                ? member?.nameZh || member.name
+                : isLa && member.nameLa
+                  ? member.nameLa
+                  : member.name;
+            const memberPosition =
+              lang === 'ZH'
+                ? member?.positionZh || member.position
+                : isLa && member.positionLa
+                  ? member.positionLa
+                  : member.position;
+            const memberDept =
+              lang === 'ZH'
+                ? member?.departmentNameZh || member.departmentName
+                : isLa && member.departmentNameLa
+                  ? member.departmentNameLa
+                  : member.departmentName;
 
             return (
               <div key={member.id || idx} className="group flex flex-col">
@@ -57,7 +78,7 @@ export function FacultySection({ data }: { data?: FacultyMember[] }) {
                 <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-100 shadow-md group-hover:shadow-xl transition-all duration-300 mb-5">
                   <Image
                     src={member.imageUrl || '/images/home_desktopview/img_5.jpg'}
-                    alt={memberName}
+                    alt={tr(memberName)}
                     fill
                     className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   />
@@ -66,14 +87,14 @@ export function FacultySection({ data }: { data?: FacultyMember[] }) {
                 {/* Text Info */}
                 <div className="space-y-1">
                   <h3 className="text-lg sm:text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                    {memberName}
+                    {tr(memberName)}
                   </h3>
                   <p className="text-xs sm:text-[13px] font-extrabold tracking-wider text-[#0400CC] uppercase">
-                    {memberPosition}
+                    {tr(memberPosition)}
                   </p>
                   {memberDept && (
                     <p className="text-xs sm:text-sm text-[#62748E] font-medium pt-0.5">
-                      {memberDept}
+                      {tr(memberDept)}
                     </p>
                   )}
                 </div>
@@ -85,4 +106,3 @@ export function FacultySection({ data }: { data?: FacultyMember[] }) {
     </section>
   );
 }
-

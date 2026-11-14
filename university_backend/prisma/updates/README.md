@@ -1,3 +1,14 @@
+## Chinese translations
+
+`20261114_chinese_translations.sql` adds optional Chinese (`Zh`) fields to every content model that already has Lao translations. Existing data is preserved. Empty Chinese fields are populated only when the English text exactly matches a built-in seed translation; existing Chinese and custom content are preserved. Apply before starting the updated backend:
+
+```sh
+npx prisma db execute --file prisma/updates/20261114_chinese_translations.sql --schema prisma/schema.prisma
+npx prisma generate
+```
+
+The existing `npx prisma db push` workflow also applies the additive schema changes. Restart the backend afterward. Admin content editors include a separate Chinese tab; contact editors include Chinese campus names, addresses, notes, phone/email labels and office hours. Blank Chinese fields fall back to English. The public navbar and admin header offer EN / LA / 中文 and remember the selection.
+
 # Image galleries and homepage video
 
 ## Department external websites

@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { api, ContactInfo } from '@/lib/api';
@@ -8,6 +10,7 @@ import { CampusContactCard } from '@/components/contact/CampusContactCard';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function ContactSection({ data }: { data?: ContactInfo | null }) {
+  const tr = useUiTranslation();
   const [contact, setContact] = useState<ContactInfo | null>(data || null);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
@@ -24,9 +27,12 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
 
   useEffect(() => {
     if (!data) {
-      api.getContact().then((res) => {
-        if (res) setContact(res);
-      }).catch(console.error);
+      api
+        .getContact()
+        .then((res) => {
+          if (res) setContact(res);
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -54,12 +60,22 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
       <div className="py-20 sm:py-28 max-w-[1280px] mx-auto px-6 space-y-10">
         <div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-            {t.about.contactTitle} <span className="text-[#0400CC]">{t.about.contactHighlight}</span>
+            {t.about.contactTitle}{' '}
+            <span className="text-[#0400CC]">{t.about.contactHighlight}</span>
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-[#4A5565] leading-relaxed">{t.about.contactDesc}</p>
+          <p className="mt-4 text-base sm:text-lg text-[#4A5565] leading-relaxed">
+            {t.about.contactDesc}
+          </p>
         </div>
         {locations.map((campus) => (
-          <CampusContactCard key={campus.id} campus={campus} isLa={isLa} labels={t.contact} wide />
+          <CampusContactCard
+            lang={lang}
+            key={campus.id}
+            campus={campus}
+            isLa={isLa}
+            labels={t.contact}
+            wide
+          />
         ))}
       </div>
 
@@ -73,7 +89,7 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
                 <div className="absolute inset-0 z-0 opacity-75">
                   <img
                     src="/images/about/contact_student.png"
-                    alt="SIT Student"
+                    alt={tr('SIT Student')}
                     className="w-full h-full object-cover object-center"
                   />
                 </div>
@@ -105,10 +121,10 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
                   <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-4 text-emerald-800">
                     <CheckCircle2 className="w-8 h-8 text-emerald-600 shrink-0" />
                     <div>
-                      <h4 className="font-bold text-lg">{isLa ? 'ສຳເລັດແລ້ວ!' : 'Success!'}</h4>
-                      <p className="text-sm text-emerald-700 mt-1">
-                        {t.about.messageSentSuccess}
-                      </p>
+                      <h4 className="font-bold text-lg">
+                        {tr(isLa ? 'ສຳເລັດແລ້ວ!' : tr('Success!'))}
+                      </h4>
+                      <p className="text-sm text-emerald-700 mt-1">{t.about.messageSentSuccess}</p>
                     </div>
                   </div>
                 ) : (
@@ -162,7 +178,7 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
                         </label>
                         <input
                           type="text"
-                          placeholder={isLa ? 'ສອບຖາມຂໍ້ມູນຫຼັກສູດ' : 'Program Inquiry'}
+                          placeholder={tr(isLa ? 'ສອບຖາມຂໍ້ມູນຫຼັກສູດ' : 'Program Inquiry')}
                           value={formData.subject}
                           onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                           className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC]/20 focus:border-[#0400CC] text-sm text-[#00001C] transition-all"
@@ -190,7 +206,15 @@ export function ContactSection({ data }: { data?: ContactInfo | null }) {
                         disabled={loading}
                         className="inline-flex items-center justify-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg shadow-[#0400CC]/20 hover:shadow-[#0400CC]/40 transition-all duration-200 cursor-pointer disabled:opacity-50"
                       >
-                        <span>{loading ? (isLa ? 'ກຳລັງສົ່ງ...' : 'Sending...') : t.about.submitMessage}</span>
+                        <span>
+                          {tr(
+                            loading
+                              ? isLa
+                                ? 'ກຳລັງສົ່ງ...'
+                                : tr('Sending...')
+                              : t.about.submitMessage,
+                          )}
+                        </span>
                         <Send className="w-4 h-4" />
                       </button>
                     </div>

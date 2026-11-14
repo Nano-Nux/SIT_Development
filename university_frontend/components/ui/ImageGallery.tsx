@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import { useId, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
@@ -19,6 +21,7 @@ export function ImageGallery({
   aspectRatio = 'aspect-video',
   fit = 'cover',
 }: ImageGalleryProps) {
+  const tr = useUiTranslation();
   const viewport = useRef<HTMLDivElement>(null);
   const id = useId();
   const [index, setIndex] = useState(0);
@@ -43,7 +46,7 @@ export function ImageGallery({
     <div
       className={`relative min-w-0 overflow-hidden bg-slate-100 ${className}`}
       role="region"
-      aria-label={alt}
+      aria-label={tr(alt)}
       aria-roledescription="carousel"
     >
       <div
@@ -79,7 +82,7 @@ export function ImageGallery({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={src}
-              alt={`${alt} (${i + 1}/${images.length})`}
+              alt={tr(`${alt} (${i + 1}/${images.length})`)}
               loading={i === 0 ? 'eager' : 'lazy'}
               draggable={false}
               className={`h-full w-full ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
@@ -91,7 +94,7 @@ export function ImageGallery({
         <>
           <button
             type="button"
-            aria-label={isLa ? 'ຮູບກ່ອນໜ້າ' : 'Previous image'}
+            aria-label={tr(isLa ? 'ຮູບກ່ອນໜ້າ' : 'Previous image')}
             aria-controls={id}
             disabled={index === 0}
             onClick={() => navigate(index - 1)}
@@ -101,7 +104,7 @@ export function ImageGallery({
           </button>
           <button
             type="button"
-            aria-label={isLa ? 'ຮູບຕໍ່ໄປ' : 'Next image'}
+            aria-label={tr(isLa ? 'ຮູບຕໍ່ໄປ' : 'Next image')}
             aria-controls={id}
             disabled={index >= images.length - 1}
             onClick={() => navigate(index + 1)}

@@ -1,7 +1,20 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
-import { Lightbulb, Award, Globe, Users, Sparkles, BookOpen, Shield, Rocket, Heart, TrendingUp } from 'lucide-react';
+import {
+  Lightbulb,
+  Award,
+  Globe,
+  Users,
+  Sparkles,
+  BookOpen,
+  Shield,
+  Rocket,
+  Heart,
+  TrendingUp,
+} from 'lucide-react';
 import { api, CoreValueItem } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -19,17 +32,21 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export function CoreValuesSection({ data }: { data?: CoreValueItem[] }) {
+  const tr = useUiTranslation();
   const [values, setValues] = useState<CoreValueItem[]>(data || []);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      api.getCoreValues().then((res) => {
-        if (res && res.length > 0) {
-          setValues(res);
-        }
-      }).catch(console.error);
+      api
+        .getCoreValues()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setValues(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -64,12 +81,24 @@ export function CoreValuesSection({ data }: { data?: CoreValueItem[] }) {
 
                 {/* Title */}
                 <h3 className="text-xl sm:text-2xl font-bold text-[#00001C] mb-3 leading-snug">
-                  {(isLa && val.titleLa) ? val.titleLa : val.title}
+                  {tr(
+                    lang === 'ZH'
+                      ? val?.titleZh || val.title
+                      : isLa && val.titleLa
+                        ? val.titleLa
+                        : val.title,
+                  )}
                 </h3>
 
                 {/* Description */}
                 <p className="text-sm md:text-base text-[#4A5565] leading-relaxed max-w-xs">
-                  {(isLa && val.descriptionLa) ? val.descriptionLa : val.description}
+                  {tr(
+                    lang === 'ZH'
+                      ? val?.descriptionZh || val.description
+                      : isLa && val.descriptionLa
+                        ? val.descriptionLa
+                        : val.description,
+                  )}
                 </p>
               </div>
             );
@@ -79,4 +108,3 @@ export function CoreValuesSection({ data }: { data?: CoreValueItem[] }) {
     </section>
   );
 }
-

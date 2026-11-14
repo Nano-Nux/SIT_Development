@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Building2, ArrowRight, ExternalLink, Sparkles, CheckCircle2 } from 'lucide-react';
@@ -15,6 +17,7 @@ interface CampusFacilitiesSectionProps {
 }
 
 export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionProps) {
+  const tr = useUiTranslation();
   const [facilities, setFacilities] = useState<CampusFacilityItem[]>(data);
   const [selectedFacility, setSelectedFacility] = useState<CampusFacilityItem | null>(null);
   const { lang, t } = useLanguage();
@@ -22,11 +25,14 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
 
   useEffect(() => {
     if (data.length === 0) {
-      api.getCampusFacilities().then((res) => {
-        if (res && res.length > 0) {
-          setFacilities(res);
-        }
-      }).catch(console.error);
+      api
+        .getCampusFacilities()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setFacilities(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -51,8 +57,14 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {items.map((fac, idx) => {
             const isRedirect = fac.actionType === 'REDIRECT';
-            const name = (isLa && fac.nameLa) ? fac.nameLa : fac.name;
-            const description = (isLa && fac.descriptionLa) ? fac.descriptionLa : fac.description;
+            const name =
+              lang === 'ZH' ? fac?.nameZh || fac.name : isLa && fac.nameLa ? fac.nameLa : fac.name;
+            const description =
+              lang === 'ZH'
+                ? fac?.descriptionZh || fac.description
+                : isLa && fac.descriptionLa
+                  ? fac.descriptionLa
+                  : fac.description;
 
             return (
               <div
@@ -62,18 +74,21 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
                 <div>
                   <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                     <ImageGallery
-                      images={getGalleryImages(fac, `/images/life_at_sit_desktopview/img_${idx + 1}.jpg`)}
-                      alt={name}
+                      images={getGalleryImages(
+                        fac,
+                        `/images/life_at_sit_desktopview/img_${idx + 1}.jpg`,
+                      )}
+                      alt={tr(name)}
                       aspectRatio="aspect-[16/10]"
                     />
                   </div>
 
                   <div className="p-5">
                     <h3 className="text-base sm:text-lg font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug mb-2">
-                      {name}
+                      {tr(name)}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                      {description}
+                      {tr(description)}
                     </p>
                   </div>
                 </div>
@@ -108,21 +123,53 @@ export function CampusFacilitiesSection({ data = [] }: CampusFacilitiesSectionPr
         <Modal
           isOpen={!!selectedFacility}
           onClose={() => setSelectedFacility(null)}
-          title={isLa ? (selectedFacility.modalTitleLa || selectedFacility.nameLa || selectedFacility.modalTitle || selectedFacility.name) : (selectedFacility.modalTitle || selectedFacility.name)}
+          title={tr(
+            lang === 'ZH'
+              ? selectedFacility?.modalTitleZh ||
+                  selectedFacility?.nameZh ||
+                  selectedFacility.modalTitle ||
+                  selectedFacility.name ||
+                  selectedFacility.modalTitle ||
+                  selectedFacility.name
+              : isLa
+                ? selectedFacility.modalTitleLa ||
+                  selectedFacility.nameLa ||
+                  selectedFacility.modalTitle ||
+                  selectedFacility.name
+                : selectedFacility.modalTitle || selectedFacility.name,
+          )}
           maxWidth="lg"
         >
           <div className="space-y-4">
             <ImageGallery
               key={selectedFacility.id}
               images={getGalleryImages(selectedFacility)}
-              alt={isLa && selectedFacility.nameLa ? selectedFacility.nameLa : selectedFacility.name}
+              alt={tr(
+                lang === 'ZH'
+                  ? selectedFacility?.nameZh || selectedFacility.name
+                  : isLa && selectedFacility.nameLa
+                    ? selectedFacility.nameLa
+                    : selectedFacility.name,
+              )}
               fit="contain"
               className="rounded-xl"
             />
             <p className="text-sm text-slate-700 leading-relaxed">
-              {isLa
-                ? (selectedFacility.modalContentLa || selectedFacility.descriptionLa || selectedFacility.modalContent || selectedFacility.description)
-                : (selectedFacility.modalContent || selectedFacility.description)}
+              {tr(
+                lang === 'ZH'
+                  ? selectedFacility?.modalContentZh ||
+                      selectedFacility?.descriptionZh ||
+                      selectedFacility.modalContent ||
+                      selectedFacility.description ||
+                      selectedFacility.modalContent ||
+                      selectedFacility.description
+                  : isLa
+                    ? selectedFacility.modalContentLa ||
+                      selectedFacility.descriptionLa ||
+                      selectedFacility.modalContent ||
+                      selectedFacility.description
+                    : selectedFacility.modalContent || selectedFacility.description,
+              )}
             </p>
             <div className="pt-2 flex justify-end">
               <button

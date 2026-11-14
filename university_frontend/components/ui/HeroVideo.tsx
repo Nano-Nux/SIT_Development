@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import { useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
@@ -11,10 +13,8 @@ interface HeroVideoProps {
 
 const FALLBACK_IMAGE = '/images/home_desktopview/img_1.jpg';
 
-export function HeroVideo({
-  src,
-  className = '',
-}: HeroVideoProps) {
+export function HeroVideo({ src, className = '' }: HeroVideoProps) {
+  const tr = useUiTranslation();
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -34,7 +34,7 @@ export function HeroVideo({
           loop
           playsInline
           preload="auto"
-          aria-label={isLa ? 'ວິດີໂອແນະນຳ SIT' : 'SIT University campus video'}
+          aria-label={tr(isLa ? 'ວິດີໂອແນະນຳ SIT' : 'SIT University campus video')}
           className="absolute inset-0 h-full w-full object-cover"
           onLoadedData={(event) => {
             const element = event.currentTarget;
@@ -58,43 +58,40 @@ export function HeroVideo({
           onPause={() => setPlaying(false)}
           onError={() => setFailed(true)}
         >
-          {isLa
-            ? 'ບຣາວເຊີຂອງທ່ານບໍ່ຮອງຮັບວິດີໂອ.'
-            : 'Your browser does not support video playback.'}
+          {tr(
+            isLa
+              ? 'ບຣາວເຊີຂອງທ່ານບໍ່ຮອງຮັບວິດີໂອ.'
+              : tr('Your browser does not support video playback.'),
+          )}
         </video>
       ) : (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={firstFrame || FALLBACK_IMAGE}
-          alt={isLa ? 'ມະຫາວິທະຍາໄລ SIT' : 'SIT University campus'}
+          alt={tr(isLa ? 'ມະຫາວິທະຍາໄລ SIT' : 'SIT University campus')}
           className="absolute inset-0 h-full w-full object-cover"
         />
       )}
       {src && !failed && (
         <button
           type="button"
-          aria-label={
+          aria-label={tr(
             playing
               ? isLa
                 ? 'ຢຸດວິດີໂອຊົ່ວຄາວ'
                 : 'Pause video'
               : isLa
                 ? 'ຫຼິ້ນວິດີໂອ'
-                : 'Play video'
-          }
+                : 'Play video',
+          )}
           onClick={() => {
             if (!video.current) return;
-            if (video.current.paused)
-              void video.current.play().catch(() => setPlaying(false));
+            if (video.current.paused) void video.current.play().catch(() => setPlaying(false));
             else video.current.pause();
           }}
           className="absolute bottom-4 right-4 rounded-full bg-black/60 p-3 text-white shadow hover:bg-black/80 cursor-pointer focus-visible:outline-2 focus-visible:outline-white"
         >
-          {playing ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5" />
-          )}
+          {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
         </button>
       )}
     </div>

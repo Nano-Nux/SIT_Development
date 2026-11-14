@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,6 +14,7 @@ import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function CollaborationsPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [partners, setPartners] = useState<PartnerItem[]>([]);
@@ -35,11 +38,25 @@ export default function CollaborationsPage() {
     });
   }, []);
 
-  const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.collaborations.heroSubtitle);
+  const heroSubtitle = getLocalizedHeroText(
+    heroData,
+    'subtitle',
+    lang,
+    t.collaborations.heroSubtitle,
+  );
 
-  const rawTitle = isLa
-    ? (heroData?.titleLa || heroData?.title || t.collaborations.heroTitle || 'ການຮ່ວມມືກັບ SIT')
-    : (heroData?.title || t.collaborations.heroTitle || 'Collaboration with SIT');
+  const rawTitle =
+    lang === 'ZH'
+      ? heroData?.titleZh ||
+        heroData?.title ||
+        t.collaborations.heroTitle ||
+        'ການຮ່ວມມືກັບ SIT' ||
+        heroData?.title ||
+        t.collaborations.heroTitle ||
+        'Collaboration with SIT'
+      : isLa
+        ? heroData?.titleLa || heroData?.title || t.collaborations.heroTitle || 'ການຮ່ວມມືກັບ SIT'
+        : heroData?.title || t.collaborations.heroTitle || 'Collaboration with SIT';
 
   let mainTitle = isLa ? 'ການຮ່ວມມື' : 'Collaboration';
   let subTitleAccent = isLa ? 'ກັບ SIT' : 'with SIT';
@@ -73,7 +90,7 @@ export default function CollaborationsPage() {
             {bgImage && (
               <Image
                 src={bgImage}
-                alt={rawTitle}
+                alt={tr(rawTitle)}
                 fill
                 className="object-cover object-center opacity-30 brightness-75"
                 priority
@@ -89,7 +106,7 @@ export default function CollaborationsPage() {
             <div>
               <div className="inline-flex items-center border border-white/20 bg-white/10 rounded-lg px-4 py-1.5 backdrop-blur-md shadow-sm">
                 <span className="text-xs sm:text-sm font-bold tracking-widest text-[#EFFFFF]">
-                  {heroSubtitle}
+                  {tr(heroSubtitle)}
                 </span>
               </div>
             </div>
@@ -97,7 +114,7 @@ export default function CollaborationsPage() {
             {/* Heading & Same-Row Discover Partners */}
             <div className="space-y-1 sm:space-y-2">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
-                {mainTitle}
+                {tr(mainTitle)}
               </h1>
 
               {/* Next line: 'with SIT' in the same row with DISCOVER PARTNERS in the middle */}
@@ -105,7 +122,7 @@ export default function CollaborationsPage() {
                 <div className="relative flex items-end min-h-[48px] pt-1">
                   {subTitleAccent && (
                     <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] bg-gradient-to-r from-[#EFFFFF] via-[#EFFFFF] to-[#EFFFFF]/70 bg-clip-text text-transparent">
-                      {subTitleAccent}
+                      {tr(subTitleAccent)}
                     </div>
                   )}
 
@@ -132,7 +149,9 @@ export default function CollaborationsPage() {
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight leading-tight">
                   {t.collaborations.universityPartnersTitle}{' '}
-                  <span className="text-[#0400CC]">{t.collaborations.universityPartnersHighlight}</span>
+                  <span className="text-[#0400CC]">
+                    {t.collaborations.universityPartnersHighlight}
+                  </span>
                 </h2>
 
                 <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
@@ -143,9 +162,14 @@ export default function CollaborationsPage() {
               {/* Right Column: Partners Grid (lg:col-span-8) */}
               <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {universityPartners.map((u, idx) => {
-                  const partnerName = isLa && u.nameLa ? u.nameLa : u.name;
+                  const partnerName =
+                    lang === 'ZH' ? u?.nameZh || u.name : isLa && u.nameLa ? u.nameLa : u.name;
                   const partnerCountry =
-                    isLa && u.countryLa ? u.countryLa : u.country || t.collaborations.internationalPartner;
+                    lang === 'ZH'
+                      ? u?.countryZh || u.country || t.collaborations.internationalPartner
+                      : isLa && u.countryLa
+                        ? u.countryLa
+                        : u.country || t.collaborations.internationalPartner;
 
                   const cardContent = (
                     <div className="p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white hover:border-[#0400CC] hover:shadow-lg transition-all duration-300 flex items-center gap-4 group h-full">
@@ -154,12 +178,13 @@ export default function CollaborationsPage() {
                         {u.logoUrl ? (
                           <img
                             src={u.logoUrl}
-                            alt={partnerName}
+                            alt={tr(partnerName)}
                             className="w-full h-full object-contain transition-transform"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.style.display = 'none';
-                              const fallback = target.parentElement?.querySelector('.collab-logo-fallback');
+                              const fallback =
+                                target.parentElement?.querySelector('.collab-logo-fallback');
                               if (fallback) fallback.classList.remove('hidden');
                             }}
                           />
@@ -177,7 +202,7 @@ export default function CollaborationsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <h3 className="text-sm sm:text-base font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                            {partnerName}
+                            {tr(partnerName)}
                           </h3>
                           {u.websiteUrl && (
                             <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-[#0400CC] transition-colors shrink-0 mt-0.5" />
@@ -185,7 +210,7 @@ export default function CollaborationsPage() {
                         </div>
                         <p className="text-xs text-[#62748E] font-medium mt-1 flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                          <span>{partnerCountry}</span>
+                          <span>{tr(partnerCountry)}</span>
                         </p>
                       </div>
                     </div>
@@ -228,7 +253,12 @@ export default function CollaborationsPage() {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                 {industryPartners.map((item, idx) => {
-                  const partnerName = isLa && item.nameLa ? item.nameLa : item.name;
+                  const partnerName =
+                    lang === 'ZH'
+                      ? item?.nameZh || item.name
+                      : isLa && item.nameLa
+                        ? item.nameLa
+                        : item.name;
 
                   const card = (
                     <div
@@ -239,7 +269,7 @@ export default function CollaborationsPage() {
                         <div className="w-full h-16 flex items-center justify-center mb-3 p-1">
                           <img
                             src={item.logoUrl}
-                            alt={partnerName}
+                            alt={tr(partnerName)}
                             className="max-h-14 max-w-[150px] object-contain transition-transform duration-300 group-hover:scale-105"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
@@ -253,7 +283,7 @@ export default function CollaborationsPage() {
                         </div>
                       )}
                       <span className="text-xs sm:text-sm font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-tight line-clamp-2">
-                        {partnerName}
+                        {tr(partnerName)}
                       </span>
                     </div>
                   );

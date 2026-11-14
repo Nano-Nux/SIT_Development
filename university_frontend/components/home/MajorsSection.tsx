@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,25 +11,35 @@ import { useLanguage } from '@/context/LanguageContext';
 import { getDepartmentHref } from '@/lib/department-links';
 
 export function MajorsSection({ data }: { data?: any[] }) {
+  const tr = useUiTranslation();
   const [majors, setMajors] = useState<any[]>(data || []);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      api.getDepartments().then((res) => {
-        if (res && res.length > 0) {
-          setMajors(res);
-        } else {
-          api.getMajors().then((mRes) => {
-            if (mRes && mRes.length > 0) setMajors(mRes);
-          }).catch(console.error);
-        }
-      }).catch(() => {
-        api.getMajors().then((mRes) => {
-          if (mRes && mRes.length > 0) setMajors(mRes);
-        }).catch(console.error);
-      });
+      api
+        .getDepartments()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setMajors(res);
+          } else {
+            api
+              .getMajors()
+              .then((mRes) => {
+                if (mRes && mRes.length > 0) setMajors(mRes);
+              })
+              .catch(console.error);
+          }
+        })
+        .catch(() => {
+          api
+            .getMajors()
+            .then((mRes) => {
+              if (mRes && mRes.length > 0) setMajors(mRes);
+            })
+            .catch(console.error);
+        });
     }
   }, [data]);
 
@@ -39,7 +51,7 @@ export function MajorsSection({ data }: { data?: any[] }) {
       <div className="absolute -right-20 bottom-0 w-[600px] h-[600px] pointer-events-none opacity-5">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern"
+          alt={tr('Lao Pattern')}
           fill
           className="object-contain"
         />
@@ -68,19 +80,28 @@ export function MajorsSection({ data }: { data?: any[] }) {
         {/* Dynamic Major Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {majors.map((major, idx) => {
-            const title = (isLa && (major.nameLa || major.titleLa))
-              ? (major.nameLa || major.titleLa)
-              : (major.name || major.title);
-            const description = (isLa && (major.descriptionLa))
-              ? major.descriptionLa
-              : major.description;
+            const title =
+              lang === 'ZH'
+                ? major?.nameZh || major?.titleZh || major.name || major.title
+                : isLa && (major.nameLa || major.titleLa)
+                  ? major.nameLa || major.titleLa
+                  : major.name || major.title;
+            const description =
+              lang === 'ZH'
+                ? major?.descriptionZh || major.description
+                : isLa && major.descriptionLa
+                  ? major.descriptionLa
+                  : major.description;
             const deptSlug =
               major.slug === 'information-technology'
                 ? 'it'
                 : major.slug === 'business-administration-economics'
-                ? 'ba-economics'
-                : major.slug || 'it';
-            const imgUrl = major.imageUrl || major.heroImage || `/images/home_desktopview/img_${(idx % 3) + 2}.jpg`;
+                  ? 'ba-economics'
+                  : major.slug || 'it';
+            const imgUrl =
+              major.imageUrl ||
+              major.heroImage ||
+              `/images/home_desktopview/img_${(idx % 3) + 2}.jpg`;
 
             return (
               <Link
@@ -104,11 +125,11 @@ export function MajorsSection({ data }: { data?: any[] }) {
                 {/* Card Content at Bottom */}
                 <div className="relative z-20">
                   <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug group-hover:text-[#00B6FF] transition-colors">
-                    {title}
+                    {tr(title)}
                   </h3>
                   {description && (
                     <p className="text-xs sm:text-sm text-slate-300 line-clamp-2 mt-2 font-normal">
-                      {description}
+                      {tr(description)}
                     </p>
                   )}
                 </div>
@@ -120,4 +141,3 @@ export function MajorsSection({ data }: { data?: any[] }) {
     </section>
   );
 }
-

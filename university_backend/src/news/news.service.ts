@@ -6,16 +6,25 @@ import { imageGalleryData } from '../common/image-gallery';
 export class NewsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query?: { category?: string; all?: boolean; limit?: number; page?: number; search?: string }) {
+  async findAll(query?: {
+    category?: string;
+    all?: boolean;
+    limit?: number;
+    page?: number;
+    search?: string;
+  }) {
     const where: any = {};
     if (!query?.all) where.isPublished = true;
-    if (query?.category && query.category !== 'All') where.category = query.category;
+    if (query?.category && query.category !== 'All')
+      where.category = query.category;
     if (query?.search) {
       where.OR = [
         { title: { contains: query.search, mode: 'insensitive' } },
         { titleLa: { contains: query.search, mode: 'insensitive' } },
+        { titleZh: { contains: query.search, mode: 'insensitive' } },
         { summary: { contains: query.search, mode: 'insensitive' } },
         { summaryLa: { contains: query.search, mode: 'insensitive' } },
+        { summaryZh: { contains: query.search, mode: 'insensitive' } },
       ];
     }
 
@@ -32,7 +41,12 @@ export class NewsService {
       this.prisma.news.count({ where }),
     ]);
 
-    return { items, total, page: query?.page ? Number(query.page) : 1, limit: take };
+    return {
+      items,
+      total,
+      page: query?.page ? Number(query.page) : 1,
+      limit: take,
+    };
   }
 
   async findBySlug(slug: string, incrementView = true) {
@@ -56,23 +70,34 @@ export class NewsService {
   }
 
   async create(data: any) {
-    const slug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const slug =
+      data.slug ||
+      data.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
     return this.prisma.news.create({
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         slug,
         summary: data.summary,
         summaryLa: data.summaryLa,
+        summaryZh: data.summaryZh,
         content: data.content,
         contentLa: data.contentLa,
+        contentZh: data.contentZh,
         category: data.category || 'General',
         categoryLa: data.categoryLa,
+        categoryZh: data.categoryZh,
         ...imageGalleryData(data),
         author: data.author || 'SIT Communications',
         authorLa: data.authorLa,
+        authorZh: data.authorZh,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
-        isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+        isPublished:
+          data.isPublished !== undefined ? Boolean(data.isPublished) : true,
       },
     });
   }
@@ -84,18 +109,26 @@ export class NewsService {
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         slug: data.slug,
         summary: data.summary,
         summaryLa: data.summaryLa,
+        summaryZh: data.summaryZh,
         content: data.content,
         contentLa: data.contentLa,
+        contentZh: data.contentZh,
         category: data.category,
         categoryLa: data.categoryLa,
+        categoryZh: data.categoryZh,
         ...imageGalleryData(data),
         author: data.author,
         authorLa: data.authorLa,
+        authorZh: data.authorZh,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : undefined,
-        isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : undefined,
+        isPublished:
+          data.isPublished !== undefined
+            ? Boolean(data.isPublished)
+            : undefined,
       },
     });
   }

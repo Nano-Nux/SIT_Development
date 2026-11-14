@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,11 +10,13 @@ import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function AdmissionsHero() {
+  const tr = useUiTranslation();
   const { t } = useLanguage();
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getHero('ADMISSIONS')
+    api
+      .getHero('ADMISSIONS')
       .then((res) => {
         if (res?.imageUrl && res.imageUrl.trim() !== '') {
           setBgImage(res.imageUrl.trim());
@@ -30,7 +34,7 @@ export function AdmissionsHero() {
         <div className="absolute inset-0 z-0">
           <Image
             src={bgImage}
-            alt="Admissions Hero Background"
+            alt={tr('Admissions Hero Background')}
             fill
             className="object-cover object-center opacity-30 brightness-75"
             priority

@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -27,6 +29,7 @@ import {
 } from 'lucide-react';
 
 function ApplyFormContent() {
+  const tr = useUiTranslation();
   const { t, isLa } = useLanguage();
   const searchParams = useSearchParams();
 
@@ -59,11 +62,26 @@ function ApplyFormContent() {
     if (programParam) {
       const decoded = decodeURIComponent(programParam);
       const lower = decoded.toLowerCase();
-      if (lower.includes('computer') || lower.includes('information') || lower.includes('it') || lower.includes('software')) {
+      if (
+        lower.includes('computer') ||
+        lower.includes('information') ||
+        lower.includes('it') ||
+        lower.includes('software')
+      ) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Computer Science' }));
-      } else if (lower.includes('business') || lower.includes('economic') || lower.includes('admin') || lower.includes('bba')) {
+      } else if (
+        lower.includes('business') ||
+        lower.includes('economic') ||
+        lower.includes('admin') ||
+        lower.includes('bba')
+      ) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Business Administration' }));
-      } else if (lower.includes('communication') || lower.includes('art') || lower.includes('media') || lower.includes('pr')) {
+      } else if (
+        lower.includes('communication') ||
+        lower.includes('art') ||
+        lower.includes('media') ||
+        lower.includes('pr')
+      ) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Communication Arts' }));
       } else if (lower.includes('startup') || lower.includes('innovation')) {
         setFormData((prev) => ({ ...prev, program: 'SIT Global Startup School Program' }));
@@ -73,9 +91,17 @@ function ApplyFormContent() {
     } else if (majorParam) {
       if (majorParam === 'it' || majorParam.includes('tech') || majorParam.includes('cs')) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Computer Science' }));
-      } else if (majorParam.includes('ba') || majorParam.includes('business') || majorParam.includes('econ')) {
+      } else if (
+        majorParam.includes('ba') ||
+        majorParam.includes('business') ||
+        majorParam.includes('econ')
+      ) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Business Administration' }));
-      } else if (majorParam.includes('comm') || majorParam.includes('art') || majorParam.includes('ca')) {
+      } else if (
+        majorParam.includes('comm') ||
+        majorParam.includes('art') ||
+        majorParam.includes('ca')
+      ) {
         setFormData((prev) => ({ ...prev, program: 'Bachelor of Communication Arts' }));
       } else if (majorParam.includes('startup')) {
         setFormData((prev) => ({ ...prev, program: 'SIT Global Startup School Program' }));
@@ -87,7 +113,7 @@ function ApplyFormContent() {
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -118,7 +144,7 @@ function ApplyFormContent() {
       }
     } catch (err) {
       console.error('Document upload failed:', err);
-      alert('Failed to upload file. Please try again.');
+      alert(tr('Failed to upload file. Please try again.'));
     } finally {
       setIsUploadingDoc(false);
       e.target.value = '';
@@ -137,7 +163,8 @@ function ApplyFormContent() {
       const docUrls = uploadedDocs.map((d) => d.url);
       const docNotes =
         uploadedDocs.length > 0
-          ? `\n\nUploaded Documents:\n` + uploadedDocs.map((d) => `- ${d.name}: ${d.url}`).join('\n')
+          ? `\n\nUploaded Documents:\n` +
+            uploadedDocs.map((d) => `- ${d.name}: ${d.url}`).join('\n')
           : '';
 
       await api.submitApplication({
@@ -226,7 +253,7 @@ function ApplyFormContent() {
               <div className="flex items-center gap-2.5 text-white">
                 <CheckCircle2 className="w-5 h-5 text-white shrink-0 stroke-[2.2]" />
                 <span className="font-semibold text-sm sm:text-base tracking-wide">
-                  {t.apply.responseWeeks || 'Response in 2-3 Weeks'}
+                  {t.apply.responseWeeks || tr('Response in 2-3 Weeks')}
                 </span>
               </div>
             </div>
@@ -257,23 +284,24 @@ function ApplyFormContent() {
                 <p className="text-base text-slate-600 leading-relaxed max-w-lg mx-auto">
                   {t.apply.successDescP1}{' '}
                   <strong className="text-[#00001C]">
-                    {formData.firstName} {formData.lastName}
+                    {tr(formData.firstName)} {tr(formData.lastName)}
                   </strong>
                   . {t.apply.successDescP2}{' '}
-                  <strong className="text-[#0400CC]">{formData.program}</strong> {t.apply.successDescP3}
+                  <strong className="text-[#0400CC]">{tr(formData.program)}</strong>{' '}
+                  {t.apply.successDescP3}
                 </p>
                 <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
                   <Link
                     href="/"
                     className="px-8 py-3.5 bg-[#0400CC] text-white font-bold rounded-xl shadow-md hover:bg-[#0000CC] transition-all text-sm cursor-pointer"
                   >
-                    Return to Homepage
+                    {tr('Return to Homepage')}
                   </Link>
                   <Link
                     href="/how-to-apply"
                     className="px-8 py-3.5 border border-slate-300 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all text-sm cursor-pointer"
                   >
-                    View How to Apply Guide
+                    {tr('View How to Apply Guide')}
                   </Link>
                 </div>
               </div>
@@ -312,22 +340,26 @@ function ApplyFormContent() {
                                 isCurrent
                                   ? 'bg-[#0400CC] text-white ring-4 ring-blue-100 scale-105'
                                   : isCompleted
-                                  ? 'bg-[#0400CC] text-white'
-                                  : 'bg-[#E5E7EB] text-[#4A5565]'
+                                    ? 'bg-[#0400CC] text-white'
+                                    : 'bg-[#E5E7EB] text-[#4A5565]'
                               }`}
                             >
-                              {isCompleted ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : step.num}
+                              {isCompleted ? (
+                                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                              ) : (
+                                step.num
+                              )}
                             </div>
                             <span
                               className={`mt-1.5 sm:mt-2 text-[10px] sm:text-xs md:text-sm font-semibold transition-colors duration-200 text-center leading-tight px-0.5 ${
                                 isCurrent
                                   ? 'text-[#0400CC] font-bold'
                                   : isCompleted
-                                  ? 'text-slate-800'
-                                  : 'text-[#4A5565]'
+                                    ? 'text-slate-800'
+                                    : 'text-[#4A5565]'
                               }`}
                             >
-                              {step.label}
+                              {tr(step.label)}
                             </span>
                           </div>
                         );
@@ -341,16 +373,18 @@ function ApplyFormContent() {
                   {/* Step Heading */}
                   <div>
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] tracking-tight">
-                      {currentStep === 1 && (t.apply.personalInfo || 'Personal Information')}
-                      {currentStep === 2 && (t.apply.academicBackground || 'Academic Background')}
-                      {currentStep === 3 && (t.apply.programChoice || 'Program Selection')}
-                      {currentStep === 4 && (t.apply.step4Heading?.replace(/^\d+\.\s*/, '') || 'Document Uploads')}
+                      {currentStep === 1 && (t.apply.personalInfo || tr('Personal Information'))}
+                      {currentStep === 2 &&
+                        (t.apply.academicBackground || tr('Academic Background'))}
+                      {currentStep === 3 && (t.apply.programChoice || tr('Program Selection'))}
+                      {currentStep === 4 &&
+                        (t.apply.step4Heading?.replace(/^\d+\.\s*/, '') || tr('Document Uploads'))}
                     </h2>
                   </div>
 
                   {errorMsg && (
                     <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium">
-                      {errorMsg}
+                      {tr(errorMsg)}
                     </div>
                   )}
 
@@ -466,7 +500,7 @@ function ApplyFormContent() {
                           {/* Gender */}
                           <div className="space-y-2">
                             <label className="text-sm font-bold text-[#00001C] block">
-                              Gender
+                              {tr('Gender')}
                             </label>
                             <select
                               name="gender"
@@ -474,9 +508,9 @@ function ApplyFormContent() {
                               onChange={handleChange}
                               className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm bg-white transition-all"
                             >
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                              <option value="Other">Other / Prefer not to say</option>
+                              <option value="Male">{tr('Male')}</option>
+                              <option value="Female">{tr('Female')}</option>
+                              <option value="Other">{tr('Other / Prefer not to say')}</option>
                             </select>
                           </div>
                         </div>
@@ -554,7 +588,7 @@ function ApplyFormContent() {
                         <div className="space-y-2">
                           <label className="text-sm font-bold text-[#00001C] flex items-center gap-2">
                             <BookOpen className="w-4 h-4 text-[#0400CC]" />
-                            <span>English Proficiency Score / Status</span>
+                            <span>{tr('English Proficiency Score / Status')}</span>
                           </label>
                           <select
                             name="englishScore"
@@ -562,11 +596,17 @@ function ApplyFormContent() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm bg-white transition-all"
                           >
-                            <option value="None / SIT Assessment">None / Will take SIT English Placement Test</option>
-                            <option value="IELTS 6.0+">IELTS 6.0 or higher</option>
-                            <option value="TOEFL iBT 70+">TOEFL iBT 70 or higher</option>
-                            <option value="Duolingo 100+">Duolingo English Test 100+</option>
-                            <option value="Native / Medium of Instruction">Native English Speaker / English High School</option>
+                            <option value="None / SIT Assessment">
+                              {tr('None / Will take SIT English Placement Test')}
+                            </option>
+                            <option value="IELTS 6.0+">{tr('IELTS 6.0 or higher')}</option>
+                            <option value="TOEFL iBT 70+">{tr('TOEFL iBT 70 or higher')}</option>
+                            <option value="Duolingo 100+">
+                              {tr('Duolingo English Test 100+')}
+                            </option>
+                            <option value="Native / Medium of Instruction">
+                              {tr('Native English Speaker / English High School')}
+                            </option>
                           </select>
                         </div>
                       </div>
@@ -586,9 +626,15 @@ function ApplyFormContent() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm bg-white transition-all"
                           >
-                            <option value="Undergraduate">Undergraduate (Bachelor&apos;s Degree)</option>
-                            <option value="Graduate">Graduate (Master&apos;s Degree)</option>
-                            <option value="Certificate">Executive Certificate / Professional Diploma</option>
+                            <option value="Undergraduate">
+                              {tr('Undergraduate (Bachelor&apos;s Degree)')}
+                            </option>
+                            <option value="Graduate">
+                              {tr('Graduate (Master&apos;s Degree)')}
+                            </option>
+                            <option value="Certificate">
+                              {tr('Executive Certificate / Professional Diploma')}
+                            </option>
                           </select>
                         </div>
 
@@ -603,12 +649,24 @@ function ApplyFormContent() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm bg-white font-semibold text-[#0400CC] transition-all"
                           >
-                            <option value="Bachelor of Computer Science">Bachelor of Computer Science (CS)</option>
-                            <option value="Bachelor of Business Administration">Bachelor of Business Administration (BBA)</option>
-                            <option value="Bachelor of Communication Arts">Bachelor of Communication Arts (CA)</option>
-                            <option value="SIT Global Startup School Program">SIT Global Startup School Program</option>
-                            <option value="Master of Information Technology">Master of Information Technology (MIT)</option>
-                            <option value="Master of Business Administration">Master of Business Administration (MBA)</option>
+                            <option value="Bachelor of Computer Science">
+                              {tr('Bachelor of Computer Science (CS)')}
+                            </option>
+                            <option value="Bachelor of Business Administration">
+                              {tr('Bachelor of Business Administration (BBA)')}
+                            </option>
+                            <option value="Bachelor of Communication Arts">
+                              {tr('Bachelor of Communication Arts (CA)')}
+                            </option>
+                            <option value="SIT Global Startup School Program">
+                              {tr('SIT Global Startup School Program')}
+                            </option>
+                            <option value="Master of Information Technology">
+                              {tr('Master of Information Technology (MIT)')}
+                            </option>
+                            <option value="Master of Business Administration">
+                              {tr('Master of Business Administration (MBA)')}
+                            </option>
                           </select>
                         </div>
 
@@ -633,7 +691,9 @@ function ApplyFormContent() {
                     {currentStep === 4 && (
                       <div className="space-y-6">
                         <p className="text-sm text-slate-600">
-                          Upload digital copies of your academic transcripts, national ID/passport, or certificates.
+                          {tr(
+                            'Upload digital copies of your academic transcripts, national ID/passport, or certificates.',
+                          )}
                         </p>
 
                         {/* Upload Dropzone */}
@@ -649,13 +709,11 @@ function ApplyFormContent() {
                             <p className="text-sm font-bold text-[#00001C]">
                               {t.apply.uploadHeading}
                             </p>
-                            <p className="text-xs text-slate-500">
-                              {t.apply.uploadSubtext}
-                            </p>
+                            <p className="text-xs text-slate-500">{t.apply.uploadSubtext}</p>
                           </div>
 
                           <label className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs rounded-xl cursor-pointer transition-all shadow-sm">
-                            <span>Browse Files</span>
+                            <span>{tr('Browse Files')}</span>
                             <input
                               type="file"
                               accept=".pdf,.png,.jpg,.jpeg"
@@ -670,7 +728,8 @@ function ApplyFormContent() {
                         {uploadedDocs.length > 0 && (
                           <div className="space-y-2">
                             <p className="text-xs font-bold text-[#00001C] uppercase tracking-wider">
-                              Uploaded Documents ({uploadedDocs.length})
+                              {tr('Uploaded Documents (')}
+                              {uploadedDocs.length})
                             </p>
                             <div className="space-y-2">
                               {uploadedDocs.map((doc, idx) => (
@@ -681,7 +740,7 @@ function ApplyFormContent() {
                                   <div className="flex items-center gap-3">
                                     <FileText className="w-5 h-5 text-[#0400CC]" />
                                     <span className="text-sm font-semibold text-[#00001C] truncate max-w-[240px] sm:max-w-md">
-                                      {doc.name}
+                                      {tr(doc.name)}
                                     </span>
                                   </div>
                                   <button
@@ -756,9 +815,7 @@ function ApplyFormContent() {
                   <h3 className="text-xl sm:text-2xl font-bold text-[#00001C] mb-2">
                     {t.apply.needHelp}
                   </h3>
-                  <p className="text-sm text-slate-600 mb-4">
-                    {t.apply.needHelpDesc}
-                  </p>
+                  <p className="text-sm text-slate-600 mb-4">{t.apply.needHelpDesc}</p>
                   <div className="flex flex-wrap items-center justify-center gap-3 text-sm font-bold">
                     <a
                       href="mailto:admissions@sit.edu.la"
@@ -784,10 +841,12 @@ function ApplyFormContent() {
         <section className="md:hidden w-full bg-[#0400CC] py-12 px-6 text-white text-center">
           <div className="max-w-md mx-auto space-y-4">
             <h2 className="text-2xl font-extrabold uppercase tracking-tight">
-              Ready to Start Your Journey?
+              {tr('Ready to Start Your Journey?')}
             </h2>
             <p className="text-sm text-blue-100 leading-relaxed font-normal">
-              Apply today and join a community of innovators, leaders, and change-makers at Soutsakan Institute of Technology.
+              {tr(
+                'Apply today and join a community of innovators, leaders, and change-makers at Soutsakan Institute of Technology.',
+              )}
             </p>
             <div className="pt-2 flex flex-col gap-3">
               <button
@@ -797,13 +856,13 @@ function ApplyFormContent() {
                 }}
                 className="w-full py-3.5 bg-white text-[#0400CC] font-bold rounded-xl text-sm shadow-md hover:bg-slate-50 transition-all uppercase tracking-wider"
               >
-                Apply Now
+                {tr('Apply Now')}
               </button>
               <Link
                 href="/request-info"
                 className="w-full py-3.5 border-2 border-white text-white font-bold rounded-xl text-sm hover:bg-white/10 transition-all uppercase tracking-wider block"
               >
-                Request Info
+                {tr('Request Info')}
               </Link>
             </div>
           </div>

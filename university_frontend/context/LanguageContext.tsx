@@ -8,6 +8,7 @@ interface LanguageContextType {
   setLang: (lang: Language) => void;
   t: Translations;
   isLa: boolean;
+  isZh: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
@@ -15,19 +16,20 @@ const LanguageContext = createContext<LanguageContextType>({
   setLang: () => {},
   t: dictionaries.EN,
   isLa: false,
+  isZh: false,
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>('EN');
 
   useEffect(() => {
-    document.documentElement.lang = lang === 'LA' ? 'lo' : 'en';
+    document.documentElement.lang = lang === 'ZH' ? 'zh-CN' : lang === 'LA' ? 'lo' : 'en';
   }, [lang]);
 
   useEffect(() => {
     try {
       const savedLang = localStorage.getItem('sit_lang') as Language | null;
-      if (savedLang === 'EN' || savedLang === 'LA') {
+      if (savedLang === 'EN' || savedLang === 'LA' || savedLang === 'ZH') {
         setLangState(savedLang);
       }
     } catch {
@@ -48,7 +50,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const isLa = lang === 'LA';
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t, isLa }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, isLa, isZh: lang === 'ZH' }}>
       {children}
     </LanguageContext.Provider>
   );

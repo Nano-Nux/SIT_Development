@@ -1,8 +1,19 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useRef } from 'react';
 import { api } from '@/lib/api';
-import { Upload, X, Check, Image as ImageIcon, Loader2, Link2, Copy, AlertCircle } from 'lucide-react';
+import {
+  Upload,
+  X,
+  Check,
+  Image as ImageIcon,
+  Loader2,
+  Link2,
+  Copy,
+  AlertCircle,
+} from 'lucide-react';
 
 interface ImageUploadProps {
   label?: string;
@@ -25,6 +36,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   className = '',
   required = false,
 }) => {
+  const tr = useUiTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,7 +130,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       {label && (
         <div className="flex items-center justify-between">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            {label} {required && <span className="text-red-500">*</span>}
+            {tr(label)} {required && <span className="text-red-500">*</span>}
           </label>
           <button
             type="button"
@@ -126,7 +138,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             className="text-[11px] font-semibold text-[#0400CC] hover:underline flex items-center gap-1 cursor-pointer"
           >
             <Link2 className="w-3 h-3" />
-            {showManualUrl ? 'Hide Direct URL' : 'Edit URL directly'}
+            {tr(showManualUrl ? 'Hide Direct URL' : 'Edit URL directly')}
           </button>
         </div>
       )}
@@ -145,11 +157,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         {value ? (
           /* Preview state */
           <div className="relative group rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 transition-all hover:border-[#0400CC]/40">
-            <div className={`w-full ${getAspectClass()} relative bg-slate-900/5 flex items-center justify-center overflow-hidden`}>
+            <div
+              className={`w-full ${getAspectClass()} relative bg-slate-900/5 flex items-center justify-center overflow-hidden`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={value}
-                alt="Upload preview"
+                alt={tr('Upload preview')}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -166,15 +180,19 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                   className="px-3 py-1.5 bg-white text-[#00001C] rounded-xl text-xs font-bold shadow hover:bg-blue-50 flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-105"
                 >
                   <Upload className="w-3.5 h-3.5 text-[#0400CC]" />
-                  Change
+                  {tr('Change')}
                 </button>
                 <button
                   type="button"
                   onClick={handleCopyUrl}
                   className="px-3 py-1.5 bg-white/90 text-slate-700 rounded-xl text-xs font-bold shadow hover:bg-white flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-105"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? 'Copied' : 'Copy URL'}
+                  {copied ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                  {tr(copied ? 'Copied' : 'Copy URL')}
                 </button>
                 <button
                   type="button"
@@ -182,16 +200,18 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                   className="px-3 py-1.5 bg-red-600 text-white rounded-xl text-xs font-bold shadow hover:bg-red-700 flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-105"
                 >
                   <X className="w-3.5 h-3.5" />
-                  Remove
+                  {tr('Remove')}
                 </button>
               </div>
             </div>
 
             {/* SeaweedFS URL bar */}
             <div className="px-3 py-2 bg-white border-t border-slate-100 flex items-center justify-between text-[11px]">
-              <span className="font-mono text-slate-500 truncate max-w-[280px] sm:max-w-xs">{value}</span>
+              <span className="font-mono text-slate-500 truncate max-w-[280px] sm:max-w-xs">
+                {value}
+              </span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 shrink-0 ml-2">
-                SeaweedFS Stored
+                {tr('SeaweedFS Stored')}
               </span>
             </div>
           </div>
@@ -211,8 +231,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             {isUploading ? (
               <div className="py-4 flex flex-col items-center justify-center gap-2">
                 <Loader2 className="w-8 h-8 text-[#0400CC] animate-spin" />
-                <p className="text-xs font-bold text-[#00001C]">Uploading to SeaweedFS (Full Quality)...</p>
-                <p className="text-[11px] text-slate-400">Preserving original resolution without loss</p>
+                <p className="text-xs font-bold text-[#00001C]">
+                  {tr('Uploading to SeaweedFS (Full Quality)...')}
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  {tr('Preserving original resolution without loss')}
+                </p>
               </div>
             ) : (
               <div className="py-2 flex flex-col items-center justify-center gap-2">
@@ -221,10 +245,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#00001C]">
-                    Click to browse or drag & drop image
+                    {tr('Click to browse or drag & drop image')}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-0.5">
-                    PNG, JPG, WebP, SVG up to 50MB (Raw Original Quality)
+                    {tr('PNG, JPG, WebP, SVG up to 50MB (Raw Original Quality)')}
                   </p>
                 </div>
               </div>
@@ -241,7 +265,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
               type="text"
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
-              placeholder={placeholder || 'https://... or /images/...'}
+              placeholder={tr(placeholder || 'https://... or /images/...')}
               className="w-full pl-8 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-mono bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
             />
             <Link2 className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -252,11 +276,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       {error && (
         <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{error}</span>
+          <span>{tr(error)}</span>
         </div>
       )}
 
-      {helpText && <p className="text-[11px] text-slate-400">{helpText}</p>}
+      {helpText && <p className="text-[11px] text-slate-400">{tr(helpText)}</p>}
     </div>
   );
 };

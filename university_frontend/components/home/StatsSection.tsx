@@ -1,11 +1,14 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { Users, GraduationCap, Building2, Globe2 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function StatsSection() {
+  const tr = useUiTranslation();
   const [statsData, setStatsData] = useState<any>(null);
   const { t } = useLanguage();
 
@@ -13,9 +16,21 @@ export function StatsSection() {
     api.getDashboardStats().then(setStatsData).catch(console.error);
   }, []);
 
-  const totalPrograms = statsData?.overview?.totalPrograms || statsData?.counts?.totalPrograms || statsData?.programs || 4;
-  const totalFaculty = statsData?.overview?.totalFaculty || statsData?.counts?.totalFaculty || statsData?.faculty || 12;
-  const totalPartners = statsData?.overview?.totalPartners || statsData?.counts?.totalPartners || statsData?.partners || 8;
+  const totalPrograms =
+    statsData?.overview?.totalPrograms ||
+    statsData?.counts?.totalPrograms ||
+    statsData?.programs ||
+    4;
+  const totalFaculty =
+    statsData?.overview?.totalFaculty ||
+    statsData?.counts?.totalFaculty ||
+    statsData?.faculty ||
+    12;
+  const totalPartners =
+    statsData?.overview?.totalPartners ||
+    statsData?.counts?.totalPartners ||
+    statsData?.partners ||
+    8;
 
   const stats = [
     {
@@ -59,9 +74,7 @@ export function StatsSection() {
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             {t.home.statsTitle}
           </h2>
-          <p className="mt-4 text-slate-400 text-sm sm:text-base">
-            {t.home.statsDesc}
-          </p>
+          <p className="mt-4 text-slate-400 text-sm sm:text-base">{t.home.statsDesc}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -74,10 +87,10 @@ export function StatsSection() {
                 {item.icon}
               </div>
               <div className="text-3xl sm:text-4xl font-black text-white group-hover:text-[#00B6FF] transition-colors mb-2">
-                {item.number}
+                {tr(item.number)}
               </div>
-              <h3 className="text-base font-bold text-slate-200 mb-2">{item.label}</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+              <h3 className="text-base font-bold text-slate-200 mb-2">{tr(item.label)}</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">{tr(item.desc)}</p>
             </div>
           ))}
         </div>

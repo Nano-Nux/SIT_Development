@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -11,11 +13,8 @@ import { newsApi, NewsArticle } from '@/lib/api';
 import { ImageGallery } from '@/components/ui/ImageGallery';
 import { getGalleryImages } from '@/lib/image-gallery';
 
-export default function NewsDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const resolvedParams = use(params);
@@ -24,7 +23,8 @@ export default function NewsDetailPage({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    newsApi.getNewsArticle(slug)
+    newsApi
+      .getNewsArticle(slug)
       .then(setArticle)
       .catch((err) => {
         console.error('Error fetching news article:', err);
@@ -49,11 +49,36 @@ export default function NewsDetailPage({
     return notFound();
   }
 
-  const title = (isLa && article.titleLa) ? article.titleLa : article.title;
-  const summary = (isLa && article.summaryLa) ? article.summaryLa : article.summary;
-  const content = (isLa && article.contentLa) ? article.contentLa : article.content;
-  const category = (isLa && article.categoryLa) ? article.categoryLa : article.category;
-  const author = (isLa && article.authorLa) ? article.authorLa : article.author;
+  const title =
+    lang === 'ZH'
+      ? article?.titleZh || article.title
+      : isLa && article.titleLa
+        ? article.titleLa
+        : article.title;
+  const summary =
+    lang === 'ZH'
+      ? article?.summaryZh || article.summary
+      : isLa && article.summaryLa
+        ? article.summaryLa
+        : article.summary;
+  const content =
+    lang === 'ZH'
+      ? article?.contentZh || article.content
+      : isLa && article.contentLa
+        ? article.contentLa
+        : article.content;
+  const category =
+    lang === 'ZH'
+      ? article?.categoryZh || article.category
+      : isLa && article.categoryLa
+        ? article.categoryLa
+        : article.category;
+  const author =
+    lang === 'ZH'
+      ? article?.authorZh || article.author
+      : isLa && article.authorLa
+        ? article.authorLa
+        : article.author;
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -72,21 +97,28 @@ export default function NewsDetailPage({
           {/* Article Header */}
           <div className="space-y-4 mb-8">
             <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-[#0400CC] uppercase tracking-wider">
-              {category}
+              {tr(category)}
             </span>
 
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight leading-tight">
-              {title}
+              {tr(title)}
             </h1>
 
             <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-slate-500 pt-2 border-b border-slate-100 pb-6">
               <span className="flex items-center gap-1.5 font-medium">
                 <Calendar className="w-4 h-4 text-[#0400CC]" />
-                {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : t.news.recently}
+                {tr(
+                  article.publishedAt
+                    ? new Date(article.publishedAt).toLocaleDateString(
+                        lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                        { month: 'long', day: 'numeric', year: 'numeric' },
+                      )
+                    : t.news.recently,
+                )}
               </span>
               <span className="flex items-center gap-1.5 font-medium">
                 <User className="w-4 h-4 text-[#00B6FF]" />
-                {author}
+                {tr(author)}
               </span>
               {article.views !== undefined && (
                 <span className="flex items-center gap-1.5 font-medium">
@@ -99,7 +131,7 @@ export default function NewsDetailPage({
 
           <ImageGallery
             images={getGalleryImages(article)}
-            alt={title}
+            alt={tr(title)}
             fit="contain"
             className="rounded-3xl shadow-xl mb-10 border border-slate-200"
           />
@@ -107,13 +139,13 @@ export default function NewsDetailPage({
           {/* Article Summary Lead */}
           {summary && (
             <div className="text-base sm:text-xl font-medium text-slate-700 leading-relaxed mb-8 border-l-4 border-[#0400CC] pl-6 py-1">
-              {summary}
+              {tr(summary)}
             </div>
           )}
 
           {/* Article Full Content */}
           <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed space-y-6 text-slate-700 whitespace-pre-line">
-            {content}
+            {tr(content)}
           </div>
 
           {/* Bottom Actions */}

@@ -1,5 +1,10 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useLanguage } from '@/context/LanguageContext';
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,6 +26,9 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
+  const { lang } = useLanguage();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -101,18 +109,20 @@ export default function AdminDashboardPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-cyan-200 text-xs font-semibold border border-white/10">
             <Image
               src="/assets/sit-logo-icon.png"
-              alt="SIT Emblem"
+              alt={tr('SIT Emblem')}
               width={18}
               height={18}
               className="w-4 h-4 object-contain"
             />
-            <span>SIT University Central CMS</span>
+            <span>{tr('SIT University Central CMS')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Welcome to the Admin Command Dashboard
+            {tr('Welcome to the Admin Command Dashboard')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-200 max-w-xl">
-            Monitor real-time student applications, manage academic catalog updates, and control dynamic content across all university website pages.
+            {tr(
+              'Monitor real-time student applications, manage academic catalog updates, and control dynamic content across all university website pages.',
+            )}
           </p>
         </div>
 
@@ -122,14 +132,14 @@ export default function AdminDashboardPage() {
             className="inline-flex items-center gap-2 bg-white text-[#0400CC] font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md hover:bg-slate-100 transition-all"
           >
             <FileCheck2 className="w-4 h-4" />
-            Review Applications
+            {tr('Review Applications')}
           </Link>
           <Link
             href="/"
             target="_blank"
             className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl border border-white/20 transition-all"
           >
-            <span>Live Site</span>
+            <span>{tr('Live Site')}</span>
             <ExternalLink className="w-4 h-4" />
           </Link>
         </div>
@@ -148,23 +158,25 @@ export default function AdminDashboardPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    {card.title}
+                    {tr(localize(card, 'title'))}
                   </span>
                   <div className="text-3xl font-extrabold text-[#00001C] mt-2 group-hover:text-[#0400CC] transition-colors">
                     {loading ? '...' : card.value}
                   </div>
                   <span className="text-xs text-slate-500 font-medium mt-1 block">
-                    {card.sub}
+                    {tr(card.sub)}
                   </span>
                 </div>
 
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${card.color} flex items-center justify-center text-white shadow-md`}>
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${card.color} flex items-center justify-center text-white shadow-md`}
+                >
                   <Icon className="w-6 h-6" />
                 </div>
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0400CC]">
-                <span>Manage Section</span>
+                <span>{tr('Manage Section')}</span>
                 <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
@@ -179,13 +191,13 @@ export default function AdminDashboardPage() {
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <h2 className="text-base sm:text-lg font-bold text-[#00001C] flex items-center gap-2">
               <FileCheck2 className="w-5 h-5 text-[#0400CC]" />
-              Recent Student Applications
+              {tr('Recent Student Applications')}
             </h2>
             <Link
               href="/admin/applications"
               className="text-xs font-bold text-[#0400CC] hover:underline"
             >
-              View All
+              {tr('View All')}
             </Link>
           </div>
 
@@ -197,30 +209,34 @@ export default function AdminDashboardPage() {
                   className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
-                    <h3 className="text-xs sm:text-sm font-bold text-[#00001C]">
-                      {app.fullName}
-                    </h3>
+                    <h3 className="text-xs sm:text-sm font-bold text-[#00001C]">{app.fullName}</h3>
                     <p className="text-[11px] text-slate-500 font-medium">
                       {app.intendedProgram} • {app.degreeLevel}
                     </p>
                     <p className="text-[11px] text-slate-400">
-                      {new Date(app.createdAt).toLocaleDateString()}
+                      {tr(
+                        new Date(app.createdAt).toLocaleDateString(
+                          lang === 'ZH' ? 'zh-CN' : lang === 'LA' ? 'lo-LA' : 'en-US',
+                        ),
+                      )}
                     </p>
                   </div>
-                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                    app.status === 'PENDING'
-                      ? 'bg-amber-100 text-amber-800'
-                      : app.status === 'ACCEPTED'
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-slate-200 text-slate-700'
-                  }`}>
-                    {app.status}
+                  <span
+                    className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                      app.status === 'PENDING'
+                        ? 'bg-amber-100 text-amber-800'
+                        : app.status === 'ACCEPTED'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {tr(app.status)}
                   </span>
                 </div>
               ))
             ) : (
               <div className="text-center py-8 text-xs text-slate-400">
-                No recent applications received.
+                {tr('No recent applications received.')}
               </div>
             )}
           </div>
@@ -231,13 +247,13 @@ export default function AdminDashboardPage() {
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <h2 className="text-base sm:text-lg font-bold text-[#00001C] flex items-center gap-2">
               <Inbox className="w-5 h-5 text-[#00B6FF]" />
-              Recent Information Inquiries
+              {tr('Recent Information Inquiries')}
             </h2>
             <Link
               href="/admin/request-info"
               className="text-xs font-bold text-[#0400CC] hover:underline"
             >
-              View All
+              {tr('View All')}
             </Link>
           </div>
 
@@ -249,30 +265,34 @@ export default function AdminDashboardPage() {
                   className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
-                    <h3 className="text-xs sm:text-sm font-bold text-[#00001C]">
-                      {inq.fullName}
-                    </h3>
+                    <h3 className="text-xs sm:text-sm font-bold text-[#00001C]">{inq.fullName}</h3>
                     <p className="text-[11px] text-slate-500 font-medium">
                       {inq.email} • {inq.programOfInterest}
                     </p>
                     <p className="text-[11px] text-slate-400">
-                      {new Date(inq.createdAt).toLocaleDateString()}
+                      {tr(
+                        new Date(inq.createdAt).toLocaleDateString(
+                          lang === 'ZH' ? 'zh-CN' : lang === 'LA' ? 'lo-LA' : 'en-US',
+                        ),
+                      )}
                     </p>
                   </div>
-                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                    inq.status === 'PENDING'
-                      ? 'bg-amber-100 text-amber-800'
-                      : inq.status === 'CONTACTED'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-emerald-100 text-emerald-800'
-                  }`}>
-                    {inq.status}
+                  <span
+                    className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                      inq.status === 'PENDING'
+                        ? 'bg-amber-100 text-amber-800'
+                        : inq.status === 'CONTACTED'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-emerald-100 text-emerald-800'
+                    }`}
+                  >
+                    {tr(inq.status)}
                   </span>
                 </div>
               ))
             ) : (
               <div className="text-center py-8 text-xs text-slate-400">
-                No inquiries received yet.
+                {tr('No inquiries received yet.')}
               </div>
             )}
           </div>

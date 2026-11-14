@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { UserCheck, Plus, Edit2, Trash2, Mail } from 'lucide-react';
@@ -7,20 +11,25 @@ import { Modal } from '@/components/ui/Modal';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminProgramDirectorsPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [formData, setFormData] = useState({
     name: '',
     nameLa: '',
+    nameZh: '',
     position: '',
     positionLa: '',
+    positionZh: '',
     programId: '',
     biography: '',
     biographyLa: '',
+    biographyZh: '',
     imageUrl: '',
     email: '',
   });
@@ -51,11 +60,14 @@ export default function AdminProgramDirectorsPage() {
     setFormData({
       name: '',
       nameLa: '',
+      nameZh: '',
       position: '',
       positionLa: '',
+      positionZh: '',
       programId: programs[0]?.id || '',
       biography: '',
       biographyLa: '',
+      biographyZh: '',
       imageUrl: '',
       email: '',
     });
@@ -68,11 +80,14 @@ export default function AdminProgramDirectorsPage() {
     setFormData({
       name: item.name || '',
       nameLa: item.nameLa || '',
+      nameZh: item.nameZh || '',
       position: item.position || '',
       positionLa: item.positionLa || '',
+      positionZh: item.positionZh || '',
       programId: item.programId || '',
       biography: item.biography || '',
       biographyLa: item.biographyLa || '',
+      biographyZh: item.biographyZh || '',
       imageUrl: item.imageUrl || '',
       email: item.email || '',
     });
@@ -80,12 +95,12 @@ export default function AdminProgramDirectorsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this director?')) return;
+    if (!confirm(tr('Are you sure you want to delete this director?'))) return;
     try {
       await api.deleteProgramDirector(id);
       loadData();
     } catch (e) {
-      alert('Failed to delete director');
+      alert(tr('Failed to delete director'));
     }
   };
 
@@ -100,7 +115,7 @@ export default function AdminProgramDirectorsPage() {
       setModalOpen(false);
       loadData();
     } catch (e) {
-      alert('Failed to save program director');
+      alert(tr('Failed to save program director'));
     }
   };
 
@@ -110,10 +125,12 @@ export default function AdminProgramDirectorsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
             <UserCheck className="w-7 h-7 text-[#0400CC]" />
-            Program Directors Manager
+            {tr('Program Directors Manager')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Assign directors and academic lead researchers to specific degree programs in English and Lao.
+            {tr(
+              'Assign directors and academic lead researchers to specific degree programs in English, Lao, and Chinese.',
+            )}
           </p>
         </div>
         <button
@@ -121,13 +138,15 @@ export default function AdminProgramDirectorsPage() {
           className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Add Program Director
+          {tr('Add Program Director')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-400">Loading directors...</div>
+          <div className="col-span-full py-12 text-center text-slate-400">
+            {tr('Loading directors...')}
+          </div>
         ) : items.length > 0 ? (
           items.map((item, idx) => (
             <div
@@ -137,24 +156,34 @@ export default function AdminProgramDirectorsPage() {
               <div>
                 <div className="aspect-[4/3] bg-slate-100 relative">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Photo</div>
+                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                      {tr('No Photo')}
+                    </div>
                   )}
                   {item.program && (
                     <span className="absolute top-2 left-2 bg-[#0400CC] text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                      {item.program.name}
+                      {tr(localize(item.program, 'name'))}
                     </span>
                   )}
                 </div>
 
                 <div className="p-5 space-y-2">
-                  <h3 className="text-base font-bold text-[#00001C]">{item.name}</h3>
-                  {item.nameLa && (
-                    <p className="text-xs font-bold text-[#0400CC]">{item.nameLa}</p>
-                  )}
-                  <p className="text-xs font-semibold text-[#0400CC]">{item.position}</p>
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{item.biography}</p>
+                  <h3 className="text-base font-bold text-[#00001C]">
+                    {tr(localize(item, 'name'))}
+                  </h3>
+                  {item.nameLa && <p className="text-xs font-bold text-[#0400CC]">{item.nameLa}</p>}
+                  <p className="text-xs font-semibold text-[#0400CC]">
+                    {tr(localize(item, 'position'))}
+                  </p>
+                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {tr(localize(item, 'biography'))}
+                  </p>
                   {item.email && (
                     <p className="text-xs text-slate-400 flex items-center gap-1 pt-1">
                       <Mail className="w-3.5 h-3.5 text-[#0400CC]" /> {item.email}
@@ -165,6 +194,7 @@ export default function AdminProgramDirectorsPage() {
 
               <div className="p-5 pt-0 border-t border-slate-100 flex items-center justify-end gap-2 mt-4">
                 <button
+                  aria-label={tr('Edit')}
                   onClick={() => handleOpenEdit(item)}
                   className="p-2 rounded-lg text-slate-500 hover:text-[#0400CC] hover:bg-slate-50 cursor-pointer"
                 >
@@ -180,14 +210,16 @@ export default function AdminProgramDirectorsPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-slate-400">No program directors found.</div>
+          <div className="col-span-full text-center py-12 text-slate-400">
+            {tr('No program directors found.')}
+          </div>
         )}
       </div>
 
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? 'Edit Program Director' : 'Add Program Director'}
+        title={tr(editingItem ? 'Edit Program Director' : tr('Add Program Director'))}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Language Switcher Tabs */}
@@ -201,7 +233,7 @@ export default function AdminProgramDirectorsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇬🇧 English
+              {tr('🇬🇧 English')}
             </button>
             <button
               type="button"
@@ -212,51 +244,107 @@ export default function AdminProgramDirectorsPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇱🇦 ພາສາລາວ (Lao)
+              {tr('🇱🇦 ພາສາລາວ (Lao)')}
               {formData.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveLangTab('zh')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLangTab === 'zh'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-[#00001C]'
+              }`}
+            >
+              {tr('中文 (Chinese)')}
+              {formData.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
 
-          {activeLangTab === 'en' ? (
+          {activeLangTab === 'zh' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Chinese Full Name')}
+                </label>
+                <input
+                  type="text"
+                  value={formData.nameZh}
+                  onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
+                  placeholder="请输入中文名称"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Chinese Position')}
+                </label>
+                <input
+                  type="text"
+                  value={formData.positionZh}
+                  onChange={(e) => setFormData({ ...formData, positionZh: e.target.value })}
+                  placeholder="请输入中文职位"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Chinese Biography')}
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.biographyZh}
+                  onChange={(e) => setFormData({ ...formData, biographyZh: e.target.value })}
+                  placeholder="请输入中文个人简介"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+            </div>
+          ) : activeLangTab === 'en' ? (
             <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Director Full Name (EN) <span className="text-red-500">*</span>
+                  {tr('Director Full Name (EN) ')}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Dr. Sarah Jenkins"
+                  placeholder={tr('e.g. Dr. Sarah Jenkins')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Title / Position (EN) <span className="text-red-500">*</span>
+                  {tr('Title / Position (EN) ')}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.position}
                   onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                  placeholder="e.g. Program Director & Associate Professor"
+                  placeholder={tr('e.g. Program Director & Associate Professor')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Biography (EN) <span className="text-red-500">*</span>
+                  {tr('Biography (EN) ')}
+                  <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={formData.biography}
                   onChange={(e) => setFormData({ ...formData, biography: e.target.value })}
-                  placeholder="Write director overview and expertise..."
+                  placeholder={tr('Write director overview and expertise...')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -265,7 +353,7 @@ export default function AdminProgramDirectorsPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຊື່ ແລະ ນາມສະກຸນ (Lao Full Name)
+                  {tr('ຊື່ ແລະ ນາມສະກຸນ (Lao Full Name)')}
                 </label>
                 <input
                   type="text"
@@ -278,7 +366,7 @@ export default function AdminProgramDirectorsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຕຳແໜ່ງ (Lao Position)
+                  {tr('ຕຳແໜ່ງ (Lao Position)')}
                 </label>
                 <input
                   type="text"
@@ -291,7 +379,7 @@ export default function AdminProgramDirectorsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຊີວະປະຫວັດຫຍໍ້ (Lao Biography)
+                  {tr('ຊີວະປະຫວັດຫຍໍ້ (Lao Biography)')}
                 </label>
                 <textarea
                   rows={3}
@@ -306,7 +394,7 @@ export default function AdminProgramDirectorsPage() {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Assigned Program
+              {tr('Assigned Program')}
             </label>
             <select
               value={formData.programId}
@@ -315,7 +403,7 @@ export default function AdminProgramDirectorsPage() {
             >
               {programs.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name}
+                  {tr(localize(p, 'name'))}
                 </option>
               ))}
             </select>
@@ -323,7 +411,7 @@ export default function AdminProgramDirectorsPage() {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Email
+              {tr('Email')}
             </label>
             <input
               type="email"
@@ -334,11 +422,11 @@ export default function AdminProgramDirectorsPage() {
           </div>
 
           <ImageUpload
-            label="Director Photo (SeaweedFS)"
+            label={tr('Director Photo (SeaweedFS)')}
             value={formData.imageUrl}
             onChange={(url) => setFormData({ ...formData, imageUrl: url })}
             placeholder="/images/home_desktopview/img_6.jpg"
-            helpText="Full resolution upload stored in SeaweedFS bucket."
+            helpText={tr('Full resolution upload stored in SeaweedFS bucket.')}
             aspectRatio="portrait"
           />
 
@@ -348,13 +436,13 @@ export default function AdminProgramDirectorsPage() {
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
-              Cancel
+              {tr('Cancel')}
             </button>
             <button
               type="submit"
               className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer"
             >
-              Save Director
+              {tr('Save Director')}
             </button>
           </div>
         </form>

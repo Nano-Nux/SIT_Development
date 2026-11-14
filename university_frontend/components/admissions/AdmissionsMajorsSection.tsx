@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,18 +14,22 @@ interface MajorItem {
   id?: string;
   name?: string;
   nameLa?: string;
+  nameZh?: string;
   title?: string;
   titleLa?: string;
+  titleZh?: string;
   slug?: string;
   externalUrl?: string | null;
   description?: string;
   descriptionLa?: string;
+  descriptionZh?: string;
   imageUrl?: string;
   heroImage?: string;
   programs?: any[];
 }
 
 export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorItem[] }) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [majors, setMajors] = useState<MajorItem[]>(initialData || []);
@@ -31,19 +37,28 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
   useEffect(() => {
     if (!initialData || initialData.length === 0) {
       // First try to fetch departments, fallback to majors
-      api.getDepartments().then((deptRes) => {
-        if (deptRes && deptRes.length > 0) {
-          setMajors(deptRes);
-        } else {
-          api.getMajors().then((mRes) => {
-            if (mRes && mRes.length > 0) setMajors(mRes);
-          }).catch(console.error);
-        }
-      }).catch(() => {
-        api.getMajors().then((mRes) => {
-          if (mRes && mRes.length > 0) setMajors(mRes);
-        }).catch(console.error);
-      });
+      api
+        .getDepartments()
+        .then((deptRes) => {
+          if (deptRes && deptRes.length > 0) {
+            setMajors(deptRes);
+          } else {
+            api
+              .getMajors()
+              .then((mRes) => {
+                if (mRes && mRes.length > 0) setMajors(mRes);
+              })
+              .catch(console.error);
+          }
+        })
+        .catch(() => {
+          api
+            .getMajors()
+            .then((mRes) => {
+              if (mRes && mRes.length > 0) setMajors(mRes);
+            })
+            .catch(console.error);
+        });
     }
   }, [initialData]);
 
@@ -53,36 +68,52 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
       id: 'it',
       name: 'Information Technology',
       nameLa: 'ເຕັກໂນໂລຊີຂໍ້ມູນຂ່າວສານ',
+      nameZh: '信息技术',
       slug: 'it',
-      description: 'Master software engineering, cloud architecture, AI integration, cybersecurity, and full-stack development with hands-on specialized lab environments.',
-      descriptionLa: 'ສຶກສາການພັດທະນາຊອບແວ, ສະຖາປັດຕະຍະກຳຄລາວ, ປັນຍາປະດິດ, ຄວາມປອດໄພທາງໄຊເບີ ພ້ອມຫ້ອງທົດລອງສະເພາະດ້ານ.',
+      description:
+        'Master software engineering, cloud architecture, AI integration, cybersecurity, and full-stack development with hands-on specialized lab environments.',
+      descriptionLa:
+        'ສຶກສາການພັດທະນາຊອບແວ, ສະຖາປັດຕະຍະກຳຄລາວ, ປັນຍາປະດິດ, ຄວາມປອດໄພທາງໄຊເບີ ພ້ອມຫ້ອງທົດລອງສະເພາະດ້ານ.',
+      descriptionZh: '在专业实验环境中实践软件工程、云架构、人工智能集成、网络安全与全栈开发。',
       imageUrl: '/images/home_desktopview/img_2.jpg',
     },
     {
       id: 'ba-economics',
       name: 'Business Administration & Economics',
       nameLa: 'ບໍລິຫານທຸລະກິດ ແລະ ເສດຖະສາດ',
+      nameZh: '工商管理与经济',
       slug: 'ba-economics',
-      description: 'Gain strategic business leadership, international financial mastery, entrepreneurial acumen, and econometric decision analysis skills.',
-      descriptionLa: 'ສ້າງຄວາມເປັນຜູ້ນຳທຸລະກິດຍຸດທະສາດ, ການເງິນສາກົນ, ຄວາມເປັນຜູ້ປະກອບການ ແລະ ການວິເຄາະເສດຖະສາດ.',
+      description:
+        'Gain strategic business leadership, international financial mastery, entrepreneurial acumen, and econometric decision analysis skills.',
+      descriptionLa:
+        'ສ້າງຄວາມເປັນຜູ້ນຳທຸລະກິດຍຸດທະສາດ, ການເງິນສາກົນ, ຄວາມເປັນຜູ້ປະກອບການ ແລະ ການວິເຄາະເສດຖະສາດ.',
+      descriptionZh: '培养战略商业领导力、国际金融能力、创业思维与计量经济决策分析技能。',
       imageUrl: '/images/home_desktopview/img_3.jpg',
     },
     {
       id: 'communication-arts',
       name: 'Communication Arts',
       nameLa: 'ນິເທດສາດ ແລະ ສິລະປະການສື່ສານ',
+      nameZh: '传播艺术',
       slug: 'communication-arts',
-      description: 'Excel in digital media production, corporate PR storytelling, broadcast journalism, multimedia design, and strategic brand management.',
-      descriptionLa: 'ໂດດເດັ່ນໃນການຜະລິດສື່ດິຈິທັລ, ການເລົ່າເລື່ອງປະຊາສຳພັນແບຣນ, ວາລະສານກະຈາຍສຽງ ແລະ ການອອກແບບມັລຕິມີເດຍ.',
+      description:
+        'Excel in digital media production, corporate PR storytelling, broadcast journalism, multimedia design, and strategic brand management.',
+      descriptionLa:
+        'ໂດດເດັ່ນໃນການຜະລິດສື່ດິຈິທັລ, ການເລົ່າເລື່ອງປະຊາສຳພັນແບຣນ, ວາລະສານກະຈາຍສຽງ ແລະ ການອອກແບບມັລຕິມີເດຍ.',
+      descriptionZh: '学习数字媒体制作、企业公关叙事、广播新闻、多媒体设计和战略品牌管理。',
       imageUrl: '/images/home_desktopview/img_4.jpg',
     },
     {
       id: 'startup-innovation',
       name: 'Global Startup & Tech Innovation',
       nameLa: 'ໂຄງການຜູ້ປະກອບການ ແລະ ນະວັດຕະກຳເທັກໂນໂລຊີ',
+      nameZh: '全球创业与科技创新',
       slug: 'it',
-      description: 'An elite accelerator curriculum designed for future founders, tech entrepreneurs, venture builders, and global product innovators.',
-      descriptionLa: 'ຫຼັກສູດບົ່ມເພາະສຳລັບຜູ້ກໍ່ຕັ້ງທຸລະກິດລຸ້ນໃໝ່, ຜູ້ປະກອບການເທັກໂນໂລຊີ ແລະ ນັກສ້າງນະວັດຕະກຳລະດັບສາກົນ.',
+      description:
+        'An elite accelerator curriculum designed for future founders, tech entrepreneurs, venture builders, and global product innovators.',
+      descriptionLa:
+        'ຫຼັກສູດບົ່ມເພາະສຳລັບຜູ້ກໍ່ຕັ້ງທຸລະກິດລຸ້ນໃໝ່, ຜູ້ປະກອບການເທັກໂນໂລຊີ ແລະ ນັກສ້າງນະວັດຕະກຳລະດັບສາກົນ.',
+      descriptionZh: '专为未来创始人、科技创业者、企业孵化者和全球产品创新者设计的精英加速课程。',
       imageUrl: '/images/home_desktopview/img_5.jpg',
     },
   ];
@@ -95,7 +126,7 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
       <div className="absolute -right-20 bottom-0 w-[600px] h-[600px] pointer-events-none opacity-5">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern Motif"
+          alt={tr('Lao Pattern Motif')}
           fill
           className="object-contain"
         />
@@ -103,7 +134,7 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
       <div className="absolute -left-20 top-0 w-[400px] h-[400px] pointer-events-none opacity-5">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern Motif"
+          alt={tr('Lao Pattern Motif')}
           fill
           className="object-contain rotate-180"
         />
@@ -117,13 +148,14 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
               <Sparkles className="w-3.5 h-3.5 text-[#0400CC]" />
               <span>{t.admissions.ourMajorsSubtitle}</span>
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
               {isLa ? (
                 t.admissions.ourMajors
               ) : (
                 <>
-                  OUR <span className="text-[#0400CC]">MAJORS</span>
+                  {tr('OUR ')}
+                  <span className="text-[#0400CC]">{tr('MAJORS')}</span>
                 </>
               )}
             </h2>
@@ -145,26 +177,35 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
         {/* Dynamic Major Columns (Major Card Box + Separate View to Apply Button Outside) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {displayList.map((major, idx) => {
-            const title = (isLa && (major.nameLa || major.titleLa))
-              ? (major.nameLa || major.titleLa)
-              : (major.name || major.title);
-            const description = (isLa && major.descriptionLa)
-              ? major.descriptionLa
-              : major.description;
-            
+            const title =
+              lang === 'ZH'
+                ? major?.nameZh || major?.titleZh || major.name || major.title
+                : isLa && (major.nameLa || major.titleLa)
+                  ? major.nameLa || major.titleLa
+                  : major.name || major.title;
+            const description =
+              lang === 'ZH'
+                ? major?.descriptionZh || major.description
+                : isLa && major.descriptionLa
+                  ? major.descriptionLa
+                  : major.description;
+
             const rawSlug = major.slug || '';
             const deptSlug =
               rawSlug === 'information-technology' || rawSlug === 'it'
                 ? 'it'
                 : rawSlug === 'business-administration-economics' || rawSlug === 'ba-economics'
-                ? 'ba-economics'
-                : rawSlug === 'communication-arts'
-                ? 'communication-arts'
-                : rawSlug || 'it';
+                  ? 'ba-economics'
+                  : rawSlug === 'communication-arts'
+                    ? 'communication-arts'
+                    : rawSlug || 'it';
 
             const programParam = encodeURIComponent(major.name || major.title || '');
             const applyLink = `/apply?major=${deptSlug}${programParam ? `&program=${programParam}` : ''}`;
-            const detailLink = getDepartmentHref({ slug: deptSlug, externalUrl: major.externalUrl });
+            const detailLink = getDepartmentHref({
+              slug: deptSlug,
+              externalUrl: major.externalUrl,
+            });
 
             const imgUrl =
               major.imageUrl ||
@@ -172,10 +213,7 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
               `/images/home_desktopview/img_${(idx % 4) + 2}.jpg`;
 
             return (
-              <div
-                key={major.id || idx}
-                className="flex flex-col space-y-4"
-              >
+              <div key={major.id || idx} className="flex flex-col space-y-4">
                 {/* 1. Major Card Box (Linked to Department Details) */}
                 <Link
                   href={detailLink}
@@ -185,7 +223,7 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
                   <div className="absolute inset-0 z-0">
                     <Image
                       src={imgUrl}
-                      alt={title || 'SIT Major'}
+                      alt={tr(title || 'SIT Major')}
                       fill
                       className="object-cover object-center opacity-45 group-hover:opacity-65 group-hover:scale-110 transition-all duration-700"
                     />
@@ -198,16 +236,16 @@ export function AdmissionsMajorsSection({ initialData }: { initialData?: MajorIt
                   <div className="relative z-20 space-y-2.5">
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/15 backdrop-blur-xs text-[#00B6FF] text-[11px] font-bold tracking-wider uppercase">
                       <GraduationCap className="w-3.5 h-3.5 text-[#00B6FF]" />
-                      <span>{isLa ? 'ສາຂາວິຊາ' : 'MAJOR'}</span>
+                      <span>{tr(isLa ? 'ສາຂາວິຊາ' : tr('MAJOR'))}</span>
                     </div>
 
                     <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug group-hover:text-[#00B6FF] transition-colors line-clamp-2">
-                      {title}
+                      {tr(title)}
                     </h3>
 
                     {description && (
                       <p className="text-xs sm:text-sm text-slate-300 line-clamp-3 font-normal leading-relaxed">
-                        {description}
+                        {tr(description)}
                       </p>
                     )}
                   </div>

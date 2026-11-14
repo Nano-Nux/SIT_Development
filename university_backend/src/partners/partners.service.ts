@@ -27,11 +27,13 @@ export class PartnersService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         type: data.type ? data.type.toUpperCase() : 'UNIVERSITY',
         logoUrl: data.logoUrl,
         websiteUrl: data.websiteUrl,
         country: data.country,
         countryLa: data.countryLa,
+        countryZh: data.countryZh,
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
       },
@@ -45,13 +47,16 @@ export class PartnersService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         type: data.type ? data.type.toUpperCase() : undefined,
         logoUrl: data.logoUrl,
         websiteUrl: data.websiteUrl,
         country: data.country,
         countryLa: data.countryLa,
+        countryZh: data.countryZh,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -64,7 +69,7 @@ export class PartnersService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.partner.update({
           where: { id: item.id },
           data: { order: item.order },

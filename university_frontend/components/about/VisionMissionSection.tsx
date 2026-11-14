@@ -1,7 +1,22 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
-import { Eye, Target, Lightbulb, Users, Award, Heart, Globe, TrendingUp, Shield, Rocket, Sparkles, BookOpen } from 'lucide-react';
+import {
+  Eye,
+  Target,
+  Lightbulb,
+  Users,
+  Award,
+  Heart,
+  Globe,
+  TrendingUp,
+  Shield,
+  Rocket,
+  Sparkles,
+  BookOpen,
+} from 'lucide-react';
 import { api, VisionMissionInfo, CoreValue } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -56,6 +71,7 @@ const defaultValues = [
 ];
 
 export function VisionMissionSection({ data }: VisionMissionProps) {
+  const tr = useUiTranslation();
   const [vmData, setVmData] = useState<VisionMissionInfo | null>(data || null);
   const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
   const { lang, t } = useLanguage();
@@ -63,17 +79,33 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
 
   useEffect(() => {
     if (!data) {
-      api.getVisionMission().then((res) => {
-        if (res) setVmData(res);
-      }).catch(console.error);
+      api
+        .getVisionMission()
+        .then((res) => {
+          if (res) setVmData(res);
+        })
+        .catch(console.error);
     }
-    api.getCoreValues().then((res) => {
-      if (res && res.length > 0) setCoreValues(res);
-    }).catch(console.error);
+    api
+      .getCoreValues()
+      .then((res) => {
+        if (res && res.length > 0) setCoreValues(res);
+      })
+      .catch(console.error);
   }, [data]);
 
-  const vision = (isLa && vmData?.visionLa) ? vmData.visionLa : (vmData?.vision || t.about.visionText);
-  const mission = (isLa && vmData?.missionLa) ? vmData.missionLa : (vmData?.mission || '');
+  const vision =
+    lang === 'ZH'
+      ? vmData?.visionZh || vmData?.vision || t.about.visionText
+      : isLa && vmData?.visionLa
+        ? vmData.visionLa
+        : vmData?.vision || t.about.visionText;
+  const mission =
+    lang === 'ZH'
+      ? vmData?.missionZh || vmData?.mission || ''
+      : isLa && vmData?.missionLa
+        ? vmData.missionLa
+        : vmData?.mission || '';
 
   return (
     <section id="vision-mission" className="w-full bg-white py-20 sm:py-28">
@@ -90,7 +122,8 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
             </div>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-            Vision & <span className="text-[#0400CC]">Mission</span>
+            {tr('Vision & ')}
+            <span className="text-[#0400CC]">{tr('Mission')}</span>
           </h2>
           <p className="mt-3 text-base sm:text-lg text-[#4A5565] max-w-xl">
             {t.about.visionMissionSubtitle}
@@ -110,9 +143,7 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
                 {t.about.ourVision}
               </h3>
-              <p className="text-base sm:text-lg text-slate-200 leading-relaxed">
-                {vision}
-              </p>
+              <p className="text-base sm:text-lg text-slate-200 leading-relaxed">{tr(vision)}</p>
             </div>
           </div>
 
@@ -126,9 +157,7 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
                 {t.about.ourMission}
               </h3>
               {mission ? (
-                <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
-                  {mission}
-                </p>
+                <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">{tr(mission)}</p>
               ) : (
                 <ul className="space-y-4 text-base sm:text-lg text-[#4A5565] leading-relaxed">
                   <li className="flex items-start gap-3">
@@ -161,9 +190,21 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {coreValues.length > 0
             ? coreValues.map((val, idx) => {
-                const title = (isLa && val.titleLa) ? val.titleLa : val.title;
-                const desc = (isLa && val.descriptionLa) ? val.descriptionLa : val.description;
-                const IconComp = (val.icon && iconComponentMap[val.icon]) || defaultValues[idx % defaultValues.length].icon;
+                const title =
+                  lang === 'ZH'
+                    ? val?.titleZh || val.title
+                    : isLa && val.titleLa
+                      ? val.titleLa
+                      : val.title;
+                const desc =
+                  lang === 'ZH'
+                    ? val?.descriptionZh || val.description
+                    : isLa && val.descriptionLa
+                      ? val.descriptionLa
+                      : val.description;
+                const IconComp =
+                  (val.icon && iconComponentMap[val.icon]) ||
+                  defaultValues[idx % defaultValues.length].icon;
 
                 return (
                   <div
@@ -173,11 +214,9 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
                     <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center text-[#0400CC] group-hover:bg-[#0400CC] group-hover:text-white transition-colors duration-300">
                       <IconComp className="w-7 h-7" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#00001C] leading-snug">
-                      {title}
-                    </h3>
+                    <h3 className="text-xl font-bold text-[#00001C] leading-snug">{tr(title)}</h3>
                     <p className="text-sm sm:text-base text-[#4A5565] leading-relaxed">
-                      {desc}
+                      {tr(desc)}
                     </p>
                   </div>
                 );
@@ -195,11 +234,9 @@ export function VisionMissionSection({ data }: VisionMissionProps) {
                     <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center text-[#0400CC] group-hover:bg-[#0400CC] group-hover:text-white transition-colors duration-300">
                       <IconComp className="w-7 h-7" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#00001C] leading-snug">
-                      {title}
-                    </h3>
+                    <h3 className="text-xl font-bold text-[#00001C] leading-snug">{tr(title)}</h3>
                     <p className="text-sm sm:text-base text-[#4A5565] leading-relaxed">
-                      {desc}
+                      {tr(desc)}
                     </p>
                   </div>
                 );

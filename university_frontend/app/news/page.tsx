@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
@@ -12,6 +14,7 @@ import { ImageGallery } from '@/components/ui/ImageGallery';
 import { getGalleryImages } from '@/lib/image-gallery';
 
 export default function NewsPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [news, setNews] = useState<NewsArticle[]>([]);
@@ -55,9 +58,7 @@ export default function NewsPage() {
               <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
                 {t.news.title}
               </h1>
-              <p className="text-sm sm:text-base text-slate-300">
-                {t.news.subtitle}
-              </p>
+              <p className="text-sm sm:text-base text-slate-300">{t.news.subtitle}</p>
             </div>
           </div>
         </section>
@@ -76,7 +77,7 @@ export default function NewsPage() {
                       : 'bg-white text-slate-600 border border-slate-200 hover:border-[#0400CC]/40'
                   }`}
                 >
-                  {cat}
+                  {tr(cat)}
                 </button>
               ))}
             </div>
@@ -102,9 +103,24 @@ export default function NewsPage() {
             ) : news.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {news.map((item, idx) => {
-                  const title = (isLa && item.titleLa) ? item.titleLa : item.title;
-                  const summary = (isLa && item.summaryLa) ? item.summaryLa : item.summary;
-                  const categoryName = (isLa && item.categoryLa) ? item.categoryLa : item.category;
+                  const title =
+                    lang === 'ZH'
+                      ? item?.titleZh || item.title
+                      : isLa && item.titleLa
+                        ? item.titleLa
+                        : item.title;
+                  const summary =
+                    lang === 'ZH'
+                      ? item?.summaryZh || item.summary
+                      : isLa && item.summaryLa
+                        ? item.summaryLa
+                        : item.summary;
+                  const categoryName =
+                    lang === 'ZH'
+                      ? item?.categoryZh || item.category
+                      : isLa && item.categoryLa
+                        ? item.categoryLa
+                        : item.category;
 
                   return (
                     <article
@@ -114,12 +130,15 @@ export default function NewsPage() {
                       <div>
                         <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                           <ImageGallery
-                            images={getGalleryImages(item, `/images/home_desktopview/img_${(idx % 3) + 1}.jpg`)}
-                            alt={title}
+                            images={getGalleryImages(
+                              item,
+                              `/images/home_desktopview/img_${(idx % 3) + 1}.jpg`,
+                            )}
+                            alt={tr(title)}
                             aspectRatio="aspect-[16/10]"
                           />
                           <span className="absolute top-3 left-3 bg-[#0400CC] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                            {categoryName}
+                            {tr(categoryName)}
                           </span>
                         </div>
 
@@ -127,18 +146,23 @@ export default function NewsPage() {
                           <div className="flex items-center gap-3 text-xs text-slate-400 font-medium">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3.5 h-3.5 text-[#0400CC]" />
-                              {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : t.news.recently}
+                              {tr(
+                                item.publishedAt
+                                  ? new Date(item.publishedAt).toLocaleDateString(
+                                      lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                                      { month: 'short', day: 'numeric', year: 'numeric' },
+                                    )
+                                  : t.news.recently,
+                              )}
                             </span>
                           </div>
 
                           <h3 className="text-lg sm:text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                            <Link href={`/news/${item.slug}`}>
-                              {title}
-                            </Link>
+                            <Link href={`/news/${item.slug}`}>{tr(title)}</Link>
                           </h3>
 
                           <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                            {summary}
+                            {tr(summary)}
                           </p>
                         </div>
                       </div>
@@ -157,9 +181,7 @@ export default function NewsPage() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-16 text-slate-500">
-                {t.news.noArticlesFound}
-              </div>
+              <div className="text-center py-16 text-slate-500">{t.news.noArticlesFound}</div>
             )}
           </div>
         </section>

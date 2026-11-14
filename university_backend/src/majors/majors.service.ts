@@ -25,14 +25,21 @@ export class MajorsService {
   }
 
   async create(data: any) {
-    const slug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const slug =
+      data.slug ||
+      data.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
     return this.prisma.major.create({
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         slug,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         imageUrl: data.imageUrl,
         order: data.order !== undefined ? Number(data.order) : 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
@@ -47,12 +54,15 @@ export class MajorsService {
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         slug: data.slug,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         imageUrl: data.imageUrl,
         order: data.order !== undefined ? Number(data.order) : undefined,
-        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        isActive:
+          data.isActive !== undefined ? Boolean(data.isActive) : undefined,
       },
     });
   }
@@ -65,7 +75,7 @@ export class MajorsService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.major.update({
           where: { id: item.id },
           data: { order: item.order },

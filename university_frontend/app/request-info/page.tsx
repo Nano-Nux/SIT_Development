@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -27,7 +29,8 @@ import {
 } from 'lucide-react';
 
 export default function RequestInfoPage() {
-  const { t, isLa } = useLanguage();
+  const tr = useUiTranslation();
+  const { lang, t, isLa } = useLanguage();
 
   const [heroData, setHeroData] = useState<Hero | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -73,23 +76,35 @@ export default function RequestInfoPage() {
     { id: 'Program Information', label: t.requestInfo.topicProgram || 'Program Information' },
     { id: 'Campus Tours', label: t.requestInfo.topicCampus || 'Campus Tours' },
     { id: 'Tuition & Fees', label: t.requestInfo.topicTuition || 'Tuition & Fees' },
-    { id: 'Scholarships & Financial Aid', label: t.requestInfo.topicScholarships || 'Scholarships & Financial Aid' },
-    { id: 'Student Life & Activities', label: t.requestInfo.topicStudentLife || 'Student Life & Activities' },
+    {
+      id: 'Scholarships & Financial Aid',
+      label: t.requestInfo.topicScholarships || 'Scholarships & Financial Aid',
+    },
+    {
+      id: 'Student Life & Activities',
+      label: t.requestInfo.topicStudentLife || 'Student Life & Activities',
+    },
     { id: 'Housing Options', label: t.requestInfo.topicHousing || 'Housing Options' },
-    { id: 'International Student Support', label: t.requestInfo.topicInternational || 'International Student Support' },
+    {
+      id: 'International Student Support',
+      label: t.requestInfo.topicInternational || 'International Student Support',
+    },
     { id: 'Career Services', label: t.requestInfo.topicCareer || 'Career Services' },
-    { id: 'Research Opportunities', label: t.requestInfo.topicResearch || 'Research Opportunities' },
+    {
+      id: 'Research Opportunities',
+      label: t.requestInfo.topicResearch || 'Research Opportunities',
+    },
     { id: 'Alumni Network', label: t.requestInfo.topicAlumni || 'Alumni Network' },
   ];
 
   const toggleInterest = (topicId: string) => {
     setSelectedInterests((prev) =>
-      prev.includes(topicId) ? prev.filter((t) => t !== topicId) : [...prev, topicId]
+      prev.includes(topicId) ? prev.filter((t) => t !== topicId) : [...prev, topicId],
     );
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
@@ -140,8 +155,14 @@ export default function RequestInfoPage() {
     }
   };
 
-  const heroTitle = (isLa && heroData?.titleLa) || heroData?.title || t.requestInfo.heroTitle;
-  const heroDesc = (isLa && heroData?.descriptionLa) || heroData?.description || t.requestInfo.heroDesc;
+  const heroTitle =
+    (lang === 'ZH' ? heroData?.titleZh : isLa && heroData?.titleLa) ||
+    heroData?.title ||
+    t.requestInfo.heroTitle;
+  const heroDesc =
+    (lang === 'ZH' ? heroData?.descriptionZh : isLa && heroData?.descriptionLa) ||
+    heroData?.description ||
+    t.requestInfo.heroDesc;
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-[#00001C] font-sans antialiased selection:bg-[#0400CC] selection:text-white">
@@ -154,7 +175,7 @@ export default function RequestInfoPage() {
           <div className="absolute inset-0 z-0 pointer-events-none">
             <Image
               src="/images/requestinfo_desktopview/img_1.jpg"
-              alt="SIT Graduation"
+              alt={tr('SIT Graduation')}
               fill
               className="object-cover object-center opacity-35 brightness-90 mix-blend-luminosity"
               priority
@@ -175,12 +196,12 @@ export default function RequestInfoPage() {
 
               {/* Page Title */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-                {heroTitle}
+                {tr(heroTitle)}
               </h1>
 
               {/* Description */}
               <p className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed font-normal max-w-2xl">
-                {heroDesc}
+                {tr(heroDesc)}
               </p>
             </div>
 
@@ -227,24 +248,25 @@ export default function RequestInfoPage() {
                 <p className="text-base text-slate-600 leading-relaxed max-w-lg mx-auto">
                   {t.requestInfo.successDescP1}{' '}
                   <strong className="text-[#00001C]">
-                    {formData.firstName} {formData.lastName}
+                    {tr(formData.firstName)} {tr(formData.lastName)}
                   </strong>
                   . {t.requestInfo.successDescP2}{' '}
-                  <strong className="text-[#0400CC]">{formData.programOfInterest}</strong>. {t.requestInfo.successDescP3}{' '}
-                  <strong className="text-[#00001C]">{formData.email}</strong>.
+                  <strong className="text-[#0400CC]">{tr(formData.programOfInterest)}</strong>.{' '}
+                  {t.requestInfo.successDescP3}{' '}
+                  <strong className="text-[#00001C]">{tr(formData.email)}</strong>.
                 </p>
                 <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
                   <Link
                     href="/"
                     className="px-8 py-3.5 bg-[#0400CC] text-white font-bold rounded-xl shadow-md hover:bg-[#0000CC] transition-all text-sm cursor-pointer"
                   >
-                    {t.requestInfo.returnHome || 'Return to Homepage'}
+                    {t.requestInfo.returnHome || tr('Return to Homepage')}
                   </Link>
                   <Link
                     href="/apply-now"
                     className="px-8 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all text-sm cursor-pointer"
                   >
-                    {t.requestInfo.applyNowBtn || 'Apply Now'}
+                    {t.requestInfo.applyNowBtn || tr('Apply Now')}
                   </Link>
                 </div>
               </div>
@@ -253,11 +275,12 @@ export default function RequestInfoPage() {
                 {/* Heading above form */}
                 <div className="text-center max-w-3xl mx-auto space-y-3">
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-                    {isLa ? (
+                    {lang !== 'EN' ? (
                       t.requestInfo.formHeading
                     ) : (
                       <>
-                        Tell Us About <span className="text-[#0400CC]">Yourself</span>
+                        {tr('Tell Us About ')}
+                        <span className="text-[#0400CC]">{tr('Yourself')}</span>
                       </>
                     )}
                   </h2>
@@ -270,7 +293,7 @@ export default function RequestInfoPage() {
                 <div className="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 md:p-14 shadow-sm border border-slate-200/90 space-y-12">
                   {errorMsg && (
                     <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium">
-                      {errorMsg}
+                      {tr(errorMsg)}
                     </div>
                   )}
 
@@ -407,11 +430,19 @@ export default function RequestInfoPage() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm text-[#00001C] transition-all bg-white cursor-pointer"
                           >
-                            <option value="High School Student">High School Student (Year 11-12)</option>
-                            <option value="High School Graduate">High School Graduate</option>
-                            <option value="Current University Student">Current University Student</option>
-                            <option value="University Graduate">University Graduate (Bachelor's Degree)</option>
-                            <option value="Other">Other</option>
+                            <option value="High School Student">
+                              {tr('High School Student (Year 11-12)')}
+                            </option>
+                            <option value="High School Graduate">
+                              {tr('High School Graduate')}
+                            </option>
+                            <option value="Current University Student">
+                              {tr('Current University Student')}
+                            </option>
+                            <option value="University Graduate">
+                              {tr("University Graduate (Bachelor's Degree)")}
+                            </option>
+                            <option value="Other">{tr('Other')}</option>
                           </select>
                         </div>
 
@@ -427,9 +458,9 @@ export default function RequestInfoPage() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm text-[#00001C] transition-all bg-white cursor-pointer"
                           >
-                            <option value="2024">2024 or earlier</option>
+                            <option value="2024">{tr('2024 or earlier')}</option>
                             <option value="2025">2025</option>
-                            <option value="2026">2026</option>
+                            <option value="2026">{tr('2026')}</option>
                             <option value="2027">2027</option>
                             <option value="2028">2028+</option>
                           </select>
@@ -447,13 +478,27 @@ export default function RequestInfoPage() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm text-[#00001C] font-medium transition-all bg-white cursor-pointer"
                           >
-                            <option value="Bachelor of Computer Science">Bachelor of Computer Science (CS)</option>
-                            <option value="Bachelor of Business Administration">Bachelor of Business Administration (BBA)</option>
-                            <option value="Bachelor of Communication Arts">Bachelor of Communication Arts (CA)</option>
-                            <option value="SIT Global Startup School Program">SIT Global Startup School Program</option>
-                            <option value="Master of Information Technology">Master of Information Technology (MIT)</option>
-                            <option value="Master of Business Administration">Master of Business Administration (MBA)</option>
-                            <option value="General University Inquiry">General University Inquiry</option>
+                            <option value="Bachelor of Computer Science">
+                              {tr('Bachelor of Computer Science (CS)')}
+                            </option>
+                            <option value="Bachelor of Business Administration">
+                              {tr('Bachelor of Business Administration (BBA)')}
+                            </option>
+                            <option value="Bachelor of Communication Arts">
+                              {tr('Bachelor of Communication Arts (CA)')}
+                            </option>
+                            <option value="SIT Global Startup School Program">
+                              {tr('SIT Global Startup School Program')}
+                            </option>
+                            <option value="Master of Information Technology">
+                              {tr('Master of Information Technology (MIT)')}
+                            </option>
+                            <option value="Master of Business Administration">
+                              {tr('Master of Business Administration (MBA)')}
+                            </option>
+                            <option value="General University Inquiry">
+                              {tr('General University Inquiry')}
+                            </option>
                           </select>
                         </div>
 
@@ -469,10 +514,12 @@ export default function RequestInfoPage() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm text-[#00001C] transition-all bg-white cursor-pointer"
                           >
-                            <option value="Fall 2026">Fall 2026 (September 2026)</option>
-                            <option value="Spring 2027">Spring 2027 (January 2027)</option>
-                            <option value="Fall 2027">Fall 2027</option>
-                            <option value="Unsure / Exploring Options">Unsure / Still Exploring</option>
+                            <option value="Fall 2026">{tr('Fall 2026 (September 2026)')}</option>
+                            <option value="Spring 2027">{tr('Spring 2027 (January 2027)')}</option>
+                            <option value="Fall 2027">{tr('Fall 2027')}</option>
+                            <option value="Unsure / Exploring Options">
+                              {tr('Unsure / Still Exploring')}
+                            </option>
                           </select>
                         </div>
                       </div>
@@ -501,7 +548,7 @@ export default function RequestInfoPage() {
                                   : 'bg-slate-50/70 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
                               }`}
                             >
-                              {topic.label}
+                              {tr(topic.label)}
                             </button>
                           );
                         })}
@@ -526,12 +573,20 @@ export default function RequestInfoPage() {
                             onChange={handleChange}
                             className="w-full px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-[#0400CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm text-[#00001C] transition-all bg-white cursor-pointer"
                           >
-                            <option value="Social Media">Social Media (Facebook / Instagram / TikTok)</option>
-                            <option value="Friend or Family">Friend, Family or SIT Student</option>
-                            <option value="School Counselor">High School Teacher / Counselor</option>
-                            <option value="Google Search">Google Search / Online</option>
-                            <option value="Education Fair">Education Fair / Campus Event</option>
-                            <option value="Other">Other</option>
+                            <option value="Social Media">
+                              {tr('Social Media (Facebook / Instagram / TikTok)')}
+                            </option>
+                            <option value="Friend or Family">
+                              {tr('Friend, Family or SIT Student')}
+                            </option>
+                            <option value="School Counselor">
+                              {tr('High School Teacher / Counselor')}
+                            </option>
+                            <option value="Google Search">{tr('Google Search / Online')}</option>
+                            <option value="Education Fair">
+                              {tr('Education Fair / Campus Event')}
+                            </option>
+                            <option value="Other">{tr('Other')}</option>
                           </select>
                         </div>
 
@@ -666,18 +721,20 @@ export default function RequestInfoPage() {
         <section className="w-full bg-[#0400CC] py-20 md:py-28 text-white relative overflow-hidden text-center">
           <div className="max-w-[1280px] mx-auto px-6 sm:px-8 relative z-10 space-y-6">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
-              {t.requestInfo.readyJourneyTitle || 'Ready to Start Your Journey?'}
+              {t.requestInfo.readyJourneyTitle || tr('Ready to Start Your Journey?')}
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
               {t.requestInfo.readyJourneyDesc ||
-                'Apply today and join a community of innovators, leaders, and change-makers at Soutsakan Institute of Technology.'}
+                tr(
+                  'Apply today and join a community of innovators, leaders, and change-makers at Soutsakan Institute of Technology.',
+                )}
             </p>
             <div className="pt-4">
               <Link
                 href="/apply-now"
                 className="inline-block px-10 py-4 bg-white text-[#0400CC] hover:bg-slate-50 font-extrabold text-sm sm:text-base rounded-xl transition-all shadow-xl hover:shadow-2xl uppercase tracking-wider cursor-pointer"
               >
-                {t.requestInfo.applyNowBtn || 'APPLY NOW'}
+                {t.requestInfo.applyNowBtn || tr('APPLY NOW')}
               </Link>
             </div>
           </div>

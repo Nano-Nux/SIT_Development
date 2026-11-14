@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Building2, Globe2, ArrowRight, MapPin } from 'lucide-react';
@@ -12,6 +14,7 @@ interface PartnersSectionProps {
 }
 
 export function PartnersSection({ data = [] }: PartnersSectionProps) {
+  const tr = useUiTranslation();
   const [partners, setPartners] = useState<PartnerItem[]>(data);
   const [tab, setTab] = useState<'ALL' | 'UNIVERSITY' | 'INDUSTRY'>('ALL');
   const { lang, t } = useLanguage();
@@ -49,7 +52,9 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
             <button
               onClick={() => setTab('ALL')}
               className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                tab === 'ALL' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                tab === 'ALL'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.home.allPartners}
@@ -57,7 +62,9 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
             <button
               onClick={() => setTab('UNIVERSITY')}
               className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                tab === 'UNIVERSITY' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                tab === 'UNIVERSITY'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.home.universityPartners}
@@ -65,7 +72,9 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
             <button
               onClick={() => setTab('INDUSTRY')}
               className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                tab === 'INDUSTRY' ? 'bg-white text-[#0400CC] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                tab === 'INDUSTRY'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.home.industryLeaders}
@@ -76,8 +85,18 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
         {/* Partners Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
           {filtered.map((partner, idx) => {
-            const partnerName = isLa && partner.nameLa ? partner.nameLa : partner.name;
-            const partnerCountry = isLa && partner.countryLa ? partner.countryLa : partner.country;
+            const partnerName =
+              lang === 'ZH'
+                ? partner?.nameZh || partner.name
+                : isLa && partner.nameLa
+                  ? partner.nameLa
+                  : partner.name;
+            const partnerCountry =
+              lang === 'ZH'
+                ? partner?.countryZh || partner.country
+                : isLa && partner.countryLa
+                  ? partner.countryLa
+                  : partner.country;
 
             const card = (
               <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center text-center group hover:border-[#0400CC]/40 hover:-translate-y-1 min-h-[160px] h-full">
@@ -86,12 +105,13 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
                   {partner.logoUrl ? (
                     <img
                       src={partner.logoUrl}
-                      alt={partnerName}
+                      alt={tr(partnerName)}
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
-                        const fallback = target.parentElement?.querySelector('.home-partner-fallback');
+                        const fallback =
+                          target.parentElement?.querySelector('.home-partner-fallback');
                         if (fallback) fallback.classList.remove('hidden');
                       }}
                     />
@@ -111,14 +131,14 @@ export function PartnersSection({ data = [] }: PartnersSectionProps) {
 
                 {/* Partner Name */}
                 <h4 className="text-xs sm:text-sm font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug line-clamp-2">
-                  {partnerName}
+                  {tr(partnerName)}
                 </h4>
 
                 {/* Partner Country */}
                 {partnerCountry && (
                   <span className="text-[11px] font-semibold text-slate-400 mt-1 flex items-center gap-1">
                     <MapPin className="w-2.5 h-2.5 text-slate-400" />
-                    <span>{partnerCountry}</span>
+                    <span>{tr(partnerCountry)}</span>
                   </span>
                 )}
               </div>

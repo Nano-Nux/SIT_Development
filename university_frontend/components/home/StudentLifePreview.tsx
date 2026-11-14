@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Sparkles, ArrowRight, Trophy, HeartHandshake, Palette, Rocket } from 'lucide-react';
@@ -15,17 +17,21 @@ const defaultIcons = [
 ];
 
 export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
+  const tr = useUiTranslation();
   const [items, setItems] = useState<StudentLifeItem[]>(data || []);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      api.getStudentLife().then((res) => {
-        if (res && res.length > 0) {
-          setItems(res);
-        }
-      }).catch(console.error);
+      api
+        .getStudentLife()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setItems(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -39,14 +45,14 @@ export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
               <div className="rounded-2xl overflow-hidden shadow-lg aspect-square bg-slate-200">
                 <img
                   src="/images/life_at_sit_desktopview/img_1.jpg"
-                  alt="Student Activities"
+                  alt={tr('Student Activities')}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="rounded-2xl overflow-hidden shadow-lg aspect-square bg-slate-200 mt-6">
                 <img
                   src="/images/life_at_sit_desktopview/img_2.jpg"
-                  alt="Campus Innovation"
+                  alt={tr('Campus Innovation')}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -54,7 +60,7 @@ export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
             <div className="rounded-2xl overflow-hidden shadow-lg aspect-[16/8] bg-slate-200">
               <img
                 src="/images/life_at_sit_desktopview/img_3.jpg"
-                alt="Student Life Collaboration"
+                alt={tr('Student Life Collaboration')}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>
@@ -76,8 +82,14 @@ export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {items.map((h, idx) => {
-                const itemTitle = (isLa && h.titleLa) ? h.titleLa : h.title;
-                const itemDesc = (isLa && h.descriptionLa) ? h.descriptionLa : h.description;
+                const itemTitle =
+                  lang === 'ZH' ? h?.titleZh || h.title : isLa && h.titleLa ? h.titleLa : h.title;
+                const itemDesc =
+                  lang === 'ZH'
+                    ? h?.descriptionZh || h.description
+                    : isLa && h.descriptionLa
+                      ? h.descriptionLa
+                      : h.description;
 
                 return (
                   <div
@@ -88,8 +100,8 @@ export function StudentLifePreview({ data }: { data?: StudentLifeItem[] }) {
                       {defaultIcons[idx % defaultIcons.length]}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-[#00001C]">{itemTitle}</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">{itemDesc}</p>
+                      <h4 className="text-sm font-bold text-[#00001C]">{tr(itemTitle)}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5">{tr(itemDesc)}</p>
                     </div>
                   </div>
                 );

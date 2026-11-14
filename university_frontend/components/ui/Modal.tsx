@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 
@@ -11,13 +13,8 @@ interface ModalProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl';
 }
 
-export function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-  maxWidth = 'lg',
-}: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, maxWidth = 'lg' }: ModalProps) {
+  const tr = useUiTranslation();
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -50,16 +47,19 @@ export function Modal({
 
       {/* Modal Dialog */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={tr(title) || tr('View Details')}
         className={`relative w-full ${maxWidthClasses[maxWidth]} bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-10 my-8`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <h3 className="text-lg sm:text-xl font-bold text-[#00001C]">{title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-[#00001C]">{tr(title)}</h3>
           <button
             onClick={onClose}
             className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-            aria-label="Close"
+            aria-label={tr('Close')}
           >
             <X className="w-5 h-5" />
           </button>

@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { HeartHandshake, Plus, Edit2, Trash2 } from 'lucide-react';
@@ -7,18 +11,23 @@ import { Modal } from '@/components/ui/Modal';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export default function AdminStudentLifePage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [formData, setFormData] = useState({
     title: '',
     titleLa: '',
+    titleZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     category: 'Clubs & Societies',
     categoryLa: '',
+    categoryZh: '',
     imageUrl: '',
     order: 1,
   });
@@ -45,10 +54,13 @@ export default function AdminStudentLifePage() {
     setFormData({
       title: '',
       titleLa: '',
+      titleZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       category: 'Academic',
       categoryLa: 'ວິຊາການ',
+      categoryZh: '',
       imageUrl: '',
       order: items.length + 1,
     });
@@ -61,10 +73,13 @@ export default function AdminStudentLifePage() {
     setFormData({
       title: item.title || '',
       titleLa: item.titleLa || '',
+      titleZh: item.titleZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       category: item.category || 'Academic',
       categoryLa: item.categoryLa || '',
+      categoryZh: item.categoryZh || '',
       imageUrl: item.imageUrl || '',
       order: item.order || 1,
     });
@@ -72,12 +87,12 @@ export default function AdminStudentLifePage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this activity?')) return;
+    if (!confirm(tr('Are you sure you want to delete this activity?'))) return;
     try {
       await api.deleteStudentLife(id);
       loadItems();
     } catch (e) {
-      alert('Failed to delete activity');
+      alert(tr('Failed to delete activity'));
     }
   };
 
@@ -92,7 +107,7 @@ export default function AdminStudentLifePage() {
       setModalOpen(false);
       loadItems();
     } catch (e) {
-      alert('Failed to save student life item');
+      alert(tr('Failed to save student life item'));
     }
   };
 
@@ -102,10 +117,12 @@ export default function AdminStudentLifePage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
             <HeartHandshake className="w-7 h-7 text-[#0400CC]" />
-            Student Life & Activities Manager
+            {tr('Student Life & Activities Manager')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Manage clubs, athletic teams, cultural events, and community activities in English and Lao.
+            {tr(
+              'Manage clubs, athletic teams, cultural events, and community activities in English, Lao, and Chinese.',
+            )}
           </p>
         </div>
         <button
@@ -113,13 +130,15 @@ export default function AdminStudentLifePage() {
           className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Add Activity / Club
+          {tr('Add Activity / Club')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-400">Loading student life...</div>
+          <div className="col-span-full py-12 text-center text-slate-400">
+            {tr('Loading student life...')}
+          </div>
         ) : items.length > 0 ? (
           items.map((item, idx) => (
             <div
@@ -129,26 +148,37 @@ export default function AdminStudentLifePage() {
               <div>
                 <div className="aspect-[4/3] bg-slate-100 relative">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
+                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                      {tr('No Image')}
+                    </div>
                   )}
                   <span className="absolute top-2 left-2 bg-[#00001C]/80 text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                    {item.category}
+                    {tr(localize(item, 'category'))}
                   </span>
                 </div>
 
                 <div className="p-5 space-y-2">
-                  <h3 className="text-base font-bold text-[#00001C]">{item.title}</h3>
+                  <h3 className="text-base font-bold text-[#00001C]">
+                    {tr(localize(item, 'title'))}
+                  </h3>
                   {item.titleLa && (
                     <p className="text-xs font-bold text-[#0400CC]">{item.titleLa}</p>
                   )}
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{item.description}</p>
+                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {tr(localize(item, 'description'))}
+                  </p>
                 </div>
               </div>
 
               <div className="p-5 pt-0 border-t border-slate-100 flex items-center justify-end gap-2 mt-4">
                 <button
+                  aria-label={tr('Edit')}
                   onClick={() => handleOpenEdit(item)}
                   className="p-1.5 rounded-lg text-slate-500 hover:text-[#0400CC] hover:bg-slate-50 cursor-pointer"
                 >
@@ -164,14 +194,16 @@ export default function AdminStudentLifePage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-slate-400">No student activities found.</div>
+          <div className="col-span-full text-center py-12 text-slate-400">
+            {tr('No student activities found.')}
+          </div>
         )}
       </div>
 
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? 'Edit Activity / Club' : 'Add Activity / Club'}
+        title={tr(editingItem ? 'Edit Activity / Club' : tr('Add Activity / Club'))}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Language Switcher Tabs */}
@@ -185,7 +217,7 @@ export default function AdminStudentLifePage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇬🇧 English
+              {tr('🇬🇧 English')}
             </button>
             <button
               type="button"
@@ -196,27 +228,39 @@ export default function AdminStudentLifePage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇱🇦 ພາສາລາວ (Lao)
+              {tr('🇱🇦 ພາສາລາວ (Lao)')}
               {formData.titleLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveLangTab('zh')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLangTab === 'zh'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-[#00001C]'
+              }`}
+            >
+              {tr('中文 (Chinese)')}
+              {formData.titleZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Category
+                {tr('Category')}
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => {
                   const cat = e.target.value;
                   const laoCatMap: Record<string, string> = {
-                    'Academic': 'ວິຊາການ',
-                    'Arts': 'ສິລະປະ',
-                    'Creative': 'ຄວາມຄິດສ້າງສັນ',
-                    'Leadership': 'ຄວາມເປັນຜູ້ນຳ',
-                    'Sports': 'ກິລາ',
-                    'Volunteerism': 'ຈິດອາສາ',
+                    Academic: 'ວິຊາການ',
+                    Arts: 'ສິລະປະ',
+                    Creative: 'ຄວາມຄິດສ້າງສັນ',
+                    Leadership: 'ຄວາມເປັນຜູ້ນຳ',
+                    Sports: 'ກິລາ',
+                    Volunteerism: 'ຈິດອາສາ',
                     'Clubs & Societies': 'ຊົມຮົມ & ສະໂມສອນ',
                   };
                   setFormData({
@@ -227,18 +271,18 @@ export default function AdminStudentLifePage() {
                 }}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm bg-white"
               >
-                <option value="Academic">Academic (ວິຊາການ)</option>
-                <option value="Arts">Arts & Music (ສິລະປະ & ດົນຕີ)</option>
-                <option value="Creative">Creative & Media (ຄວາມຄິດສ້າງສັນ)</option>
-                <option value="Leadership">Leadership & Governance (ຄວາມເປັນຜູ້ນຳ)</option>
-                <option value="Sports">Sports & Athletics (ກິລາ)</option>
-                <option value="Volunteerism">Volunteerism (ຈິດອາສາ)</option>
-                <option value="Clubs & Societies">Clubs & Societies (ຊົມຮົມທົ່ວໄປ)</option>
+                <option value="Academic">{tr('Academic (ວິຊາການ)')}</option>
+                <option value="Arts">{tr('Arts & Music (ສິລະປະ & ດົນຕີ)')}</option>
+                <option value="Creative">{tr('Creative & Media (ຄວາມຄິດສ້າງສັນ)')}</option>
+                <option value="Leadership">{tr('Leadership & Governance (ຄວາມເປັນຜູ້ນຳ)')}</option>
+                <option value="Sports">{tr('Sports & Athletics (ກິລາ)')}</option>
+                <option value="Volunteerism">{tr('Volunteerism (ຈິດອາສາ)')}</option>
+                <option value="Clubs & Societies">{tr('Clubs & Societies (ຊົມຮົມທົ່ວໄປ)')}</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Display Order
+                {tr('Display Order')}
               </label>
               <input
                 type="number"
@@ -249,32 +293,75 @@ export default function AdminStudentLifePage() {
             </div>
           </div>
 
-          {activeLangTab === 'en' ? (
-            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          {activeLangTab === 'zh' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Activity Title (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Activity Title')}
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. AI & Robotics Club"
+                  value={formData.titleZh}
+                  onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
+                  placeholder="请输入中文标题"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Description (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Description')}
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.descriptionZh}
+                  onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
+                  placeholder="请输入中文说明"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Chinese Category')}
+                </label>
+                <input
+                  type="text"
+                  value={formData.categoryZh}
+                  onChange={(e) => setFormData({ ...formData, categoryZh: e.target.value })}
+                  placeholder="请输入中文分类"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+            </div>
+          ) : activeLangTab === 'en' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Activity Title (EN) ')}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder={tr('e.g. AI & Robotics Club')}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Description (EN) ')}
+                  <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe the club goals and weekly activities..."
+                  placeholder={tr('Describe the club goals and weekly activities...')}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -283,7 +370,7 @@ export default function AdminStudentLifePage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຊື່ກິດຈະກຳ / ຊົມຮົມ (Lao Activity Title)
+                  {tr('ຊື່ກິດຈະກຳ / ຊົມຮົມ (Lao Activity Title)')}
                 </label>
                 <input
                   type="text"
@@ -296,7 +383,7 @@ export default function AdminStudentLifePage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)
+                  {tr('ເນື້ອຫາຄຳອະທິບາຍ (Lao Description)')}
                 </label>
                 <textarea
                   rows={3}
@@ -309,7 +396,7 @@ export default function AdminStudentLifePage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ໝວດໝູ່ພາສາລາວ (Lao Category)
+                  {tr('ໝວດໝູ່ພາສາລາວ (Lao Category)')}
                 </label>
                 <input
                   type="text"
@@ -323,11 +410,11 @@ export default function AdminStudentLifePage() {
           )}
 
           <ImageUpload
-            label="Activity Cover Image (SeaweedFS)"
+            label={tr('Activity Cover Image (SeaweedFS)')}
             value={formData.imageUrl}
             onChange={(url) => setFormData({ ...formData, imageUrl: url })}
             placeholder="/images/life_at_sit_desktopview/img_2.jpg"
-            helpText="Full quality photo uploaded directly to SeaweedFS."
+            helpText={tr('Full quality photo uploaded directly to SeaweedFS.')}
             aspectRatio="video"
           />
 
@@ -337,13 +424,13 @@ export default function AdminStudentLifePage() {
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
-              Cancel
+              {tr('Cancel')}
             </button>
             <button
               type="submit"
               className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer"
             >
-              Save Activity
+              {tr('Save Activity')}
             </button>
           </div>
         </form>

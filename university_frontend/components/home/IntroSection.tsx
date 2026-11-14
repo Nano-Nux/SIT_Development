@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,11 +11,13 @@ import { getLocalizedHeroText } from '@/lib/hero-content';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function IntroSection() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const [heroData, setHeroData] = useState<HeroItem | null>(null);
 
   useEffect(() => {
-    api.getHero('HOME')
+    api
+      .getHero('HOME')
       .then((hero) => setHeroData(hero || null))
       .catch(() => setHeroData(null));
   }, []);
@@ -28,7 +32,7 @@ export function IntroSection() {
       <div className="absolute -right-16 top-1/2 -translate-y-1/2 w-[520px] h-[520px] pointer-events-none opacity-5 rotate-[-12deg]">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern"
+          alt={tr('Lao Pattern')}
           fill
           className="object-contain"
         />
@@ -44,16 +48,14 @@ export function IntroSection() {
 
         {/* Stacked Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#00001C] uppercase leading-tight">
-          {subtitle}
-          <span className="block text-[#0400CC] mt-1">{title}</span>
+          {tr(subtitle)}
+          <span className="block text-[#0400CC] mt-1">{tr(title)}</span>
         </h2>
 
         {/* Paragraph */}
         <p className="mt-8 text-base sm:text-lg md:text-xl text-[#4A5565] leading-relaxed max-w-[850px] mx-auto font-normal">
-          {description}
+          {tr(description)}
         </p>
-
-    
       </div>
     </section>
   );

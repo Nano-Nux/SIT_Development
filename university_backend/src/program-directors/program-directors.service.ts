@@ -12,7 +12,15 @@ export class ProgramDirectorsService {
     return this.prisma.programDirector.findMany({
       where,
       include: {
-        program: { select: { id: true, name: true, slug: true } },
+        program: {
+          select: {
+            id: true,
+            name: true,
+            nameLa: true,
+            nameZh: true,
+            slug: true,
+          },
+        },
       },
       orderBy: { order: 'asc' },
     });
@@ -32,12 +40,16 @@ export class ProgramDirectorsService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         position: data.position,
         positionLa: data.positionLa,
+        positionZh: data.positionZh,
         departmentName: data.departmentName,
         departmentNameLa: data.departmentNameLa,
+        departmentNameZh: data.departmentNameZh,
         biography: data.biography,
         biographyLa: data.biographyLa,
+        biographyZh: data.biographyZh,
         imageUrl: data.imageUrl,
         email: data.email,
         programId: data.programId || null,
@@ -54,12 +66,16 @@ export class ProgramDirectorsService {
       data: {
         name: data.name,
         nameLa: data.nameLa,
+        nameZh: data.nameZh,
         position: data.position,
         positionLa: data.positionLa,
+        positionZh: data.positionZh,
         departmentName: data.departmentName,
         departmentNameLa: data.departmentNameLa,
+        departmentNameZh: data.departmentNameZh,
         biography: data.biography,
         biographyLa: data.biographyLa,
+        biographyZh: data.biographyZh,
         imageUrl: data.imageUrl,
         email: data.email,
         programId: data.programId !== undefined ? data.programId : undefined,
@@ -77,7 +93,7 @@ export class ProgramDirectorsService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.programDirector.update({
           where: { id: item.id },
           data: { order: item.order },

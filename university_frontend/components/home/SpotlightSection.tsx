@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Quote } from 'lucide-react';
@@ -7,6 +9,7 @@ import { api, SpotlightItem } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
+  const tr = useUiTranslation();
   const [testimonials, setTestimonials] = useState<SpotlightItem[]>(data || []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { lang } = useLanguage();
@@ -14,11 +17,14 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
 
   useEffect(() => {
     if (!data || data.length === 0) {
-      api.getSpotlights().then((res) => {
-        if (res && res.length > 0) {
-          setTestimonials(res);
-        }
-      }).catch(console.error);
+      api
+        .getSpotlights()
+        .then((res) => {
+          if (res && res.length > 0) {
+            setTestimonials(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [data]);
 
@@ -35,18 +41,37 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
   const current = testimonials[currentIndex % testimonials.length];
   if (!current) return null;
 
-  const quoteText = isLa
-    ? (current.quoteLa || current.descriptionLa || current.quote || current.description)
-    : (current.quote || current.description || current.quoteLa || current.descriptionLa);
-  const authorName = isLa
-    ? (current.authorNameLa || current.authorName)
-    : (current.authorName || current.authorNameLa);
-  const authorRole = isLa
-    ? (current.authorRoleLa || current.authorRole)
-    : (current.authorRole || current.authorRoleLa);
-  const titleText = isLa
-    ? (current.titleLa || current.title)
-    : (current.title || current.titleLa);
+  const quoteText =
+    lang === 'ZH'
+      ? current?.quoteZh ||
+        current?.descriptionZh ||
+        current.quote ||
+        current.description ||
+        current.quote ||
+        current.description ||
+        current.quoteLa ||
+        current.descriptionLa
+      : isLa
+        ? current.quoteLa || current.descriptionLa || current.quote || current.description
+        : current.quote || current.description || current.quoteLa || current.descriptionLa;
+  const authorName =
+    lang === 'ZH'
+      ? current?.authorNameZh || current.authorName || current.authorName || current.authorNameLa
+      : isLa
+        ? current.authorNameLa || current.authorName
+        : current.authorName || current.authorNameLa;
+  const authorRole =
+    lang === 'ZH'
+      ? current?.authorRoleZh || current.authorRole || current.authorRole || current.authorRoleLa
+      : isLa
+        ? current.authorRoleLa || current.authorRole
+        : current.authorRole || current.authorRoleLa;
+  const titleText =
+    lang === 'ZH'
+      ? current?.titleZh || current.title || current.title || current.titleLa
+      : isLa
+        ? current.titleLa || current.title
+        : current.title || current.titleLa;
   const hasImage = Boolean(current.imageUrl);
 
   // If the spotlight has literally nothing, skip
@@ -60,16 +85,20 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
       <div className="absolute left-0 bottom-0 w-[600px] h-[600px] pointer-events-none opacity-10">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern"
+          alt={tr('Lao Pattern')}
           fill
           className="object-contain"
         />
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 relative z-10">
-        <div className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-12 gap-12 lg:gap-16' : 'max-w-4xl mx-auto'} items-center`}>
+        <div
+          className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-12 gap-12 lg:gap-16' : 'max-w-4xl mx-auto'} items-center`}
+        >
           {/* Left Column: Quote & Author */}
-          <div className={`${hasImage ? 'lg:col-span-7' : 'w-full text-center sm:text-left'} space-y-8`}>
+          <div
+            className={`${hasImage ? 'lg:col-span-7' : 'w-full text-center sm:text-left'} space-y-8`}
+          >
             {/* Glowing Blue Quote Icon (only if quoteText exists) */}
             {quoteText && (
               <div className="text-[#0400CC] inline-block">
@@ -80,7 +109,7 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
             {/* Display Quote */}
             {quoteText && (
               <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-extrabold leading-tight sm:leading-tight text-white tracking-tight">
-                {quoteText}
+                {tr(quoteText)}
               </blockquote>
             )}
 
@@ -89,17 +118,17 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
               <div className="pt-2">
                 {authorName && (
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
-                    {authorName}
+                    {tr(authorName)}
                   </h3>
                 )}
                 {authorRole && (
                   <p className="text-sm sm:text-base text-slate-300 font-medium">
-                    {authorRole}
+                    {tr(authorRole)}
                   </p>
                 )}
                 {titleText && (
                   <p className="text-xs sm:text-sm text-cyan-400 mt-0.5 font-semibold">
-                    {titleText}
+                    {tr(titleText)}
                   </p>
                 )}
               </div>
@@ -107,18 +136,20 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
 
             {/* Previous / Next Controls */}
             {testimonials.length > 1 && (
-              <div className={`flex items-center gap-4 pt-4 ${!hasImage ? 'justify-center sm:justify-start' : ''}`}>
+              <div
+                className={`flex items-center gap-4 pt-4 ${!hasImage ? 'justify-center sm:justify-start' : ''}`}
+              >
                 <button
                   onClick={handlePrev}
                   className="w-12 h-12 rounded-full border border-white/20 hover:border-white/60 hover:bg-white/10 flex items-center justify-center text-white transition-all cursor-pointer active:scale-95"
-                  aria-label="Previous Testimonial"
+                  aria-label={tr('Previous Testimonial')}
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={handleNext}
                   className="w-12 h-12 rounded-full border border-white/20 hover:border-white/60 hover:bg-white/10 flex items-center justify-center text-white transition-all cursor-pointer active:scale-95"
-                  aria-label="Next Testimonial"
+                  aria-label={tr('Next Testimonial')}
                 >
                   <ArrowRight className="w-5 h-5" />
                 </button>
@@ -133,7 +164,7 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
                 <div className="relative w-full h-full rounded-2xl overflow-hidden">
                   <Image
                     src={current.imageUrl!}
-                    alt={authorName || titleText || 'Spotlight'}
+                    alt={tr(authorName || titleText || 'Spotlight')}
                     fill
                     className="object-cover object-top"
                     priority
@@ -148,4 +179,3 @@ export function SpotlightSection({ data }: { data?: SpotlightItem[] }) {
     </section>
   );
 }
-

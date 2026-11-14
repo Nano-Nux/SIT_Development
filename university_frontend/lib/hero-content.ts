@@ -9,7 +9,8 @@ export function getLocalizedHeroText(
   language: Language,
   fallback = '',
 ): string {
-  const localizedValue = language === 'LA' ? hero?.[`${field}La`] : undefined;
+  const localizedValue =
+    language === 'ZH' ? hero?.[`${field}Zh`] : language === 'LA' ? hero?.[`${field}La`] : undefined;
   const englishValue = hero?.[field];
 
   if (typeof localizedValue === 'string' && localizedValue.trim()) return localizedValue;

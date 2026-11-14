@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,6 +10,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { api } from '@/lib/api';
 
 export function Footer() {
+  const tr = useUiTranslation();
   const { t, lang } = useLanguage();
   const [socialData, setSocialData] = useState<{
     facebook?: string;
@@ -47,6 +50,7 @@ export function Footer() {
   const [contactDetails, setContactDetails] = useState<{
     address?: string;
     addressLa?: string;
+    addressZh?: string;
     phone?: string;
     email?: string;
   }>({});
@@ -59,13 +63,18 @@ export function Footer() {
           // Parse primary address, phone, email
           let addr = contact.address;
           let addrLa = contact.addressLa;
+          let addrZh = contact.addressZh;
           if (contact.locations) {
             try {
-              const locs = typeof contact.locations === 'string' ? JSON.parse(contact.locations) : contact.locations;
+              const locs =
+                typeof contact.locations === 'string'
+                  ? JSON.parse(contact.locations)
+                  : contact.locations;
               if (Array.isArray(locs) && locs.length > 0) {
                 const primary = locs.find((l: any) => l.isPrimary) || locs[0];
                 addr = primary.address || addr;
                 addrLa = primary.addressLa || addrLa;
+                addrZh = primary.addressZh || addrZh;
               }
             } catch (e) {}
           }
@@ -73,7 +82,8 @@ export function Footer() {
           let phoneStr = contact.phone;
           if (contact.phones) {
             try {
-              const phs = typeof contact.phones === 'string' ? JSON.parse(contact.phones) : contact.phones;
+              const phs =
+                typeof contact.phones === 'string' ? JSON.parse(contact.phones) : contact.phones;
               if (Array.isArray(phs) && phs.length > 0) {
                 const primary = phs.find((p: any) => p.isPrimary) || phs[0];
                 phoneStr = primary.number || phoneStr;
@@ -84,7 +94,8 @@ export function Footer() {
           let emailStr = contact.email;
           if (contact.emails) {
             try {
-              const ems = typeof contact.emails === 'string' ? JSON.parse(contact.emails) : contact.emails;
+              const ems =
+                typeof contact.emails === 'string' ? JSON.parse(contact.emails) : contact.emails;
               if (Array.isArray(ems) && ems.length > 0) {
                 const primary = ems.find((e: any) => e.isPrimary) || ems[0];
                 emailStr = primary.email || emailStr;
@@ -95,6 +106,7 @@ export function Footer() {
           setContactDetails({
             address: addr,
             addressLa: addrLa,
+            addressZh: addrZh,
             phone: phoneStr,
             email: emailStr,
           });
@@ -134,7 +146,7 @@ export function Footer() {
       <div className="absolute right-0 bottom-0 w-[500px] h-[500px] pointer-events-none opacity-5">
         <Image
           src="/images/lao-pattern.png"
-          alt="Lao Pattern"
+          alt={tr('Lao Pattern')}
           fill
           className="object-contain"
         />
@@ -147,15 +159,13 @@ export function Footer() {
             <Link href="/" className="inline-block relative h-12 w-60">
               <Image
                 src="/assets/sit-logo.png"
-                alt="Soutsaka Institute of Technology"
+                alt={tr('Soutsaka Institute of Technology')}
                 fill
                 className="object-contain object-left brightness-110"
               />
             </Link>
 
-            <p className="text-sm text-white/70 leading-relaxed max-w-sm">
-              {t.footer.description}
-            </p>
+            <p className="text-sm text-white/70 leading-relaxed max-w-sm">{t.footer.description}</p>
 
             {/* Social Icons */}
             <div className="flex flex-wrap items-center gap-2.5 pt-2">
@@ -274,7 +284,11 @@ export function Footer() {
               {/* WhatsApp */}
               {isPlatformActive('whatsapp', false) && socialData.whatsapp && (
                 <a
-                  href={socialData.whatsapp.startsWith('http') ? socialData.whatsapp : `https://wa.me/${socialData.whatsapp.replace(/\D/g, '')}`}
+                  href={
+                    socialData.whatsapp.startsWith('http')
+                      ? socialData.whatsapp
+                      : `https://wa.me/${socialData.whatsapp.replace(/\D/g, '')}`
+                  }
                   target="_blank"
                   rel="noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-[#25D366] flex items-center justify-center text-white transition-all hover:scale-110 shadow-sm"
@@ -298,10 +312,10 @@ export function Footer() {
                       target="_blank"
                       rel="noreferrer"
                       className="h-10 px-3 rounded-full bg-white/10 hover:bg-[#0400CC] flex items-center gap-1.5 text-xs text-white transition-all hover:scale-105 shadow-sm"
-                      title={custom.name}
+                      title={tr(custom.name)}
                     >
                       <Globe className="w-3.5 h-3.5" />
-                      <span className="font-semibold">{custom.name}</span>
+                      <span className="font-semibold">{tr(custom.name)}</span>
                     </a>
                   );
                 })}
@@ -351,18 +365,22 @@ export function Footer() {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#1E65FF] shrink-0 mt-0.5" />
                 <span>
-                  {(lang === 'LA' && contactDetails.addressLa)
-                    ? contactDetails.addressLa
-                    : (contactDetails.address || t.footer.address)}
+                  {tr(
+                    lang === 'ZH'
+                      ? contactDetails?.addressZh || contactDetails.address || t.footer.address
+                      : lang === 'LA' && contactDetails.addressLa
+                        ? contactDetails.addressLa
+                        : contactDetails.address || t.footer.address,
+                  )}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-[#1E65FF] shrink-0" />
-                <span>{contactDetails.phone || '+856 21 123 456'}</span>
+                <span>{tr(contactDetails.phone || '+856 21 123 456')}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#1E65FF] shrink-0" />
-                <span>{contactDetails.email || 'admissions@sit.edu.la'}</span>
+                <span>{tr(contactDetails.email || 'admissions@sit.edu.la')}</span>
               </div>
             </div>
           </div>

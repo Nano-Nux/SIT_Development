@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Sparkles } from 'lucide-react';
@@ -7,11 +9,13 @@ import { api } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function AcademicsHero() {
+  const tr = useUiTranslation();
   const { t } = useLanguage();
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getHero('ACADEMICS')
+    api
+      .getHero('ACADEMICS')
       .then((res) => {
         if (res?.imageUrl && res.imageUrl.trim() !== '') {
           setBgImage(res.imageUrl.trim());
@@ -29,7 +33,7 @@ export function AcademicsHero() {
         <div className="absolute inset-0 z-0">
           <Image
             src={bgImage}
-            alt="Academics Hero Background"
+            alt={tr('Academics Hero Background')}
             fill
             className="object-cover object-center opacity-30 brightness-75"
             priority

@@ -1,5 +1,9 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Building2, Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
@@ -8,25 +12,31 @@ import { MultiImageUpload } from '@/components/ui/MultiImageUpload';
 import { getGalleryImages } from '@/lib/image-gallery';
 
 export default function AdminCampusPage() {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la'>('en');
+  const [activeLangTab, setActiveLangTab] = useState<'en' | 'la' | 'zh'>('en');
   const [formData, setFormData] = useState({
     name: '',
     nameLa: '',
+    nameZh: '',
     description: '',
     descriptionLa: '',
+    descriptionZh: '',
     imageUrls: [] as string[],
     actionType: 'MODAL',
     destinationUrl: '',
     modalTitle: '',
     modalTitleLa: '',
+    modalTitleZh: '',
     modalContent: '',
     modalContentLa: '',
+    modalContentZh: '',
     order: 1,
   });
 
@@ -52,15 +62,19 @@ export default function AdminCampusPage() {
     setFormData({
       name: '',
       nameLa: '',
+      nameZh: '',
       description: '',
       descriptionLa: '',
+      descriptionZh: '',
       imageUrls: [],
       actionType: 'MODAL',
       destinationUrl: '',
       modalTitle: '',
       modalTitleLa: '',
+      modalTitleZh: '',
       modalContent: '',
       modalContentLa: '',
+      modalContentZh: '',
       order: items.length + 1,
     });
     setModalOpen(true);
@@ -72,27 +86,31 @@ export default function AdminCampusPage() {
     setFormData({
       name: item.name || '',
       nameLa: item.nameLa || '',
+      nameZh: item.nameZh || '',
       description: item.description || '',
       descriptionLa: item.descriptionLa || '',
+      descriptionZh: item.descriptionZh || '',
       imageUrls: getGalleryImages(item),
       actionType: item.actionType || 'MODAL',
       destinationUrl: item.destinationUrl || '',
       modalTitle: item.modalTitle || '',
       modalTitleLa: item.modalTitleLa || '',
+      modalTitleZh: item.modalTitleZh || '',
       modalContent: item.modalContent || '',
       modalContentLa: item.modalContentLa || '',
+      modalContentZh: item.modalContentZh || '',
       order: item.order || 1,
     });
     setModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this campus facility?')) return;
+    if (!confirm(tr('Are you sure you want to delete this campus facility?'))) return;
     try {
       await api.deleteCampusFacility(id);
       loadItems();
     } catch (e) {
-      alert('Failed to delete facility');
+      alert(tr('Failed to delete facility'));
     }
   };
 
@@ -109,7 +127,7 @@ export default function AdminCampusPage() {
       setModalOpen(false);
       loadItems();
     } catch (e) {
-      alert('Failed to save campus facility');
+      alert(tr('Failed to save campus facility'));
     } finally {
       setSaving(false);
     }
@@ -121,10 +139,12 @@ export default function AdminCampusPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#00001C] flex items-center gap-2.5">
             <Building2 className="w-7 h-7 text-[#0400CC]" />
-            Campus Facilities Manager
+            {tr('Campus Facilities Manager')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Configure campus spaces, laboratories, and interactive click actions in English and Lao.
+            {tr(
+              'Configure campus spaces, laboratories, and interactive click actions in English, Lao, and Chinese.',
+            )}
           </p>
         </div>
         <button
@@ -132,13 +152,15 @@ export default function AdminCampusPage() {
           className="inline-flex items-center gap-2 bg-[#0400CC] hover:bg-[#030099] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Add Facility
+          {tr('Add Facility')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-400">Loading facilities...</div>
+          <div className="col-span-full py-12 text-center text-slate-400">
+            {tr('Loading facilities...')}
+          </div>
         ) : items.length > 0 ? (
           items.map((item, idx) => (
             <div
@@ -148,26 +170,36 @@ export default function AdminCampusPage() {
               <div>
                 <div className="aspect-[16/10] bg-slate-100 relative">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
+                    <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                      {tr('No Image')}
+                    </div>
                   )}
                   <span className="absolute top-2 left-2 bg-[#00001C]/80 text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                    Action: {item.actionType}
+                    {tr('Action: ')}
+                    {item.actionType}
                   </span>
                 </div>
 
                 <div className="p-5 space-y-2">
-                  <h3 className="text-base font-bold text-[#00001C]">{item.name}</h3>
-                  {item.nameLa && (
-                    <p className="text-xs font-bold text-[#0400CC]">{item.nameLa}</p>
-                  )}
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{item.description}</p>
+                  <h3 className="text-base font-bold text-[#00001C]">
+                    {tr(localize(item, 'name'))}
+                  </h3>
+                  {item.nameLa && <p className="text-xs font-bold text-[#0400CC]">{item.nameLa}</p>}
+                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {tr(localize(item, 'description'))}
+                  </p>
                 </div>
               </div>
 
               <div className="p-5 pt-0 border-t border-slate-100 flex items-center justify-end gap-2 mt-4">
                 <button
+                  aria-label={tr('Edit')}
                   onClick={() => handleOpenEdit(item)}
                   className="p-2 rounded-lg text-slate-500 hover:text-[#0400CC] hover:bg-slate-50 cursor-pointer"
                 >
@@ -183,7 +215,9 @@ export default function AdminCampusPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-slate-400">No facilities found.</div>
+          <div className="col-span-full text-center py-12 text-slate-400">
+            {tr('No facilities found.')}
+          </div>
         )}
       </div>
 
@@ -192,7 +226,7 @@ export default function AdminCampusPage() {
         onClose={() => {
           if (!uploading && !saving) setModalOpen(false);
         }}
-        title={editingItem ? 'Edit Campus Facility' : 'Add Campus Facility'}
+        title={tr(editingItem ? 'Edit Campus Facility' : 'Add Campus Facility')}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Language Switcher Tabs */}
@@ -206,7 +240,7 @@ export default function AdminCampusPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇬🇧 English
+              {tr('🇬🇧 English')}
             </button>
             <button
               type="button"
@@ -217,28 +251,40 @@ export default function AdminCampusPage() {
                   : 'text-slate-600 hover:text-[#00001C]'
               }`}
             >
-              🇱🇦 ພາສາລາວ (Lao)
+              {tr('🇱🇦 ພາສາລາວ (Lao)')}
               {formData.nameLa && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveLangTab('zh')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLangTab === 'zh'
+                  ? 'bg-white text-[#0400CC] shadow-sm'
+                  : 'text-slate-600 hover:text-[#00001C]'
+              }`}
+            >
+              {tr('中文 (Chinese)')}
+              {formData.nameZh && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Action Type on Click
+                {tr('Action Type on Click')}
               </label>
               <select
                 value={formData.actionType}
                 onChange={(e) => setFormData({ ...formData, actionType: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm bg-white"
               >
-                <option value="MODAL">Open Popup Modal</option>
-                <option value="REDIRECT">Redirect to Page / URL</option>
+                <option value="MODAL">{tr('Open Popup Modal')}</option>
+                <option value="REDIRECT">{tr('Redirect to Page / URL')}</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Display Order
+                {tr('Display Order')}
               </label>
               <input
                 type="number"
@@ -249,32 +295,30 @@ export default function AdminCampusPage() {
             </div>
           </div>
 
-          {activeLangTab === 'en' ? (
-            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          {activeLangTab === 'zh' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Facility Name (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Facility Name')}
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Modern Innovation Hub"
+                  value={formData.nameZh}
+                  onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
+                  placeholder="请输入中文名称"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Summary Description (EN) <span className="text-red-500">*</span>
+                  {tr('Chinese Summary Description')}
                 </label>
                 <textarea
-                  required
                   rows={2}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Short description..."
+                  value={formData.descriptionZh}
+                  onChange={(e) => setFormData({ ...formData, descriptionZh: e.target.value })}
+                  placeholder="请输入中文说明"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                 />
               </div>
@@ -283,25 +327,88 @@ export default function AdminCampusPage() {
                 <>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Modal Dialog Title (EN)
+                      {tr('Chinese Modal Title')}
                     </label>
                     <input
                       type="text"
-                      value={formData.modalTitle}
-                      onChange={(e) => setFormData({ ...formData, modalTitle: e.target.value })}
-                      placeholder="e.g. Innovation Hub Tour & Facilities"
+                      value={formData.modalTitleZh}
+                      onChange={(e) => setFormData({ ...formData, modalTitleZh: e.target.value })}
+                      placeholder="请输入中文弹窗标题"
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Modal Detailed Content (EN)
+                      {tr('Chinese Modal Detailed Content')}
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={formData.modalContentZh}
+                      onChange={(e) => setFormData({ ...formData, modalContentZh: e.target.value })}
+                      placeholder="请输入中文弹窗详细内容"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          ) : activeLangTab === 'en' ? (
+            <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Facility Name (EN) ')}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder={tr('e.g. Modern Innovation Hub')}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  {tr('Summary Description (EN) ')}
+                  <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={2}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder={tr('Short description...')}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                />
+              </div>
+
+              {formData.actionType === 'MODAL' && (
+                <>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      {tr('Modal Dialog Title (EN)')}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.modalTitle}
+                      onChange={(e) => setFormData({ ...formData, modalTitle: e.target.value })}
+                      placeholder={tr('e.g. Innovation Hub Tour & Facilities')}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      {tr('Modal Detailed Content (EN)')}
                     </label>
                     <textarea
                       rows={3}
                       value={formData.modalContent}
                       onChange={(e) => setFormData({ ...formData, modalContent: e.target.value })}
-                      placeholder="Detailed equipment specifications, hours, research opportunities..."
+                      placeholder={tr(
+                        'Detailed equipment specifications, hours, research opportunities...',
+                      )}
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
                     />
                   </div>
@@ -312,7 +419,7 @@ export default function AdminCampusPage() {
             <div className="space-y-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ຊື່ສະຖານທີ່ (Lao Facility Name)
+                  {tr('ຊື່ສະຖານທີ່ (Lao Facility Name)')}
                 </label>
                 <input
                   type="text"
@@ -325,7 +432,7 @@ export default function AdminCampusPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  ເນື້ອຫາຄຳອະທິບາຍຫຍໍ້ (Lao Summary Description)
+                  {tr('ເນື້ອຫາຄຳອະທິບາຍຫຍໍ້ (Lao Summary Description)')}
                 </label>
                 <textarea
                   rows={2}
@@ -340,7 +447,7 @@ export default function AdminCampusPage() {
                 <>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      ຫົວຂໍ້ປ໊ອບອັບ (Lao Modal Title)
+                      {tr('ຫົວຂໍ້ປ໊ອບອັບ (Lao Modal Title)')}
                     </label>
                     <input
                       type="text"
@@ -352,7 +459,7 @@ export default function AdminCampusPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      ເນື້ອຫາລະອຽດໃນປ໊ອບອັບ (Lao Modal Detailed Content)
+                      {tr('ເນື້ອຫາລະອຽດໃນປ໊ອບອັບ (Lao Modal Detailed Content)')}
                     </label>
                     <textarea
                       rows={3}
@@ -370,20 +477,20 @@ export default function AdminCampusPage() {
           {formData.actionType === 'REDIRECT' && (
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Destination URL / Link
+                {tr('Destination URL / Link')}
               </label>
               <input
                 type="text"
                 value={formData.destinationUrl}
                 onChange={(e) => setFormData({ ...formData, destinationUrl: e.target.value })}
-                placeholder="e.g. /life-at-sit#sports"
+                placeholder={tr('e.g. /life-at-sit#sports')}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0400CC] text-sm"
               />
             </div>
           )}
 
           <MultiImageUpload
-            label="Facility Images"
+            label={tr('Facility Images')}
             value={formData.imageUrls}
             onChange={(imageUrls) => setFormData((prev) => ({ ...prev, imageUrls }))}
             onUploadingChange={setUploading}
@@ -397,14 +504,20 @@ export default function AdminCampusPage() {
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold cursor-pointer"
             >
-              Cancel
+              {tr('Cancel')}
             </button>
             <button
               type="submit"
               disabled={uploading || saving}
               className="px-5 py-2 rounded-xl bg-[#0400CC] hover:bg-[#030099] text-white text-xs font-bold shadow-md cursor-pointer disabled:opacity-50"
             >
-              {uploading ? 'Uploading Images...' : saving ? 'Saving...' : 'Save Facility'}
+              {tr(
+                uploading
+                  ? tr('Uploading Images...')
+                  : saving
+                    ? tr('Saving...')
+                    : tr('Save Facility'),
+              )}
             </button>
           </div>
         </form>

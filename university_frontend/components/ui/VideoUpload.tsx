@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import { useId, useRef, useState } from 'react';
 import { Loader2, Upload, X } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -17,6 +19,7 @@ export function VideoUpload({
   onUploadingChange,
   disabled = false,
 }: VideoUploadProps) {
+  const tr = useUiTranslation();
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -31,9 +34,7 @@ export function VideoUpload({
       return;
     }
     if (file.size > 50 * 1024 * 1024) {
-      setError(
-        'Videos must be 50 MB or smaller. You can also paste a hosted video URL.',
-      );
+      setError('Videos must be 50 MB or smaller. You can also paste a hosted video URL.');
       return;
     }
     setUploading(true);
@@ -43,11 +44,7 @@ export function VideoUpload({
       if (!result.url) throw new Error('No video URL returned.');
       onChange(result.url);
     } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Video upload failed. Please try again.',
-      );
+      setError(cause instanceof Error ? cause.message : 'Video upload failed. Please try again.');
     } finally {
       setUploading(false);
       onUploadingChange(false);
@@ -60,7 +57,7 @@ export function VideoUpload({
         htmlFor={id}
         className="block text-xs font-bold text-slate-700 uppercase tracking-wider"
       >
-        Homepage Hero Video
+        {tr('Homepage Hero Video')}
       </label>
       <input
         id={id}
@@ -91,30 +88,30 @@ export function VideoUpload({
           <Upload className="mx-auto mb-2 h-6 w-6 text-[#0400CC]" />
         )}
         <span className="block text-sm font-bold text-slate-800">
-          {uploading
-            ? 'Uploading video...'
-            : value
-              ? 'Replace hero video'
-              : 'Choose a video or drag and drop'}
+          {tr(
+            uploading
+              ? tr('Uploading video...')
+              : value
+                ? tr('Replace hero video')
+                : tr('Choose a video or drag and drop'),
+          )}
         </span>
-        <span className="block mt-1 text-xs text-slate-500">
-          MP4 or WebM, up to 50 MB
-        </span>
+        <span className="block mt-1 text-xs text-slate-500">{tr('MP4 or WebM, up to 50 MB')}</span>
       </button>
       <div className="flex items-center gap-2">
         <input
           type="text"
-          aria-label="Hero video URL"
+          aria-label={tr('Hero video URL')}
           value={value}
           disabled={busy}
           onChange={(event) => onChange(event.target.value)}
-          placeholder="Or paste a direct .mp4 or .webm URL"
+          placeholder={tr('Or paste a direct .mp4 or .webm URL')}
           className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#0400CC]"
         />
         {value && (
           <button
             type="button"
-            aria-label="Remove hero video"
+            aria-label={tr('Remove hero video')}
             disabled={busy}
             onClick={() => onChange('')}
             className="rounded-xl bg-red-50 p-2 text-red-600 disabled:opacity-40"
@@ -124,15 +121,13 @@ export function VideoUpload({
         )}
       </div>
       <p className="text-xs text-slate-500">
-        The video plays automatically, muted, and loops on the homepage. Use a
-        direct video file URL for hosted videos.
+        {tr(
+          'The video plays automatically, muted, and loops on the homepage. Use a direct video file URL for hosted videos.',
+        )}
       </p>
       {error && (
-        <p
-          role="alert"
-          className="rounded-xl bg-red-50 p-3 text-xs text-red-700"
-        >
-          {error}
+        <p role="alert" className="rounded-xl bg-red-50 p-3 text-xs text-red-700">
+          {tr(error)}
         </p>
       )}
     </div>

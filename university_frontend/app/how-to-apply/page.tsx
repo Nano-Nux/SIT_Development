@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -39,7 +41,8 @@ import {
 } from 'lucide-react';
 
 export default function HowToApplyPage() {
-  const { t, isLa } = useLanguage();
+  const tr = useUiTranslation();
+  const { lang, t, isLa } = useLanguage();
 
   const [heroData, setHeroData] = useState<Hero | null>(null);
   const [timelines, setTimelines] = useState<AdmissionTimeline[]>([]);
@@ -100,9 +103,18 @@ export default function HowToApplyPage() {
     }
   };
 
-  const heroTitle = (isLa && heroData?.titleLa) || heroData?.title || t.howToApply.heroTitle;
-  const heroSubtitle = (isLa && heroData?.subtitleLa) || heroData?.subtitle || t.howToApply.heroSubtitle;
-  const heroDesc = (isLa && heroData?.descriptionLa) || heroData?.description || t.howToApply.heroDesc;
+  const heroTitle =
+    (lang === 'ZH' ? heroData?.titleZh : isLa && heroData?.titleLa) ||
+    heroData?.title ||
+    t.howToApply.heroTitle;
+  const heroSubtitle =
+    (lang === 'ZH' ? heroData?.subtitleZh : isLa && heroData?.subtitleLa) ||
+    heroData?.subtitle ||
+    t.howToApply.heroSubtitle;
+  const heroDesc =
+    (lang === 'ZH' ? heroData?.descriptionZh : isLa && heroData?.descriptionLa) ||
+    heroData?.description ||
+    t.howToApply.heroDesc;
   const heroBg = heroData?.imageUrl?.trim() || null;
 
   return (
@@ -116,7 +128,7 @@ export default function HowToApplyPage() {
             <div className="absolute inset-0 z-0">
               <Image
                 src={heroBg}
-                alt="SIT How to Apply"
+                alt={tr('SIT How to Apply')}
                 fill
                 className="object-cover object-center opacity-30 brightness-75"
                 priority
@@ -136,18 +148,18 @@ export default function HowToApplyPage() {
               <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 shadow-sm">
                 <CheckCircle2 className="w-4 h-4 text-[#00B6FF]" />
                 <span className="text-xs sm:text-sm font-bold tracking-wider text-white uppercase">
-                  {heroSubtitle}
+                  {tr(heroSubtitle)}
                 </span>
               </div>
 
               {/* Title */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight uppercase leading-tight">
-                {heroTitle}
+                {tr(heroTitle)}
               </h1>
 
               {/* Description */}
               <p className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed font-normal">
-                {heroDesc}
+                {tr(heroDesc)}
               </p>
             </div>
 
@@ -203,7 +215,8 @@ export default function HowToApplyPage() {
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                APPLICATION <span className="text-[#0400CC]">TIMELINE</span>
+                {tr('APPLICATION ')}
+                <span className="text-[#0400CC]">{tr('TIMELINE')}</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
                 {t.howToApply.timelineDesc}
@@ -217,46 +230,73 @@ export default function HowToApplyPage() {
                   id: 'tl-1',
                   intakeName: 'Fall Semester 2026',
                   intakeNameLa: 'ພາກຮຽນລະດູໃບໄມ້ຫຼົ່ນ 2026',
+                  intakeNameZh: '2026年秋季学期',
                   deadlineDate: '2026-08-15',
                   classesBeginDate: '2026-10-01',
-                  additionalNotes: '• 1st of October will be starting date of class.\n• Placement Exam 7th of September',
-                  additionalNotesLa: '• ວັນທີ 1 ຕຸລາ ຈະເປັນມື້ເລີ່ມຕົ້ນຮຽນ.\n• ສອບເສັງວັດລະດັບວັນທີ 7 ກັນຍາ',
+                  additionalNotes:
+                    '• 1st of October will be starting date of class.\n• Placement Exam 7th of September',
+                  additionalNotesLa:
+                    '• ວັນທີ 1 ຕຸລາ ຈະເປັນມື້ເລີ່ມຕົ້ນຮຽນ.\n• ສອບເສັງວັດລະດັບວັນທີ 7 ກັນຍາ',
+                  additionalNotesZh: '• 10月1日开课。\n• 9月7日举行分级考试。',
                   status: 'Open Now',
                   statusLa: 'ເປີດຮັບສະໝັກແລ້ວ',
+                  statusZh: '现已开放',
                   order: 1,
                 },
                 {
                   id: 'tl-2',
                   intakeName: 'Spring Semester 2027',
                   intakeNameLa: 'ພາກຮຽນລະດູໃບໄມ້ປົ່ງ 2027',
+                  intakeNameZh: '2027年春季学期',
                   deadlineDate: '2027-01-15',
                   classesBeginDate: '2027-02-15',
-                  additionalNotes: '• Early application scholarship discounts apply.\n• Placement Exam 20th of January',
-                  additionalNotesLa: '• ໄດ້ຮັບສ່ວນຫຼຸດທຶນການສຶກສາສຳລັບຜູ້ສະໝັກໄວ.\n• ສອບເສັງວັດລະດັບວັນທີ 20 ມັງກອນ',
+                  additionalNotes:
+                    '• Early application scholarship discounts apply.\n• Placement Exam 20th of January',
+                  additionalNotesLa:
+                    '• ໄດ້ຮັບສ່ວນຫຼຸດທຶນການສຶກສາສຳລັບຜູ້ສະໝັກໄວ.\n• ສອບເສັງວັດລະດັບວັນທີ 20 ມັງກອນ',
+                  additionalNotesZh: '• 提前申请可享奖学金优惠。\n• 1月20日举行分级考试。',
                   status: 'Upcoming',
                   statusLa: 'ກຳລັງຈະເປີດຮັບ',
+                  statusZh: '即将开始',
                   order: 2,
                 },
               ];
 
-              const displayTimelines = timelines && timelines.length > 0 ? timelines : defaultTimelines;
+              const displayTimelines =
+                timelines && timelines.length > 0 ? timelines : defaultTimelines;
 
               return (
                 <div className="w-full space-y-8">
                   {displayTimelines.map((item, idx) => {
-                    const intake = (isLa && item.intakeNameLa) || item.intakeName;
-                    const status = (isLa && item.statusLa) || item.status || 'Open Now';
+                    const intake =
+                      (lang === 'ZH' ? item?.intakeNameZh : isLa && item.intakeNameLa) ||
+                      item.intakeName;
+                    const status =
+                      (lang === 'ZH' ? item?.statusZh : isLa && item.statusLa) ||
+                      item.status ||
+                      tr('Open Now');
                     const deadline = item.deadlineDate
-                      ? new Date(item.deadlineDate).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                      ? new Date(item.deadlineDate).toLocaleDateString(
+                          lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                          { month: 'long', day: 'numeric', year: 'numeric' },
+                        )
                       : item.closingDate
-                        ? new Date(item.closingDate).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                        ? new Date(item.closingDate).toLocaleDateString(
+                            lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                            { month: 'long', day: 'numeric', year: 'numeric' },
+                          )
                         : 'August 15, 2026';
 
                     const begin = item.classesBeginDate
-                      ? new Date(item.classesBeginDate).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                      ? new Date(item.classesBeginDate).toLocaleDateString(
+                          lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                          { month: 'long', day: 'numeric', year: 'numeric' },
+                        )
                       : 'October 1, 2026';
 
-                    const notes = (isLa && item.additionalNotesLa) || item.additionalNotes;
+                    const notes =
+                      (lang === 'ZH' ? item?.additionalNotesZh : isLa && item.additionalNotesLa) ||
+                      item.additionalNotes;
 
                     return (
                       <div
@@ -271,14 +311,14 @@ export default function HowToApplyPage() {
                             </div>
                             <div>
                               <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#00001C] tracking-tight">
-                                {intake}
+                                {tr(intake)}
                               </h3>
                             </div>
                           </div>
 
                           <div className="shrink-0">
                             <span className="px-4 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs sm:text-sm rounded-full border border-emerald-200 shadow-sm inline-block">
-                              {status}
+                              {tr(status)}
                             </span>
                           </div>
                         </div>
@@ -290,7 +330,7 @@ export default function HowToApplyPage() {
                               {t.howToApply.appDeadline}
                             </p>
                             <p className="text-2xl sm:text-3xl font-black text-[#00001C]">
-                              {deadline}
+                              {tr(deadline)}
                             </p>
                           </div>
 
@@ -299,7 +339,7 @@ export default function HowToApplyPage() {
                               {t.howToApply.classesBegin}
                             </p>
                             <p className="text-2xl sm:text-3xl font-black text-[#00001C]">
-                              {begin}
+                              {tr(begin)}
                             </p>
                           </div>
                         </div>
@@ -307,12 +347,18 @@ export default function HowToApplyPage() {
                         {/* Divider & Additional Notes */}
                         {notes && (
                           <div className="pt-6 sm:pt-8 border-t border-slate-300/80 space-y-3">
-                            {notes.split('\n').filter(Boolean).map((line: string, nIdx: number) => (
-                              <div key={nIdx} className="flex items-center gap-3 text-sm sm:text-base font-bold text-[#0400CC]">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#0400CC] shrink-0" />
-                                <span>{line.replace(/^[•\-\*]\s*/, '')}</span>
-                              </div>
-                            ))}
+                            {notes
+                              .split('\n')
+                              .filter(Boolean)
+                              .map((line: string, nIdx: number) => (
+                                <div
+                                  key={nIdx}
+                                  className="flex items-center gap-3 text-sm sm:text-base font-bold text-[#0400CC]"
+                                >
+                                  <span className="w-2.5 h-2.5 rounded-full bg-[#0400CC] shrink-0" />
+                                  <span>{tr(line.replace(/^[•\-\*]\s*/, ''))}</span>
+                                </div>
+                              ))}
                           </div>
                         )}
                       </div>
@@ -329,37 +375,55 @@ export default function HowToApplyPage() {
                   id: 'rem-1',
                   title: 'Early Application Advantage',
                   titleLa: 'ຂໍ້ໄດ້ປຽບຂອງການສະໝັກກ່ອນ',
-                  description: 'Applicants who submit early receive priority consideration for merit scholarships and preferred course schedules.',
-                  descriptionLa: 'ຜູ້ສະໝັກທີ່ສົ່ງເອກະສານກ່ອນ ຈະໄດ້ຮັບການພິຈາລະນາທຶນການສຶກສາ ແລະ ຕາຕະລາງຮຽນທີ່ຕ້ອງການກ່ອນ.',
+                  titleZh: '提前申请优势',
+                  description:
+                    'Applicants who submit early receive priority consideration for merit scholarships and preferred course schedules.',
+                  descriptionLa:
+                    'ຜູ້ສະໝັກທີ່ສົ່ງເອກະສານກ່ອນ ຈະໄດ້ຮັບການພິຈາລະນາທຶນການສຶກສາ ແລະ ຕາຕະລາງຮຽນທີ່ຕ້ອງການກ່ອນ.',
+                  descriptionZh: '提前申请者可优先参与优秀学生奖学金评审并选择心仪的课程时间。',
                   order: 1,
                 },
                 {
                   id: 'rem-2',
                   title: 'Rolling Admissions Policy',
                   titleLa: 'ນະໂຍບາຍຮັບສະໝັກແບບຕໍ່ເນື່ອງ',
-                  description: 'We review applications as they are received. Decisions are typically released within 2 to 4 weeks after all required materials are verified.',
-                  descriptionLa: 'ພວກເຮົາກວດສອບໃບສະໝັກຕາມລຳດັບທີ່ໄດ້ຮັບ. ຜົນການພິຈາລະນາຈະແຈ້ງພາຍໃນ 2 ຫາ 4 ອາທິດຫຼັງຈາກກວດສອບເອກະສານຄົບຖ້ວນ.',
+                  titleZh: '滚动招生政策',
+                  description:
+                    'We review applications as they are received. Decisions are typically released within 2 to 4 weeks after all required materials are verified.',
+                  descriptionLa:
+                    'ພວກເຮົາກວດສອບໃບສະໝັກຕາມລຳດັບທີ່ໄດ້ຮັບ. ຜົນການພິຈາລະນາຈະແຈ້ງພາຍໃນ 2 ຫາ 4 ອາທິດຫຼັງຈາກກວດສອບເອກະສານຄົບຖ້ວນ.',
+                  descriptionZh:
+                    '我们按收到顺序审核申请。所有所需材料核实后，通常在2至4周内作出决定。',
                   order: 2,
                 },
                 {
                   id: 'rem-3',
                   title: 'Placement Exam & Interview',
                   titleLa: 'ການສອບເສັງວັດລະດັບ ແລະ ສຳພາດ',
-                  description: 'Shortlisted candidates may be invited for an English proficiency placement test and brief interview with faculty advisors.',
-                  descriptionLa: 'ຜູ້ສະໝັກທີ່ຜ່ານການຄັດເລືອກເບື້ອງຕົ້ນ ອາດຈະໄດ້ຮັບການເຊື້ອເຊີນໃຫ້ເຂົ້າສອບເສັງພາສາອັງກິດ ແລະ ສຳພາດສັ້ນໆກັບອາຈານທີ່ປຶກສາ.',
+                  titleZh: '分级考试与面试',
+                  description:
+                    'Shortlisted candidates may be invited for an English proficiency placement test and brief interview with faculty advisors.',
+                  descriptionLa:
+                    'ຜູ້ສະໝັກທີ່ຜ່ານການຄັດເລືອກເບື້ອງຕົ້ນ ອາດຈະໄດ້ຮັບການເຊື້ອເຊີນໃຫ້ເຂົ້າສອບເສັງພາສາອັງກິດ ແລະ ສຳພາດສັ້ນໆກັບອາຈານທີ່ປຶກສາ.',
+                  descriptionZh: '入围申请者可能受邀参加英语分级测试及与学业顾问的简短面试。',
                   order: 3,
                 },
                 {
                   id: 'rem-4',
                   title: 'Visa & Housing Support for International Students',
                   titleLa: 'ການສະໜັບສະໜູນວີຊາ ແລະ ທີ່ພັກສຳລັບນັກສຶກສາຕ່າງປະເທດ',
-                  description: 'Dedicated international student advisors will guide you through visa processing, dorm bookings, and airport pick-up.',
-                  descriptionLa: 'ທີ່ປຶກສານັກສຶກສາຕ່າງປະເທດຈະໃຫ້ຄຳແນະນຳຂັ້ນຕອນການຂໍວີຊາ, ຈອງຫໍພັກ ແລະ ຮັບສົ່ງສະໜາມບິນ.',
+                  titleZh: '国际学生签证与住宿支持',
+                  description:
+                    'Dedicated international student advisors will guide you through visa processing, dorm bookings, and airport pick-up.',
+                  descriptionLa:
+                    'ທີ່ປຶກສານັກສຶກສາຕ່າງປະເທດຈະໃຫ້ຄຳແນະນຳຂັ້ນຕອນການຂໍວີຊາ, ຈອງຫໍພັກ ແລະ ຮັບສົ່ງສະໜາມບິນ.',
+                  descriptionZh: '国际学生专属顾问协助办理签证、预订宿舍及安排接机。',
                   order: 4,
                 },
               ];
 
-              const displayReminders = reminders && reminders.length > 0 ? reminders : defaultReminders;
+              const displayReminders =
+                reminders && reminders.length > 0 ? reminders : defaultReminders;
 
               return (
                 <div className="w-full">
@@ -379,19 +443,20 @@ export default function HowToApplyPage() {
                     {/* Bullet List */}
                     <div className="space-y-4 pl-1">
                       {displayReminders.map((rem, idx) => {
-                        const title = (isLa && rem.titleLa) || rem.title;
-                        const desc = (isLa && rem.descriptionLa) || rem.description;
+                        const title =
+                          (lang === 'ZH' ? rem?.titleZh : isLa && rem.titleLa) || rem.title;
+                        const desc =
+                          (lang === 'ZH' ? rem?.descriptionZh : isLa && rem.descriptionLa) ||
+                          rem.description;
 
                         return (
                           <div key={rem.id || idx} className="flex items-start gap-3.5">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#0400CC] shrink-0 mt-2 shadow-sm" />
                             <div className="leading-relaxed">
                               <span className="text-sm sm:text-base font-bold text-[#00001C]">
-                                {title}:{' '}
+                                {tr(title)}:{' '}
                               </span>
-                              <span className="text-xs sm:text-sm text-[#364153]">
-                                {desc}
-                              </span>
+                              <span className="text-xs sm:text-sm text-[#364153]">{tr(desc)}</span>
                             </div>
                           </div>
                         );
@@ -415,7 +480,8 @@ export default function HowToApplyPage() {
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                ADMISSION <span className="text-[#0400CC]">REQUIREMENTS</span>
+                {tr('ADMISSION ')}
+                <span className="text-[#0400CC]">{tr('REQUIREMENTS')}</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                 {t.howToApply.requirementsDesc}
@@ -437,15 +503,23 @@ export default function HowToApplyPage() {
 
                 <div className="p-8 sm:p-10 space-y-8 divide-y divide-slate-100">
                   {academicReqs.map((req, idx) => {
-                    const subtitle = (isLa && req.subtitleLa) || req.subtitle || (req.degreeLevel === 'Graduate' ? t.howToApply.gradSubtitle : t.howToApply.undergradSubtitle);
-                    const list = parseList((isLa && req.requirementsListLa) || req.requirementsList);
+                    const subtitle =
+                      (lang === 'ZH' ? req?.subtitleZh : isLa && req.subtitleLa) ||
+                      req.subtitle ||
+                      (req.degreeLevel === 'Graduate'
+                        ? t.howToApply.gradSubtitle
+                        : t.howToApply.undergradSubtitle);
+                    const list = parseList(
+                      (lang === 'ZH' ? req?.requirementsListZh : isLa && req.requirementsListLa) ||
+                        req.requirementsList,
+                    );
 
                     return (
                       <div key={req.id || idx} className={`${idx > 0 ? 'pt-8' : ''} space-y-4`}>
                         <div className="flex items-center gap-2.5">
                           <div className="w-1.5 h-5 bg-[#0400CC] rounded-full" />
                           <h4 className="text-lg sm:text-xl font-extrabold text-[#00001C]">
-                            {subtitle}
+                            {tr(subtitle)}
                           </h4>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -453,7 +527,7 @@ export default function HowToApplyPage() {
                             <div key={itemIdx} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-[#0400CC] shrink-0 mt-2" />
                               <span className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                                {item}
+                                {tr(item)}
                               </span>
                             </div>
                           ))}
@@ -477,15 +551,21 @@ export default function HowToApplyPage() {
 
                 <div className="p-8 sm:p-10 space-y-6">
                   {qualificationsReqs.map((req, idx) => {
-                    const subtitle = (isLa && req.subtitleLa) || req.subtitle || t.howToApply.qualificationsSubtitle;
-                    const list = parseList((isLa && req.requirementsListLa) || req.requirementsList);
+                    const subtitle =
+                      (lang === 'ZH' ? req?.subtitleZh : isLa && req.subtitleLa) ||
+                      req.subtitle ||
+                      t.howToApply.qualificationsSubtitle;
+                    const list = parseList(
+                      (lang === 'ZH' ? req?.requirementsListZh : isLa && req.requirementsListLa) ||
+                        req.requirementsList,
+                    );
 
                     return (
                       <div key={req.id || idx} className="space-y-4">
                         <div className="flex items-center gap-2.5">
                           <div className="w-1.5 h-5 bg-[#6366F1] rounded-full" />
                           <h4 className="text-lg sm:text-xl font-extrabold text-[#00001C]">
-                            {subtitle}
+                            {tr(subtitle)}
                           </h4>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -493,7 +573,7 @@ export default function HowToApplyPage() {
                             <div key={itemIdx} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-[#6366F1] shrink-0 mt-2" />
                               <span className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                                {item}
+                                {tr(item)}
                               </span>
                             </div>
                           ))}
@@ -517,15 +597,21 @@ export default function HowToApplyPage() {
 
                 <div className="p-8 sm:p-10 space-y-6">
                   {internationalReqs.map((req, idx) => {
-                    const subtitle = (isLa && req.subtitleLa) || req.subtitle || t.howToApply.internationalSubtitle;
-                    const list = parseList((isLa && req.requirementsListLa) || req.requirementsList);
+                    const subtitle =
+                      (lang === 'ZH' ? req?.subtitleZh : isLa && req.subtitleLa) ||
+                      req.subtitle ||
+                      t.howToApply.internationalSubtitle;
+                    const list = parseList(
+                      (lang === 'ZH' ? req?.requirementsListZh : isLa && req.requirementsListLa) ||
+                        req.requirementsList,
+                    );
 
                     return (
                       <div key={req.id || idx} className="space-y-4">
                         <div className="flex items-center gap-2.5">
                           <div className="w-1.5 h-5 bg-[#EC4899] rounded-full" />
                           <h4 className="text-lg sm:text-xl font-extrabold text-[#00001C]">
-                            {subtitle}
+                            {tr(subtitle)}
                           </h4>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -533,7 +619,7 @@ export default function HowToApplyPage() {
                             <div key={itemIdx} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-[#EC4899] shrink-0 mt-2" />
                               <span className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                                {item}
+                                {tr(item)}
                               </span>
                             </div>
                           ))}
@@ -558,7 +644,8 @@ export default function HowToApplyPage() {
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                FREQUENTLY ASKED <span className="text-[#0400CC]">QUESTIONS</span>
+                {tr('FREQUENTLY ASKED ')}
+                <span className="text-[#0400CC]">{tr('QUESTIONS')}</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                 {t.howToApply.faqDesc}
@@ -569,16 +656,18 @@ export default function HowToApplyPage() {
             <div className="max-w-4xl mx-auto space-y-4">
               {faqs.map((faq, idx) => {
                 const isOpen = openFaqIndex === idx;
-                const question = (isLa && faq.questionLa) || faq.question;
-                const answer = (isLa && faq.answerLa) || faq.answer;
+                const question =
+                  (lang === 'ZH' ? faq?.questionZh : isLa && faq.questionLa) || faq.question;
+                const answer = (lang === 'ZH' ? faq?.answerZh : isLa && faq.answerLa) || faq.answer;
 
                 return (
                   <div
                     key={faq.id || idx}
-                    className={`rounded-2xl border transition-all duration-200 overflow-hidden ${isOpen
+                    className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                      isOpen
                         ? 'bg-white border-blue-200 shadow-md ring-2 ring-[#0400CC]/10'
                         : 'bg-white border-slate-200 hover:border-slate-300'
-                      }`}
+                    }`}
                   >
                     <button
                       type="button"
@@ -586,9 +675,11 @@ export default function HowToApplyPage() {
                       className="w-full p-6 sm:p-7 flex items-center justify-between text-left gap-4 cursor-pointer"
                     >
                       <div className="flex items-center gap-3.5">
-                        <HelpCircle className={`w-5 h-5 shrink-0 ${isOpen ? 'text-[#0400CC]' : 'text-slate-400'}`} />
+                        <HelpCircle
+                          className={`w-5 h-5 shrink-0 ${isOpen ? 'text-[#0400CC]' : 'text-slate-400'}`}
+                        />
                         <span className="text-base sm:text-lg font-bold text-[#00001C]">
-                          {question}
+                          {tr(question)}
                         </span>
                       </div>
                       {isOpen ? (
@@ -600,7 +691,7 @@ export default function HowToApplyPage() {
 
                     {isOpen && (
                       <div className="px-6 pb-6 sm:px-7 sm:pb-7 pt-0 text-sm sm:text-base text-slate-600 leading-relaxed border-t border-slate-100">
-                        <div className="pl-8 pt-3">{answer}</div>
+                        <div className="pl-8 pt-3">{tr(answer)}</div>
                       </div>
                     )}
                   </div>
@@ -647,7 +738,8 @@ export default function HowToApplyPage() {
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                APPLICATION <span className="text-[#0400CC]">SUPPORT</span>
+                {tr('APPLICATION ')}
+                <span className="text-[#0400CC]">{tr('SUPPORT')}</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                 {t.howToApply.supportDesc}
@@ -683,7 +775,9 @@ export default function HowToApplyPage() {
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0400CC] flex items-center justify-center">
                     <Phone className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-[#00001C]">{t.howToApply.phoneConsultation}</h3>
+                  <h3 className="text-lg font-bold text-[#00001C]">
+                    {t.howToApply.phoneConsultation}
+                  </h3>
                   <p className="text-xs text-slate-500">{t.howToApply.phoneConsultationDesc}</p>
                   <p className="text-sm font-extrabold text-[#0400CC]">+856 21 123 456</p>
                 </div>
@@ -754,7 +848,8 @@ export default function HowToApplyPage() {
                 </span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#00001C] tracking-tight uppercase">
-                DOWNLOAD APPLICATION <span className="text-[#0400CC]">MATERIALS</span>
+                {tr('DOWNLOAD APPLICATION ')}
+                <span className="text-[#0400CC]">{tr('MATERIALS')}</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                 {t.howToApply.downloadDesc}
@@ -768,8 +863,12 @@ export default function HowToApplyPage() {
                   id: 'mat-1',
                   title: 'Application Checklist',
                   titleLa: 'ລາຍການກວດສອບການສະໝັກ',
-                  description: "Download our comprehensive PDF checklist to ensure you don't miss anything.",
-                  descriptionLa: 'ດາວໂຫຼດລາຍການກວດສອບ PDF ທີ່ຄົບຖ້ວນຂອງພວກເຮົາ ເພື່ອໃຫ້ແນ່ໃຈວ່າທ່ານບໍ່ພາດເອກະສານໃດໆ.',
+                  titleZh: '申请材料清单',
+                  description:
+                    "Download our comprehensive PDF checklist to ensure you don't miss anything.",
+                  descriptionLa:
+                    'ດາວໂຫຼດລາຍການກວດສອບ PDF ທີ່ຄົບຖ້ວນຂອງພວກເຮົາ ເພື່ອໃຫ້ແນ່ໃຈວ່າທ່ານບໍ່ພາດເອກະສານໃດໆ.',
+                  descriptionZh: '下载完整 PDF 清单，确保不遗漏任何材料。',
                   fileUrl: '/uploads/documents/sit_application_checklist.pdf',
                   fileType: 'PDF',
                   fileSize: '2.3 MB',
@@ -781,8 +880,12 @@ export default function HowToApplyPage() {
                   id: 'mat-2',
                   title: 'Full Admission Details',
                   titleLa: 'ລາຍລະອຽດການຮັບສະໝັກຄົບຊຸດ',
-                  description: 'Tips and examples for crafting a compelling personal statement and application packet.',
-                  descriptionLa: 'ຄຳແນະນຳ ແລະ ຕົວຢ່າງສຳລັບການຂຽນໃບສະແດງເຈດຈຳນົງ ແລະ ຊຸດເອກະສານການສະໝັກ.',
+                  titleZh: '完整招生信息',
+                  description:
+                    'Tips and examples for crafting a compelling personal statement and application packet.',
+                  descriptionLa:
+                    'ຄຳແນະນຳ ແລະ ຕົວຢ່າງສຳລັບການຂຽນໃບສະແດງເຈດຈຳນົງ ແລະ ຊຸດເອກະສານການສະໝັກ.',
+                  descriptionZh: '撰写出色个人陈述和申请材料的技巧与示例。',
                   fileUrl: '/uploads/documents/sit_full_admission_details.pdf',
                   fileType: 'PDF',
                   fileSize: '1.8 MB',
@@ -794,8 +897,12 @@ export default function HowToApplyPage() {
                   id: 'mat-3',
                   title: 'Document Requirements',
                   titleLa: 'ເງື່ອນໄຂເອກະສານປະກອບ',
-                  description: 'Detailed list of all required documents with formatting and translation guidelines.',
-                  descriptionLa: 'ລາຍການລະອຽດຂອງເອກະສານທີ່ຈຳເປັນທັງໝົດ ພ້ອມທັງຄຳແນະນຳການຈັດຮູບແບບ ແລະ ການແປ.',
+                  titleZh: '材料要求',
+                  description:
+                    'Detailed list of all required documents with formatting and translation guidelines.',
+                  descriptionLa:
+                    'ລາຍການລະອຽດຂອງເອກະສານທີ່ຈຳເປັນທັງໝົດ ພ້ອມທັງຄຳແນະນຳການຈັດຮູບແບບ ແລະ ການແປ.',
+                  descriptionZh: '完整列出所需材料，并说明格式和翻译要求。',
                   fileUrl: '/uploads/documents/sit_document_requirements.pdf',
                   fileType: 'PDF',
                   fileSize: '1.5 MB',
@@ -807,8 +914,12 @@ export default function HowToApplyPage() {
                   id: 'mat-4',
                   title: 'Payment Plan',
                   titleLa: 'ແຜນການຊຳລະຄ່າຮຽນ',
-                  description: 'Special guide for international and local applicants with scholarship options and fee schedules.',
-                  descriptionLa: 'ຄູ່ມືພິເສດສຳລັບຜູ້ສະໝັກ ພ້ອມດ້ວຍທາງເລືອກທຶນການສຶກສາ ແລະ ຕາຕະລາງການຊຳລະຄ່າທຳນຽມ.',
+                  titleZh: '付款方案',
+                  description:
+                    'Special guide for international and local applicants with scholarship options and fee schedules.',
+                  descriptionLa:
+                    'ຄູ່ມືພິເສດສຳລັບຜູ້ສະໝັກ ພ້ອມດ້ວຍທາງເລືອກທຶນການສຶກສາ ແລະ ຕາຕະລາງການຊຳລະຄ່າທຳນຽມ.',
+                  descriptionZh: '面向国际与本地申请者的特别指南，介绍奖学金选择及收费安排。',
                   fileUrl: '/uploads/documents/sit_payment_plan.pdf',
                   fileType: 'PDF',
                   fileSize: '3.2 MB',
@@ -823,11 +934,21 @@ export default function HowToApplyPage() {
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                   {displayList.map((item, idx) => {
-                    const title = (isLa && item.titleLa) ? item.titleLa : item.title;
-                    const desc = (isLa && item.descriptionLa) ? item.descriptionLa : item.description;
+                    const title =
+                      lang === 'ZH'
+                        ? item?.titleZh || item.title
+                        : isLa && item.titleLa
+                          ? item.titleLa
+                          : item.title;
+                    const desc =
+                      lang === 'ZH'
+                        ? item?.descriptionZh || item.description
+                        : isLa && item.descriptionLa
+                          ? item.descriptionLa
+                          : item.description;
                     const headerColor = item.badgeColor || '#0400CC';
                     const isBook = item.icon === 'BookOpen';
-                    const fileFormat = item.fileType || 'PDF';
+                    const fileFormat = item.fileType || tr('PDF');
                     const sizeText = item.fileSize ? `, ${item.fileSize}` : '';
                     const downloadUrl = item.fileUrl || '#';
 
@@ -842,14 +963,19 @@ export default function HowToApplyPage() {
                           className="p-6 text-white flex items-center gap-4 transition-transform"
                         >
                           <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
-                            {isBook ? <BookOpen className="w-6 h-6" /> : <Download className="w-6 h-6" />}
+                            {isBook ? (
+                              <BookOpen className="w-6 h-6" />
+                            ) : (
+                              <Download className="w-6 h-6" />
+                            )}
                           </div>
                           <div className="min-w-0">
                             <h3 className="text-lg sm:text-xl font-bold text-white truncate">
-                              {title}
+                              {tr(title)}
                             </h3>
                             <span className="text-xs text-white/80 font-medium">
-                              {fileFormat}{sizeText}
+                              {tr(fileFormat)}
+                              {tr(sizeText)}
                             </span>
                           </div>
                         </div>
@@ -857,12 +983,16 @@ export default function HowToApplyPage() {
                         {/* Content & Action */}
                         <div className="p-6 sm:p-8 space-y-6 flex-grow flex flex-col justify-between">
                           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                            {desc}
+                            {tr(desc)}
                           </p>
 
                           <a
                             href={downloadUrl}
-                            download={item.title ? `${item.title.replace(/\s+/g, '_')}.${fileFormat.toLowerCase()}` : true}
+                            download={
+                              item.title
+                                ? `${item.title.replace(/\s+/g, '_')}.${fileFormat.toLowerCase()}`
+                                : true
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full py-3.5 bg-[#0400CC] hover:bg-[#0000CC] text-white font-bold text-xs sm:text-sm rounded-xl transition-all text-center flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
@@ -911,7 +1041,7 @@ export default function HowToApplyPage() {
                   <div className="relative h-56 w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200">
                     <Image
                       src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop"
-                      alt="SIT Admissions Office"
+                      alt={tr('SIT Admissions Office')}
                       fill
                       className="object-cover"
                     />

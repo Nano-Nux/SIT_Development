@@ -1,9 +1,14 @@
 'use client';
 
+import { useLocalizedContent } from '@/context/useLocalizedContent';
+
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard,
@@ -34,6 +39,8 @@ import {
 } from 'lucide-react';
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
+  const localize = useLocalizedContent();
+  const tr = useUiTranslation();
   const { user, token, logout, loading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
@@ -56,7 +63,9 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen bg-[#00001C] flex items-center justify-center text-white">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-[#0400CC] border-t-[#00B6FF] rounded-full animate-spin" />
-          <span className="text-sm font-medium text-slate-400">Verifying Admin Session...</span>
+          <span className="text-sm font-medium text-slate-400">
+            {tr('Verifying Admin Session...')}
+          </span>
         </div>
       </div>
     );
@@ -65,9 +74,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const menuSections = [
     {
       group: 'Overview',
-      items: [
-        { name: 'Dashboard Analytics', href: '/admin/dashboard', icon: LayoutDashboard },
-      ],
+      items: [{ name: 'Dashboard Analytics', href: '/admin/dashboard', icon: LayoutDashboard }],
     },
     {
       group: 'Homepage & Core',
@@ -114,9 +121,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     },
     {
       group: 'System & Media',
-      items: [
-        { name: 'Media Library', href: '/admin/media', icon: ImageIcon },
-      ],
+      items: [{ name: 'Media Library', href: '/admin/media', icon: ImageIcon }],
     },
   ];
 
@@ -129,7 +134,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
-              aria-label="Toggle Sidebar"
+              aria-label={tr('Toggle Sidebar')}
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -138,42 +143,50 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
               <div className="w-10 h-10 rounded-xl bg-white/10 p-1.5 flex items-center justify-center shadow-md border border-white/15 group-hover:scale-105 transition-transform backdrop-blur-sm">
                 <Image
                   src="/assets/sit-logo-icon.png"
-                  alt="SIT Logo"
+                  alt={tr('SIT Logo')}
                   width={36}
                   height={36}
                   className="w-full h-full object-contain"
                   priority
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <span className="font-extrabold text-sm sm:text-base tracking-tight text-white leading-none">
-                  SIT <span className="text-[#00B6FF]">CMS</span>
+                  {tr('SIT ')}
+                  <span className="text-[#00B6FF]">{tr('CMS')}</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">Administration Portal</span>
+                <span className="text-[10px] text-slate-400 font-medium">
+                  {tr('Administration Portal')}
+                </span>
               </div>
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Link
               href="/"
               target="_blank"
               className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
             >
-              <span>View Public Site</span>
+              <span>{tr('View Public Site')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
 
             {user && (
               <div className="flex items-center gap-3 pl-2 border-l border-white/10">
                 <div className="flex flex-col text-right hidden md:block">
-                  <span className="text-xs font-bold text-white leading-tight">{user.fullName || user.email}</span>
-                  <span className="text-[10px] text-cyan-300 font-semibold uppercase">{user.role}</span>
+                  <span className="text-xs font-bold text-white leading-tight">
+                    {tr(user.fullName || user.email)}
+                  </span>
+                  <span className="text-[10px] text-cyan-300 font-semibold uppercase">
+                    {tr(user.role)}
+                  </span>
                 </div>
                 <button
                   onClick={logout}
                   className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-                  title="Sign Out"
+                  title={tr('Sign Out')}
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -195,14 +208,17 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-2">
               <Image
                 src="/assets/sit-logo-icon.png"
-                alt="SIT Logo"
+                alt={tr('SIT Logo')}
                 width={24}
                 height={24}
                 className="w-6 h-6 object-contain"
               />
-              <span className="font-bold text-xs uppercase text-slate-700">Admin Menu</span>
+              <span className="font-bold text-xs uppercase text-slate-700">{tr('Admin Menu')}</span>
             </div>
-            <button onClick={() => setSidebarOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+            >
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -211,7 +227,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             {menuSections.map((sec, sidx) => (
               <div key={sidx} className="space-y-1">
                 <h4 className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                  {sec.group}
+                  {tr(sec.group)}
                 </h4>
                 {sec.items.map((item) => {
                   const isActive = pathname === item.href;
@@ -228,7 +244,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                      <span>{item.name}</span>
+                      <span>{tr(localize(item, 'name'))}</span>
                     </Link>
                   );
                 })}

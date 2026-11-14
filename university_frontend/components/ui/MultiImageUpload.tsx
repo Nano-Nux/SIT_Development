@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import { useId, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Loader2, Plus, Upload, X } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -19,6 +21,7 @@ export function MultiImageUpload({
   onUploadingChange,
   disabled = false,
 }: MultiImageUploadProps) {
+  const tr = useUiTranslation();
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -66,10 +69,7 @@ export function MultiImageUpload({
 
   const move = (index: number, direction: number) => {
     const images = [...value];
-    [images[index], images[index + direction]] = [
-      images[index + direction],
-      images[index],
-    ];
+    [images[index], images[index + direction]] = [images[index + direction], images[index]];
     onChange(images);
   };
 
@@ -79,11 +79,12 @@ export function MultiImageUpload({
         htmlFor={id}
         className="block text-xs font-bold text-slate-700 uppercase tracking-wider"
       >
-        {label}
+        {tr(label)}
       </label>
       <p className="text-xs text-slate-500">
-        Select multiple images at once. The first image is the cover. Use the
-        arrows to change their order.
+        {tr(
+          'Select multiple images at once. The first image is the cover. Use the arrows to change their order.',
+        )}
       </p>
       <input
         id={id}
@@ -115,13 +116,9 @@ export function MultiImageUpload({
           <Upload className="mx-auto mb-2 h-6 w-6 text-[#0400CC]" />
         )}
         <span className="block text-sm font-bold text-slate-800">
-          {uploading
-            ? `Uploading images ${progress}...`
-            : 'Choose images or drag and drop'}
+          {tr(uploading ? `Uploading images ${progress}...` : tr('Choose images or drag and drop'))}
         </span>
-        <span className="block mt-1 text-xs text-slate-500">
-          Images up to 50 MB each
-        </span>
+        <span className="block mt-1 text-xs text-slate-500">{tr('Images up to 50 MB each')}</span>
       </button>
       {value.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -133,17 +130,17 @@ export function MultiImageUpload({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
-                alt={`Image ${index + 1}`}
+                alt={tr(`Image ${index + 1}`)}
                 className="aspect-video w-full object-cover"
               />
               <div className="flex items-center justify-between gap-1 p-2">
                 <span className="text-[11px] font-bold text-slate-600">
-                  {index === 0 ? 'Cover' : `${index + 1}`}
+                  {tr(index === 0 ? tr('Cover') : `${index + 1}`)}
                 </span>
                 <div className="flex gap-1">
                   <button
                     type="button"
-                    aria-label={`Move image ${index + 1} left`}
+                    aria-label={tr(`Move image ${index + 1} left`)}
                     disabled={busy || index === 0}
                     onClick={() => move(index, -1)}
                     className="rounded p-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30"
@@ -152,7 +149,7 @@ export function MultiImageUpload({
                   </button>
                   <button
                     type="button"
-                    aria-label={`Move image ${index + 1} right`}
+                    aria-label={tr(`Move image ${index + 1} right`)}
                     disabled={busy || index === value.length - 1}
                     onClick={() => move(index, 1)}
                     className="rounded p-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30"
@@ -161,11 +158,9 @@ export function MultiImageUpload({
                   </button>
                   <button
                     type="button"
-                    aria-label={`Remove image ${index + 1}`}
+                    aria-label={tr(`Remove image ${index + 1}`)}
                     disabled={busy}
-                    onClick={() =>
-                      onChange(value.filter((_, i) => i !== index))
-                    }
+                    onClick={() => onChange(value.filter((_, i) => i !== index))}
                     className="rounded p-1 text-red-600 hover:bg-red-50 disabled:opacity-30"
                   >
                     <X className="h-4 w-4" />
@@ -179,8 +174,8 @@ export function MultiImageUpload({
       <div className="flex gap-2">
         <input
           type="text"
-          aria-label="Image URL"
-          placeholder="Or paste an image URL"
+          aria-label={tr('Image URL')}
+          placeholder={tr('Or paste an image URL')}
           value={url}
           disabled={busy}
           onChange={(event) => setUrl(event.target.value)}
@@ -196,7 +191,7 @@ export function MultiImageUpload({
           className="inline-flex items-center gap-1 rounded-xl bg-blue-50 px-3 py-2 text-xs font-bold text-[#0400CC] disabled:opacity-40"
         >
           <Plus className="h-4 w-4" />
-          Add
+          {tr('Add')}
         </button>
       </div>
       {error && (
@@ -204,7 +199,7 @@ export function MultiImageUpload({
           role="alert"
           className="whitespace-pre-line rounded-xl bg-red-50 p-3 text-xs text-red-700"
         >
-          {error}
+          {tr(error)}
         </p>
       )}
     </div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Clock, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
@@ -10,17 +12,28 @@ interface Program {
   id: string;
   name: string;
   nameLa?: string | null;
+  nameZh?: string | null;
   slug: string;
   degree: string;
   degreeLa?: string | null;
+  degreeZh?: string | null;
   duration: string;
   durationLa?: string | null;
+  durationZh?: string | null;
   description: string;
   descriptionLa?: string | null;
+  descriptionZh?: string | null;
   heroImage?: string | null;
   coreFocusAreas: string;
   coreFocusAreasLa?: string | null;
-  department?: { id: string; name: string; nameLa?: string | null; slug: string } | null;
+  coreFocusAreasZh?: string | null;
+  department?: {
+    id: string;
+    name: string;
+    nameLa?: string | null;
+    nameZh?: string | null;
+    slug: string;
+  } | null;
 }
 
 interface ProgramsGridProps {
@@ -28,13 +41,15 @@ interface ProgramsGridProps {
 }
 
 export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
+  const tr = useUiTranslation();
   const [degreeFilter, setDegreeFilter] = useState<'ALL' | 'BACHELOR' | 'MASTER'>('ALL');
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
-  const filtered = degreeFilter === 'ALL'
-    ? data
-    : data.filter((p) => p.degree.toUpperCase().includes(degreeFilter));
+  const filtered =
+    degreeFilter === 'ALL'
+      ? data
+      : data.filter((p) => p.degree.toUpperCase().includes(degreeFilter));
 
   return (
     <section className="py-20 sm:py-28 bg-white">
@@ -52,7 +67,9 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
             <button
               onClick={() => setDegreeFilter('ALL')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                degreeFilter === 'ALL' ? 'bg-[#0400CC] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                degreeFilter === 'ALL'
+                  ? 'bg-[#0400CC] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.academics.allDegreesFilter}
@@ -60,7 +77,9 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
             <button
               onClick={() => setDegreeFilter('BACHELOR')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                degreeFilter === 'BACHELOR' ? 'bg-[#0400CC] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                degreeFilter === 'BACHELOR'
+                  ? 'bg-[#0400CC] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.academics.bachelorFilter}
@@ -68,7 +87,9 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
             <button
               onClick={() => setDegreeFilter('MASTER')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                degreeFilter === 'MASTER' ? 'bg-[#0400CC] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                degreeFilter === 'MASTER'
+                  ? 'bg-[#0400CC] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {t.academics.masterFilter}
@@ -78,16 +99,44 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map((prog, idx) => {
-            const name = (isLa && prog.nameLa) ? prog.nameLa : prog.name;
-            const degree = (isLa && prog.degreeLa) ? prog.degreeLa : prog.degree;
-            const duration = (isLa && prog.durationLa) ? prog.durationLa : prog.duration;
-            const description = (isLa && prog.descriptionLa) ? prog.descriptionLa : prog.description;
-            const deptName = prog.department ? ((isLa && prog.department.nameLa) ? prog.department.nameLa : prog.department.name) : null;
+            const name =
+              lang === 'ZH'
+                ? prog?.nameZh || prog.name
+                : isLa && prog.nameLa
+                  ? prog.nameLa
+                  : prog.name;
+            const degree =
+              lang === 'ZH'
+                ? prog?.degreeZh || prog.degree
+                : isLa && prog.degreeLa
+                  ? prog.degreeLa
+                  : prog.degree;
+            const duration =
+              lang === 'ZH'
+                ? prog?.durationZh || prog.duration
+                : isLa && prog.durationLa
+                  ? prog.durationLa
+                  : prog.duration;
+            const description =
+              lang === 'ZH'
+                ? prog?.descriptionZh || prog.description
+                : isLa && prog.descriptionLa
+                  ? prog.descriptionLa
+                  : prog.description;
+            const deptName = prog.department
+              ? lang === 'ZH'
+                ? prog.department?.nameZh || prog.department.name
+                : isLa && prog.department.nameLa
+                  ? prog.department.nameLa
+                  : prog.department.name
+              : null;
 
             let focusAreas: string[] = [];
-            if (isLa && prog.coreFocusAreasLa) {
+            if (lang === 'ZH' ? prog?.coreFocusAreasZh : isLa && prog.coreFocusAreasLa) {
               try {
-                focusAreas = JSON.parse(prog.coreFocusAreasLa);
+                focusAreas = JSON.parse(
+                  (lang === 'ZH' ? prog?.coreFocusAreasZh : prog?.coreFocusAreasLa) || '[]',
+                );
               } catch {
                 focusAreas = [];
               }
@@ -107,12 +156,14 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
                 <div>
                   <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                     <img
-                      src={prog.heroImage || `/images/academics_desktopview/img_${(idx % 4) + 1}.jpg`}
-                      alt={name}
+                      src={
+                        prog.heroImage || `/images/academics_desktopview/img_${(idx % 4) + 1}.jpg`
+                      }
+                      alt={tr(name)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 bg-[#0400CC] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md">
-                      {degree}
+                      {tr(degree)}
                     </div>
                   </div>
 
@@ -120,21 +171,21 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
                     <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5 text-[#0400CC]" />
-                        {duration}
+                        {tr(duration)}
                       </span>
                       {deptName && (
                         <span className="text-[#0400CC] font-bold bg-blue-50 px-2 py-0.5 rounded">
-                          {deptName}
+                          {tr(deptName)}
                         </span>
                       )}
                     </div>
 
                     <h3 className="text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                      {name}
+                      {tr(name)}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                      {description}
+                      {tr(description)}
                     </p>
 
                     {focusAreas.length > 0 && (
@@ -148,7 +199,7 @@ export function ProgramsGrid({ data = [] }: ProgramsGridProps) {
                               key={fidx}
                               className="text-[11px] font-medium bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md"
                             >
-                              {fa}
+                              {tr(fa)}
                             </span>
                           ))}
                         </div>

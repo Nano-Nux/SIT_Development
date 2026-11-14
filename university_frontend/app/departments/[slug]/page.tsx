@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -33,16 +35,20 @@ interface DeptPageProps {
 }
 
 export default function DepartmentDetailPage({ params }: DeptPageProps) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const resolvedParams = use(params);
   const slug = resolvedParams.slug || 'it';
-  const [department, setDepartment] = useState<(Department & { programs?: ProgramItem[]; faculty?: FacultyMember[] }) | null>(null);
+  const [department, setDepartment] = useState<
+    (Department & { programs?: ProgramItem[]; faculty?: FacultyMember[] }) | null
+  >(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setLoading(true);
-    api.getDepartment(slug)
+    api
+      .getDepartment(slug)
       .then((res) => {
         const externalUrl = getExternalDepartmentUrl(res.externalUrl);
         if (externalUrl) {
@@ -71,27 +77,56 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
   };
 
   // 1. Title & URL Slug
-  const title = (isLa && department?.nameLa) ? department.nameLa : (department?.name || department?.title || t.departmentDetail.departmentTitle);
+  const title =
+    lang === 'ZH'
+      ? department?.nameZh ||
+        department?.name ||
+        department?.title ||
+        t.departmentDetail.departmentTitle
+      : isLa && department?.nameLa
+        ? department.nameLa
+        : department?.name || department?.title || t.departmentDetail.departmentTitle;
   // 2. Description
-  const description = (isLa && department?.descriptionLa) ? department.descriptionLa : (department?.description || t.departmentDetail.departmentDesc);
-  const heroImage = department?.heroImage || department?.imageUrl || '/images/about_desktopview/img_1.jpg';
+  const description =
+    lang === 'ZH'
+      ? department?.descriptionZh || department?.description || t.departmentDetail.departmentDesc
+      : isLa && department?.descriptionLa
+        ? department.descriptionLa
+        : department?.description || t.departmentDetail.departmentDesc;
+  const heroImage =
+    department?.heroImage || department?.imageUrl || '/images/about_desktopview/img_1.jpg';
   const programs = department?.programs || [];
   const faculty = department?.faculty || [];
 
   // 3. Box-descriptions (Optional Hero Stats)
-  const rawBoxes = (isLa && department?.boxDescriptionsLa) ? department.boxDescriptionsLa : department?.boxDescriptions;
+  const rawBoxes =
+    lang === 'ZH'
+      ? department?.boxDescriptionsZh || department?.boxDescriptions
+      : isLa && department?.boxDescriptionsLa
+        ? department.boxDescriptionsLa
+        : department?.boxDescriptions;
   const heroBoxes: BoxStatItem[] = parseJsonArray(rawBoxes);
 
   const boxIcons = [Code2, Database, Briefcase, Cpu];
 
   // 4. Core Focus Areas
-  const rawDeptFocus = (isLa && department?.coreFocusAreasLa) ? department.coreFocusAreasLa : department?.coreFocusAreas;
+  const rawDeptFocus =
+    lang === 'ZH'
+      ? department?.coreFocusAreasZh || department?.coreFocusAreas
+      : isLa && department?.coreFocusAreasLa
+        ? department.coreFocusAreasLa
+        : department?.coreFocusAreas;
   let focusAreas: string[] = parseJsonArray(rawDeptFocus);
 
   if (focusAreas.length === 0) {
     // Fallback: extract focus areas dynamically from programs under this department
     programs.forEach((p) => {
-      const rawAreas = (isLa && p.coreFocusAreasLa) ? p.coreFocusAreasLa : p.coreFocusAreas;
+      const rawAreas =
+        lang === 'ZH'
+          ? p?.coreFocusAreasZh || p.coreFocusAreas
+          : isLa && p.coreFocusAreasLa
+            ? p.coreFocusAreasLa
+            : p.coreFocusAreas;
       if (rawAreas) {
         try {
           const parsed = JSON.parse(rawAreas);
@@ -107,19 +142,64 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
   focusAreas = Array.from(new Set(focusAreas));
 
   // 5. Career Outcome Description
-  const careerOutcomeDesc = (isLa && department?.careerOutcomeDescLa) ? department.careerOutcomeDescLa : department?.careerOutcomeDesc;
+  const careerOutcomeDesc =
+    lang === 'ZH'
+      ? department?.careerOutcomeDescZh || department?.careerOutcomeDesc
+      : isLa && department?.careerOutcomeDescLa
+        ? department.careerOutcomeDescLa
+        : department?.careerOutcomeDesc;
 
   // 6. Career Outcomes Boxes (Optional)
-  const placementRate = (isLa && department?.careerPlacementRateLa) ? department.careerPlacementRateLa : department?.careerPlacementRate;
-  const avgSalary = (isLa && department?.careerAvgSalaryLa) ? department.careerAvgSalaryLa : department?.careerAvgSalary;
-  const partnerCompanies = (isLa && department?.careerPartnerCompaniesLa) ? department.careerPartnerCompaniesLa : department?.careerPartnerCompanies;
-  const timeToEmployment = (isLa && department?.careerTimeToEmploymentLa) ? department.careerTimeToEmploymentLa : department?.careerTimeToEmployment;
+  const placementRate =
+    lang === 'ZH'
+      ? department?.careerPlacementRateZh || department?.careerPlacementRate
+      : isLa && department?.careerPlacementRateLa
+        ? department.careerPlacementRateLa
+        : department?.careerPlacementRate;
+  const avgSalary =
+    lang === 'ZH'
+      ? department?.careerAvgSalaryZh || department?.careerAvgSalary
+      : isLa && department?.careerAvgSalaryLa
+        ? department.careerAvgSalaryLa
+        : department?.careerAvgSalary;
+  const partnerCompanies =
+    lang === 'ZH'
+      ? department?.careerPartnerCompaniesZh || department?.careerPartnerCompanies
+      : isLa && department?.careerPartnerCompaniesLa
+        ? department.careerPartnerCompaniesLa
+        : department?.careerPartnerCompanies;
+  const timeToEmployment =
+    lang === 'ZH'
+      ? department?.careerTimeToEmploymentZh || department?.careerTimeToEmployment
+      : isLa && department?.careerTimeToEmploymentLa
+        ? department.careerTimeToEmploymentLa
+        : department?.careerTimeToEmployment;
 
   const careerBoxes: { value: string; label: string; icon: any }[] = [];
-  if (placementRate) careerBoxes.push({ value: placementRate, label: t.departmentDetail.jobPlacementRate, icon: Briefcase });
-  if (avgSalary) careerBoxes.push({ value: avgSalary, label: t.departmentDetail.avgStartingSalary, icon: TrendingUp });
-  if (partnerCompanies) careerBoxes.push({ value: partnerCompanies, label: t.departmentDetail.partnerCompanies, icon: Building2 });
-  if (timeToEmployment) careerBoxes.push({ value: timeToEmployment, label: t.departmentDetail.avgTimeToEmployment, icon: Award });
+  if (placementRate)
+    careerBoxes.push({
+      value: placementRate,
+      label: t.departmentDetail.jobPlacementRate,
+      icon: Briefcase,
+    });
+  if (avgSalary)
+    careerBoxes.push({
+      value: avgSalary,
+      label: t.departmentDetail.avgStartingSalary,
+      icon: TrendingUp,
+    });
+  if (partnerCompanies)
+    careerBoxes.push({
+      value: partnerCompanies,
+      label: t.departmentDetail.partnerCompanies,
+      icon: Building2,
+    });
+  if (timeToEmployment)
+    careerBoxes.push({
+      value: timeToEmployment,
+      label: t.departmentDetail.avgTimeToEmployment,
+      icon: Award,
+    });
 
   const hasCareerSection = Boolean(careerOutcomeDesc || careerBoxes.length > 0);
 
@@ -133,7 +213,7 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
           <div className="absolute inset-0 z-0">
             <Image
               src={heroImage}
-              alt={title}
+              alt={tr(title)}
               fill
               className="object-cover object-center opacity-25 brightness-75"
               priority
@@ -153,11 +233,11 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
               </div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-                {title}
+                {tr(title)}
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl font-normal">
-                {description}
+                {tr(description)}
               </p>
             </div>
 
@@ -176,10 +256,10 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
                       </div>
                       <div>
                         <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                          {stat.value}
+                          {tr(stat.value)}
                         </div>
                         <div className="text-xs font-bold tracking-wider text-white/70 uppercase mt-1">
-                          {stat.label}
+                          {tr(stat.label)}
                         </div>
                       </div>
                     </div>
@@ -209,7 +289,7 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
                     key={idx}
                     className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-center font-bold text-sm sm:text-base text-[#00001C] hover:border-[#0400CC] hover:shadow-md hover:text-[#0400CC] transition-all min-h-[100px]"
                   >
-                    {area}
+                    {tr(area)}
                   </div>
                 ))}
               </div>
@@ -232,10 +312,30 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {programs.map((prog, idx) => {
-                  const progName = (isLa && prog.nameLa) ? prog.nameLa : prog.name;
-                  const progDegree = (isLa && prog.degreeLa) ? prog.degreeLa : prog.degree;
-                  const progDuration = (isLa && prog.durationLa) ? prog.durationLa : prog.duration;
-                  const progDesc = (isLa && prog.descriptionLa) ? prog.descriptionLa : prog.description;
+                  const progName =
+                    lang === 'ZH'
+                      ? prog?.nameZh || prog.name
+                      : isLa && prog.nameLa
+                        ? prog.nameLa
+                        : prog.name;
+                  const progDegree =
+                    lang === 'ZH'
+                      ? prog?.degreeZh || prog.degree
+                      : isLa && prog.degreeLa
+                        ? prog.degreeLa
+                        : prog.degree;
+                  const progDuration =
+                    lang === 'ZH'
+                      ? prog?.durationZh || prog.duration
+                      : isLa && prog.durationLa
+                        ? prog.durationLa
+                        : prog.duration;
+                  const progDesc =
+                    lang === 'ZH'
+                      ? prog?.descriptionZh || prog.description
+                      : isLa && prog.descriptionLa
+                        ? prog.descriptionLa
+                        : prog.description;
 
                   return (
                     <div
@@ -244,18 +344,18 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
                     >
                       <div className="space-y-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#0400CC] text-xs font-bold uppercase">
-                          <span>{progDegree}</span>
+                          <span>{tr(progDegree)}</span>
                         </div>
                         <h3 className="text-xl font-bold text-[#00001C] leading-snug">
-                          {progName}
+                          {tr(progName)}
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                          {progDesc}
+                          {tr(progDesc)}
                         </p>
                         <div className="flex items-center gap-4 text-xs font-medium text-slate-500 pt-2">
                           <span className="flex items-center gap-1.5">
                             <Clock className="w-3.5 h-3.5 text-[#0400CC]" />
-                            {progDuration}
+                            {tr(progDuration)}
                           </span>
                         </div>
                       </div>
@@ -284,10 +384,11 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
               {/* Header: Description */}
               <div className="text-center max-w-3xl mx-auto space-y-4">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-                  Career <span className="text-[#0400CC]">Outcomes</span>
+                  {tr('Career ')}
+                  <span className="text-[#0400CC]">{tr('Outcomes')}</span>
                 </h2>
                 <p className="text-base sm:text-lg text-[#4A5565] leading-relaxed">
-                  {careerOutcomeDesc || t.departmentDetail.careerOutcomesDescDefault}
+                  {tr(careerOutcomeDesc || t.departmentDetail.careerOutcomesDescDefault)}
                 </p>
               </div>
 
@@ -306,10 +407,10 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
                         </div>
                         <div>
                           <div className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#00001C] tracking-tight">
-                            {box.value}
+                            {tr(box.value)}
                           </div>
                           <div className="text-xs font-bold tracking-wider text-slate-500 uppercase mt-2">
-                            {box.label}
+                            {tr(box.label)}
                           </div>
                         </div>
                       </div>
@@ -362,16 +463,31 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {faculty.map((member, idx) => {
-                  const memberName = (isLa && member.nameLa) ? member.nameLa : member.name;
-                  const memberPosition = (isLa && member.positionLa) ? member.positionLa : member.position;
-                  const memberBio = (isLa && member.biographyLa) ? member.biographyLa : member.biography;
+                  const memberName =
+                    lang === 'ZH'
+                      ? member?.nameZh || member.name
+                      : isLa && member.nameLa
+                        ? member.nameLa
+                        : member.name;
+                  const memberPosition =
+                    lang === 'ZH'
+                      ? member?.positionZh || member.position
+                      : isLa && member.positionLa
+                        ? member.positionLa
+                        : member.position;
+                  const memberBio =
+                    lang === 'ZH'
+                      ? member?.biographyZh || member.biography
+                      : isLa && member.biographyLa
+                        ? member.biographyLa
+                        : member.biography;
 
                   return (
                     <div key={member.id || idx} className="group flex flex-col">
                       <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-100 shadow-md group-hover:shadow-xl transition-all duration-300 mb-5">
                         <Image
                           src={member.imageUrl || '/images/home_desktopview/img_5.jpg'}
-                          alt={memberName}
+                          alt={tr(memberName)}
                           fill
                           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                         />
@@ -379,14 +495,14 @@ export default function DepartmentDetailPage({ params }: DeptPageProps) {
 
                       <div className="space-y-1">
                         <h3 className="text-lg sm:text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                          {memberName}
+                          {tr(memberName)}
                         </h3>
                         <p className="text-xs sm:text-[13px] font-extrabold tracking-wider text-[#0400CC] uppercase">
-                          {memberPosition}
+                          {tr(memberPosition)}
                         </p>
                         {memberBio && (
                           <p className="text-xs text-[#62748E] font-medium pt-0.5 line-clamp-2">
-                            {memberBio}
+                            {tr(memberBio)}
                           </p>
                         )}
                       </div>

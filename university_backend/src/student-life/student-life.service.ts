@@ -22,18 +22,22 @@ export class StudentLifeService {
   }
 
   async create(data: any) {
-    const gallery = typeof data.gallery === 'string'
-      ? data.gallery
-      : JSON.stringify(data.gallery || []);
+    const gallery =
+      typeof data.gallery === 'string'
+        ? data.gallery
+        : JSON.stringify(data.gallery || []);
 
     return this.prisma.studentLife.create({
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         category: data.category || 'Campus Life',
         categoryLa: data.categoryLa,
+        categoryZh: data.categoryZh,
         imageUrl: data.imageUrl,
         gallery,
         order: data.order !== undefined ? Number(data.order) : 0,
@@ -43,19 +47,25 @@ export class StudentLifeService {
 
   async update(id: string, data: any) {
     await this.findOne(id);
-    const gallery = data.gallery !== undefined
-      ? (typeof data.gallery === 'string' ? data.gallery : JSON.stringify(data.gallery))
-      : undefined;
+    const gallery =
+      data.gallery !== undefined
+        ? typeof data.gallery === 'string'
+          ? data.gallery
+          : JSON.stringify(data.gallery)
+        : undefined;
 
     return this.prisma.studentLife.update({
       where: { id },
       data: {
         title: data.title,
         titleLa: data.titleLa,
+        titleZh: data.titleZh,
         description: data.description,
         descriptionLa: data.descriptionLa,
+        descriptionZh: data.descriptionZh,
         category: data.category,
         categoryLa: data.categoryLa,
+        categoryZh: data.categoryZh,
         imageUrl: data.imageUrl,
         gallery,
         order: data.order !== undefined ? Number(data.order) : undefined,
@@ -71,7 +81,7 @@ export class StudentLifeService {
 
   async reorder(items: { id: string; order: number }[]) {
     await this.prisma.$transaction(
-      items.map(item =>
+      items.map((item) =>
         this.prisma.studentLife.update({
           where: { id: item.id },
           data: { order: item.order },

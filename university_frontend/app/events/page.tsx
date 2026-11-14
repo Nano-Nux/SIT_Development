@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
@@ -10,6 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { eventsApi, EventItem } from '@/lib/api';
 
 export default function EventsPage() {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -41,9 +44,7 @@ export default function EventsPage() {
               <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
                 {t.events.title}
               </h1>
-              <p className="text-sm sm:text-base text-slate-300">
-                {t.events.subtitle}
-              </p>
+              <p className="text-sm sm:text-base text-slate-300">{t.events.subtitle}</p>
             </div>
           </div>
         </section>
@@ -57,12 +58,35 @@ export default function EventsPage() {
               <div className="space-y-6">
                 {events.map((event, idx) => {
                   const dateObj = new Date(event.eventDate);
-                  const month = dateObj.toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short' });
+                  const month = dateObj.toLocaleDateString(
+                    lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+                    { month: 'short' },
+                  );
                   const day = dateObj.getDate();
-                  const eventTitle = (isLa && event.titleLa) ? event.titleLa : event.title;
-                  const eventSummary = (isLa && event.summaryLa) ? event.summaryLa : event.summary;
-                  const eventTime = (isLa && event.timeLa) ? event.timeLa : event.time;
-                  const eventLocation = (isLa && event.locationLa) ? event.locationLa : event.location;
+                  const eventTitle =
+                    lang === 'ZH'
+                      ? event?.titleZh || event.title
+                      : isLa && event.titleLa
+                        ? event.titleLa
+                        : event.title;
+                  const eventSummary =
+                    lang === 'ZH'
+                      ? event?.summaryZh || event.summary
+                      : isLa && event.summaryLa
+                        ? event.summaryLa
+                        : event.summary;
+                  const eventTime =
+                    lang === 'ZH'
+                      ? event?.timeZh || event.time
+                      : isLa && event.timeLa
+                        ? event.timeLa
+                        : event.time;
+                  const eventLocation =
+                    lang === 'ZH'
+                      ? event?.locationZh || event.location
+                      : isLa && event.locationLa
+                        ? event.locationLa
+                        : event.location;
 
                   return (
                     <div
@@ -73,30 +97,26 @@ export default function EventsPage() {
                         {/* Date badge */}
                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#00001C] to-[#0400CC] text-white flex flex-col items-center justify-center shrink-0 shadow-md">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-300 leading-none">
-                            {month}
+                            {tr(month)}
                           </span>
-                          <span className="text-xl font-black leading-tight mt-0.5">
-                            {day}
-                          </span>
+                          <span className="text-xl font-black leading-tight mt-0.5">{day}</span>
                         </div>
 
                         <div className="space-y-2">
                           <h3 className="text-lg sm:text-xl font-bold text-[#00001C] group-hover:text-[#0400CC] transition-colors leading-snug">
-                            <Link href={`/events/${event.slug}`}>
-                              {eventTitle}
-                            </Link>
+                            <Link href={`/events/${event.slug}`}>{tr(eventTitle)}</Link>
                           </h3>
                           <p className="text-xs sm:text-sm text-slate-600 line-clamp-2">
-                            {eventSummary}
+                            {tr(eventSummary)}
                           </p>
                           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 font-semibold pt-1">
                             <span className="flex items-center gap-1.5">
                               <Clock className="w-3.5 h-3.5 text-[#0400CC]" />
-                              {eventTime}
+                              {tr(eventTime)}
                             </span>
                             <span className="flex items-center gap-1.5">
                               <MapPin className="w-3.5 h-3.5 text-[#00B6FF]" />
-                              {eventLocation}
+                              {tr(eventLocation)}
                             </span>
                           </div>
                         </div>
@@ -116,9 +136,7 @@ export default function EventsPage() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-16 text-slate-500">
-                {t.events.noEventsFound}
-              </div>
+              <div className="text-center py-16 text-slate-500">{t.events.noEventsFound}</div>
             )}
           </div>
         </section>

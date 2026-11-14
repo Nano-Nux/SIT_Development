@@ -1,26 +1,47 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { api, FounderInfo } from '@/lib/api';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function FounderSection({ data }: { data?: FounderInfo | null }) {
+  const tr = useUiTranslation();
   const [founder, setFounder] = useState<FounderInfo | null>(data || null);
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
   useEffect(() => {
     if (!data) {
-      api.getFounder().then((res) => {
-        if (res) setFounder(res);
-      }).catch(console.error);
+      api
+        .getFounder()
+        .then((res) => {
+          if (res) setFounder(res);
+        })
+        .catch(console.error);
     }
   }, [data]);
 
-  const name = (isLa && founder?.nameLa) ? founder.nameLa : (founder?.name || 'Dr. Soutsaka Bounmanit');
-  const designation = (isLa && founder?.designationLa) ? founder.designationLa : (founder?.designation || 'Founder & President');
-  const rawQuote = isLa ? (founder?.quoteLa || founder?.quote) : founder?.quote;
+  const name =
+    lang === 'ZH'
+      ? founder?.nameZh || founder?.name || 'Dr. Soutsaka Bounmanit'
+      : isLa && founder?.nameLa
+        ? founder.nameLa
+        : founder?.name || 'Dr. Soutsaka Bounmanit';
+  const designation =
+    lang === 'ZH'
+      ? founder?.designationZh || founder?.designation || 'Founder & President'
+      : isLa && founder?.designationLa
+        ? founder.designationLa
+        : founder?.designation || 'Founder & President';
+  const rawQuote =
+    lang === 'ZH'
+      ? founder?.quoteZh || founder?.quote || founder?.quote
+      : isLa
+        ? founder?.quoteLa || founder?.quote
+        : founder?.quote;
   const quote = typeof rawQuote === 'string' ? rawQuote.trim() : '';
   const imageUrl = founder?.imageUrl?.trim() || '/images/about/founder_portrait.jpg';
 
@@ -28,9 +49,18 @@ export function FounderSection({ data }: { data?: FounderInfo | null }) {
     ? `ຫຼັກສູດຂອງພວກເຮົາຖືກອອກແບບມາເພື່ອສ້າງຄວາມເຂັ້ມແຂງໃຫ້ນັກສຶກສາມີເຄື່ອງມືທີ່ຈຳເປັນເພື່ອຄວາມສຳເລັດໃນຂົງເຂດຕ່າງໆ ລວມທັງເຕັກໂນໂລຊີສຳລັບທຸລະກິດ, ການຄຸ້ມຄອງ, ການຕະຫຼາດດິຈິຕອນ, ການເງິນ ແລະ ການບັນຊີ.\n\nໜຶ່ງໃນຈຸດເດັ່ນຂອງຫຼັກສູດຂອງພວກເຮົາແມ່ນການເນັ້ນໃສ່ການນຳໃຊ້ຕົວຈິງ. ຜ່ານໂອກາດການຮຽນຮູ້ຈາກປະສົບການຕົວຈິງ, ຂໍ້ລິເລີ່ມການເປັນຜູ້ປະກອບການ ແລະ ໂຄງການແກ້ໄຂບັນຫາຕົວຈິງ, ນັກສຶກສາຂອງພວກເຮົາຈະໄດ້ພັດທະນາທັກສະຕົວຈິງທີ່ໄດ້ຮັບຄຸນຄ່າສູງໃນວົງການວິຊາຊີບ.\n\nຍິ່ງໄປກວ່ານັ້ນ, ຫຼັກສູດຂອງພວກເຮົາຍັງມອບໂອກາດທີ່ໜ້າຕື່ນເຕັ້ນສຳລັບການເປີດກວ້າງສູ່ລະດັບສາກົນ ຜ່ານໂຄງການແລກປ່ຽນໄລຍະສັ້ນ ແລະ ໄລຍະຍາວກັບມະຫາວິທະຍາໄລຄູ່ຮ່ວມງານຊັ້ນນຳຂອງພວກເຮົາ. ທັດສະນະລະດັບໂລກນີ້ບໍ່ພຽງແຕ່ເປີດກວ້າງວິໄສທັດເທົ່ານັ້ນ ແຕ່ຍັງປູກຝັງຄວາມເຂົ້າໃຈ ແລະ ການຮ່ວມມືຂ້າມວັດທະນະທຳ.\n\nທີ່ SIT, ພວກເຮົາຖືກຂັບເຄື່ອນດ້ວຍວິໄສທັດຮ່ວມກັນໃນການສົ່ງເສີມການເປັນຜູ້ປະກອບການ ແລະ ປະກອບສ່ວນເຂົ້າໃນການພັດທະນາແບບຍືນຍົງໃນພາກພື້ນຂອງພວກເຮົາ. ຜ່ານການບົ່ມເພາະກຸ່ມຜູ້ປະກອບການທີ່ມີຄວາມຫຼາກຫຼາຍ ແລະ ປ່ຽມດ້ວຍພອນສະຫວັນ, ພວກເຮົາຕັ້ງເປົ້າໝາຍທີ່ຈະສ້າງຜົນກະທົບທາງບວກຕໍ່ເສດຖະກິດທ້ອງຖິ່ນ ແລະ ສ້າງໂອກາດວຽກເຮັດງານທຳ. ຂ້າພະເຈົ້າຂໍເຊີນຊວນທ່ານຮ່ວມເດີນທາງໃນການເດີນທາງແຫ່ງການຫັນປ່ຽນນີ້ກັບພວກເຮົາທີ່ SIT ແລະ ເຂົ້າຮ່ວມຊຸມຊົນແຫ່ງການຮຽນຮູ້, ນັກນະວັດຕະກຳ ແລະ ຜູ້ນຳການປ່ຽນແປງ.`
     : `Our program is designed to empower students with the necessary tools for success in areas including technology for business, management, digital marketing, finance, and accounting.\n\nOne of the hallmarks of our program is its focus on real-world application. Through experiential learning opportunities, entrepreneurship initiatives, and problem-solving projects, our students develop practical skills that are highly valued in the professional sphere.\n\nFurthermore, our program offers exciting opportunities for international exposure through short and long-term exchange programs with our esteemed university partners. This global perspective not only broadens horizons but also nurtures cross-cultural understanding and collaboration.\n\nAt SiT, we are driven by a shared vision of fostering entrepreneurship and contributing to sustainable development in our region. By nurturing a diverse and talented pool of entrepreneurs, we aim to positively impact the local economy, and create job opportunities. I invite you to embark on this transformative journey with us at SiT and join our vibrant community of learners, innovators, and change-makers as we strive towards excellence together.`;
 
-  const rawBiography = (isLa && founder?.biographyLa) ? founder.biographyLa : (founder?.biography || defaultBio);
-  const biography = typeof rawBiography === 'string' && rawBiography.trim() ? rawBiography : defaultBio;
-  const bioParagraphs = biography.split('\n\n').map((p) => p.trim()).filter(Boolean);
+  const rawBiography =
+    lang === 'ZH'
+      ? founder?.biographyZh || founder?.biography || defaultBio
+      : isLa && founder?.biographyLa
+        ? founder.biographyLa
+        : founder?.biography || defaultBio;
+  const biography =
+    typeof rawBiography === 'string' && rawBiography.trim() ? rawBiography : defaultBio;
+  const bioParagraphs = biography
+    .split('\n\n')
+    .map((p) => p.trim())
+    .filter(Boolean);
 
   return (
     <section id="founder" className="w-full bg-white py-20 sm:py-28">
@@ -69,7 +99,7 @@ export function FounderSection({ data }: { data?: FounderInfo | null }) {
               <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl z-10 bg-slate-100">
                 <img
                   src={imageUrl}
-                  alt={name}
+                  alt={tr(name)}
                   className="w-full h-full object-cover object-top"
                 />
               </div>
@@ -77,14 +107,12 @@ export function FounderSection({ data }: { data?: FounderInfo | null }) {
 
             {/* Caption */}
             <div className="text-center lg:text-left space-y-1">
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#00001C]">
-                {name}
-              </h3>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#00001C]">{tr(name)}</h3>
               <p className="text-sm sm:text-base font-bold text-[#0400CC] tracking-wider">
-                {designation}
+                {tr(designation)}
               </p>
               <p className="text-sm text-[#62748E] font-medium">
-                Soutsaka Institute of Technology
+                {tr('Soutsaka Institute of Technology')}
               </p>
             </div>
           </div>
@@ -95,7 +123,7 @@ export function FounderSection({ data }: { data?: FounderInfo | null }) {
             <div className="relative z-10 space-y-4">
               {bioParagraphs.map((paragraph, idx) => (
                 <p key={idx} className="font-normal text-[#4A5565] leading-relaxed">
-                  {paragraph}
+                  {tr(paragraph)}
                 </p>
               ))}
             </div>
@@ -104,16 +132,16 @@ export function FounderSection({ data }: { data?: FounderInfo | null }) {
             {quote ? (
               <div className="relative z-10 mt-8 p-6 sm:p-8 bg-[#EFFFFF] border-l-4 border-[#0400CC] rounded-r-2xl space-y-3 shadow-sm">
                 <p className="text-lg sm:text-xl font-bold text-[#00001C] italic leading-relaxed">
-                  “{quote}”
+                  “{tr(quote)}”
                 </p>
               </div>
             ) : null}
 
             {/* Founder Signoff */}
             <div className="relative z-10 pt-4 text-sm sm:text-base space-y-0.5 text-[#00001C]">
-              <p className="font-bold">{name.replace('Dr. ', '')}</p>
-              <p className="text-[#62748E]">{isLa ? 'ຜູ້ກໍ່ຕັ້ງ' : 'Founder'}</p>
-              <p className="text-[#62748E]">Soutsaka Institute of Technology</p>
+              <p className="font-bold">{tr(name.replace('Dr. ', ''))}</p>
+              <p className="text-[#62748E]">{tr(isLa ? 'ຜູ້ກໍ່ຕັ້ງ' : tr('Founder'))}</p>
+              <p className="text-[#62748E]">{tr('Soutsaka Institute of Technology')}</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React from 'react';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -10,11 +12,13 @@ interface TimelineItem {
   id: string;
   intakeName: string;
   intakeNameLa?: string | null;
+  intakeNameZh?: string | null;
   intakeYear: string;
   openingDate: string | Date;
   closingDate: string | Date;
   status: string;
   statusLa?: string | null;
+  statusZh?: string | null;
 }
 
 interface TimelineSectionProps {
@@ -22,6 +26,7 @@ interface TimelineSectionProps {
 }
 
 export function TimelineSection({ data = [] }: TimelineSectionProps) {
+  const tr = useUiTranslation();
   const { lang, t } = useLanguage();
   const isLa = lang === 'LA';
 
@@ -67,9 +72,20 @@ export function TimelineSection({ data = [] }: TimelineSectionProps) {
         <div className="space-y-4">
           {items.map((item, idx) => {
             const isOpen = item.status.toLowerCase().includes('open');
-            const openDate = new Date(item.openingDate).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const closeDate = new Date(item.closingDate).toLocaleDateString(isLa ? 'lo-LA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const intakeName = (isLa && item.intakeNameLa) ? item.intakeNameLa : item.intakeName;
+            const openDate = new Date(item.openingDate).toLocaleDateString(
+              lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+              { month: 'short', day: 'numeric', year: 'numeric' },
+            );
+            const closeDate = new Date(item.closingDate).toLocaleDateString(
+              lang === 'ZH' ? 'zh-CN' : isLa ? 'lo-LA' : 'en-US',
+              { month: 'short', day: 'numeric', year: 'numeric' },
+            );
+            const intakeName =
+              lang === 'ZH'
+                ? item?.intakeNameZh || item.intakeName
+                : isLa && item.intakeNameLa
+                  ? item.intakeNameLa
+                  : item.intakeName;
 
             return (
               <div
@@ -82,24 +98,26 @@ export function TimelineSection({ data = [] }: TimelineSectionProps) {
               >
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                      isOpen ? 'bg-[#0400CC] text-white' : 'bg-slate-200 text-slate-700'
-                    }`}>
-                      {isOpen ? t.common.openNow : t.common.upcoming}
+                    <span
+                      className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                        isOpen ? 'bg-[#0400CC] text-white' : 'bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {tr(isOpen ? t.common.openNow : t.common.upcoming)}
                     </span>
-                    <span className="text-xs font-semibold text-slate-500">{t.admissions.year} {item.intakeYear}</span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      {t.admissions.year} {tr(item.intakeYear)}
+                    </span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#00001C]">
-                    {intakeName}
-                  </h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-[#00001C]">{tr(intakeName)}</h3>
                   <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-[#0400CC]" />
-                      {t.admissions.opens} {openDate}
+                      {t.admissions.opens} {tr(openDate)}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-red-500" />
-                      {t.admissions.deadline} {closeDate}
+                      {t.admissions.deadline} {tr(closeDate)}
                     </span>
                   </div>
                 </div>

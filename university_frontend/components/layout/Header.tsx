@@ -1,28 +1,27 @@
 'use client';
 
+import { useUiTranslation } from '@/context/useUiTranslation';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import {
-  Menu,
-  ChevronDown,
-  Search,
-  X
-} from 'lucide-react';
+import { Menu, ChevronDown, Search, X } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { MobileNav } from './MobileNav';
 import { useLanguage } from '@/context/LanguageContext';
 import { api, Department } from '@/lib/api';
 import { getDepartmentHref } from '@/lib/department-links';
 
 export function Header() {
+  const tr = useUiTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [departments, setDepartments] = useState<Department[]>([]);
-  const { lang, setLang, t } = useLanguage();
+  const { lang, t } = useLanguage();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -38,7 +37,8 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    api.getDepartments()
+    api
+      .getDepartments()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setDepartments(data);
@@ -49,18 +49,26 @@ export function Header() {
       });
   }, []);
 
-  const academicsDropdown = departments.length > 0
-    ? departments
-        .filter((d) => d.isActive !== false)
-        .map((d) => ({
-          name: (lang === 'LA' ? (d.nameLa || d.name) : (d.name || d.nameLa)) || d.slug || 'Department',
-          href: getDepartmentHref(d),
-        }))
-    : [
-        { name: t.nav.deptIT, href: '/departments/it' },
-        { name: t.nav.deptBA, href: '/departments/ba-economics' },
-        { name: t.nav.deptCA, href: '/departments/communication-arts' },
-      ];
+  const academicsDropdown =
+    departments.length > 0
+      ? departments
+          .filter((d) => d.isActive !== false)
+          .map((d) => ({
+            name:
+              (lang === 'ZH'
+                ? d?.nameZh || d.name || d.name || d.nameLa
+                : lang === 'LA'
+                  ? d.nameLa || d.name
+                  : d.name || d.nameLa) ||
+              d.slug ||
+              'Department',
+            href: getDepartmentHref(d),
+          }))
+      : [
+          { name: t.nav.deptIT, href: '/departments/it' },
+          { name: t.nav.deptBA, href: '/departments/ba-economics' },
+          { name: t.nav.deptCA, href: '/departments/communication-arts' },
+        ];
 
   interface NavLinkItem {
     name: string;
@@ -99,10 +107,7 @@ export function Header() {
         <div className="bg-[#00001C] text-white/80 text-[12px] py-1.5 px-4 sm:px-8 border-b border-white/10">
           <div className="max-w-[1280px] mx-auto flex items-center justify-end gap-3 sm:gap-5">
             <div className="hidden md:flex items-center gap-5">
-              <Link
-                href="/news"
-                className="text-white/80 hover:text-white transition-colors"
-              >
+              <Link href="/news" className="text-white/80 hover:text-white transition-colors">
                 {t.nav.newsEvents}
               </Link>
               <span className="text-white/30">|</span>
@@ -113,44 +118,19 @@ export function Header() {
                 {t.nav.alumni}
               </Link>
               <span className="text-white/30">|</span>
-              <Link
-                href="/contact"
-                className="text-white/80 hover:text-white transition-colors"
-              >
+              <Link href="/contact" className="text-white/80 hover:text-white transition-colors">
                 {t.nav.careers}
               </Link>
             </div>
 
             {/* Language Switcher */}
-            <div className="flex items-center bg-[#000028] border border-white/20 rounded-md px-1 py-0.5">
-              <button
-                onClick={() => setLang('EN')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all cursor-pointer ${lang === 'EN'
-                  ? 'bg-[#0400CC] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-                  }`}
-                aria-label="Switch to English"
-              >
-                EN
-              </button>
-              <span className="text-white/30 text-[10px] mx-0.5">|</span>
-              <button
-                onClick={() => setLang('LA')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all cursor-pointer ${lang === 'LA'
-                  ? 'bg-[#0400CC] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-                  }`}
-                aria-label="Switch to Lao"
-              >
-                LA
-              </button>
-            </div>
+            <LanguageSwitcher />
 
             {/* Search Icon */}
             <button
               onClick={() => setSearchOpen(true)}
               className="text-white/80 hover:text-white p-1 rounded-md transition-colors cursor-pointer"
-              aria-label="Open Search"
+              aria-label={tr('Open Search')}
             >
               <Search className="w-4 h-4" />
             </button>
@@ -171,7 +151,7 @@ export function Header() {
               <div className="relative h-10 sm:h-12 w-48 sm:w-56">
                 <Image
                   src="/assets/sit-logo.png"
-                  alt="Soutsaka Institute of Technology"
+                  alt={tr('Soutsaka Institute of Technology')}
                   fill
                   className="object-contain object-left brightness-110"
                   priority
@@ -183,8 +163,7 @@ export function Header() {
             <div className="hidden lg:flex items-center gap-1 xl:gap-2">
               {navLinks.map((link) => {
                 const isActive =
-                  pathname === link.href ||
-                  (link.href !== '/' && pathname.startsWith(link.href));
+                  pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
                 const hasDropdown = Boolean(link.dropdown && link.dropdown.length > 0);
 
                 return (
@@ -200,16 +179,18 @@ export function Header() {
                   >
                     <Link
                       href={link.href}
-                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold tracking-wider transition-all duration-200 ${isActive
-                        ? 'bg-white/20 text-white shadow-inner font-bold'
-                        : 'text-white/90 hover:text-white hover:bg-white/10'
-                        }`}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold tracking-wider transition-all duration-200 ${
+                        isActive
+                          ? 'bg-white/20 text-white shadow-inner font-bold'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
+                      }`}
                     >
-                      <span>{link.name}</span>
+                      <span>{tr(link.name)}</span>
                       {hasDropdown && (
                         <ChevronDown
-                          className={`w-3.5 h-3.5 text-white/70 transition-transform duration-200 ${activeDropdown === link.name ? 'rotate-180 text-white' : ''
-                            }`}
+                          className={`w-3.5 h-3.5 text-white/70 transition-transform duration-200 ${
+                            activeDropdown === link.name ? 'rotate-180 text-white' : ''
+                          }`}
                         />
                       )}
                     </Link>
@@ -217,10 +198,11 @@ export function Header() {
                     {/* Dropdown Menu */}
                     {hasDropdown && link.dropdown && (
                       <div
-                        className={`absolute top-full left-0 w-72 pt-2.5 transition-all duration-200 ${activeDropdown === link.name
-                          ? 'opacity-100 translate-y-0 pointer-events-auto'
-                          : 'opacity-0 translate-y-2 pointer-events-none'
-                          }`}
+                        className={`absolute top-full left-0 w-72 pt-2.5 transition-all duration-200 ${
+                          activeDropdown === link.name
+                            ? 'opacity-100 translate-y-0 pointer-events-auto'
+                            : 'opacity-0 translate-y-2 pointer-events-none'
+                        }`}
                       >
                         <div className="bg-[#00001C]/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15 p-2 overflow-hidden">
                           {link.dropdown.map((item) => (
@@ -229,7 +211,7 @@ export function Header() {
                               href={item.href}
                               className="block px-3.5 py-2.5 rounded-xl text-xs font-medium text-white/80 hover:bg-[#0400CC] hover:text-white transition-all"
                             >
-                              {item.name}
+                              {tr(item.name)}
                             </Link>
                           ))}
                         </div>
@@ -253,7 +235,7 @@ export function Header() {
               <button
                 onClick={() => setMobileMenuOpen(true)}
                 className="flex lg:hidden p-1.5 -mr-1 rounded-lg text-white hover:bg-white/10 focus:outline-none cursor-pointer items-center justify-center"
-                aria-label="Open Navigation Menu"
+                aria-label={tr('Open Navigation Menu')}
               >
                 <Menu className="w-6 h-6 sm:w-7 sm:h-7" />
               </button>
@@ -283,7 +265,7 @@ export function Header() {
               <button
                 onClick={() => setSearchOpen(false)}
                 className="text-white/60 hover:text-white cursor-pointer"
-                aria-label="Close search"
+                aria-label={tr('Close search')}
               >
                 <X className="w-5 h-5" />
               </button>
