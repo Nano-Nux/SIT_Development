@@ -95,6 +95,18 @@ sed -i '/^BACKEND_PUBLIC_URL=/d' .env 2>/dev/null || true
 echo "BACKEND_PUBLIC_URL=http://${NAT_PUBLIC_IP}:${BACKEND_PORT}" >> .env
 
 npm install --production=false
+
+# Sync every model with the current Prisma schema (galleries, departments, etc.).
+# Do not accept data loss automatically; set -e stops deployment on failure.
+echo -e "${CYAN}Synchronizing database schema...${NC}"
+npx prisma db push --skip-generate
+
+# Populate missing Chinese translations after the schema has been synchronized.
+echo -e "${CYAN}Applying Chinese translation data update...${NC}"
+npx prisma db execute \
+  --file prisma/updates/20261114_chinese_translations.sql \
+  --schema prisma/schema.prisma
+
 npx prisma generate
 npm run build
 echo -e "${GREEN}✓ Backend build complete.${NC}"
