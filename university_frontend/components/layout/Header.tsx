@@ -112,7 +112,7 @@ export function Header() {
               </Link>
               <span className="text-white/30">|</span>
               <Link
-                href="/about#members"
+                href="/academics#alumni-spotlight"
                 className="text-white/80 hover:text-white transition-colors"
               >
                 {t.nav.alumni}

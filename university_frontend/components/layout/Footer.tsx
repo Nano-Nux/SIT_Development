@@ -329,12 +329,12 @@ export function Footer() {
             </h3>
             <ul className="space-y-3 text-sm text-white/80">
               <li>
-                <Link href="/news" className="hover:text-white transition-colors">
-                  {t.footer.academicCalendar}
+                <Link href="https://sit.edu.la/student/login.php" className="hover:text-white transition-colors">
+                  {t.footer.studentPortal}
                 </Link>
               </li>
               <li>
-                <Link href="/life-at-sit" className="hover:text-white transition-colors">
+                <Link href="https://www.sit.edu.la/?d=Publication" className="hover:text-white transition-colors">
                   {t.footer.library}
                 </Link>
               </li>
@@ -349,7 +349,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about#members" className="hover:text-white transition-colors">
+                <Link href="/academics#alumni-spotlight" className="hover:text-white transition-colors">
                   {t.footer.alumniNetwork}
                 </Link>
               </li>

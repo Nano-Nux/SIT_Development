@@ -66,7 +66,7 @@ export const zh: Translations = {
   footer: {
     description: '通过创新、卓越教育和全球视野，培养新一代领导者。',
     quickLinks: '快捷链接',
-    academicCalendar: '校历',
+    studentPortal: '学生门户',
     library: '图书馆',
     campusMap: '校园地图',
     careersAtSIT: '联系我们',

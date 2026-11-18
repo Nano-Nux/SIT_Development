@@ -66,7 +66,7 @@ export const la: Translations = {
   footer: {
     description: 'ສ້າງຄວາມເຂັ້ມແຂງໃຫ້ແກ່ຜູ້ນຳລຸ້ນໃໝ່ ຜ່ານນະວັດຕະກຳ, ຄວາມເປັນເລີດ ແລະ ວິໄສທັດລະດັບສາກົນ.',
     quickLinks: 'ລິ້ງດ່ວນ',
-    academicCalendar: 'ປະຕິທິນການສຶກສາ',
+    studentPortal: 'ລະບົບນັກສຶກສາ',
     library: 'ຫ້ອງສະໝຸດ',
     campusMap: 'ແຜນທີ່ວິທະຍາເຂດ',
     careersAtSIT: 'ຮ່ວມງານກັບ SIT',

@@ -64,7 +64,7 @@ export const en = {
   footer: {
     description: 'Empowering the next generation of leaders through innovation, excellence, and global perspective.',
     quickLinks: 'QUICK LINKS',
-    academicCalendar: 'Academic Calendar',
+    studentPortal: 'Student Portal',
     library: 'Library',
     campusMap: 'Campus Map',
     careersAtSIT: 'Contact us',

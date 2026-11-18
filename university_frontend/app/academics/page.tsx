@@ -44,6 +44,12 @@ export default function AcademicsPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!loading && window.location.hash === '#alumni-spotlight') {
+      document.getElementById('alumni-spotlight')?.scrollIntoView();
+    }
+  }, [loading]);
+
   const heroSubtitle = getLocalizedHeroText(heroData, 'subtitle', lang, t.academics.heroSubtitle);
 
   const rawTitle =
@@ -342,7 +348,10 @@ export default function AcademicsPage() {
             }
 
             return (
-              <section className="w-full bg-[#00001C] py-24 md:py-32 text-white relative overflow-hidden">
+              <section
+                id="alumni-spotlight"
+                className="w-full scroll-mt-32 bg-[#00001C] py-24 md:py-32 text-white relative overflow-hidden"
+              >
                 <div className="max-w-[1280px] mx-auto px-6 relative z-10">
                   <div className="text-center mb-16 space-y-3">
                     {spotSubtitle && (
